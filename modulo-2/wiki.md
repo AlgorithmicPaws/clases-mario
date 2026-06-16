@@ -1,15 +1,6 @@
 # Módulo 2 — Trabajar con el Modelo
 ### Fundamentos de IA Productiva
 
-> **Perfil del lector:** ingeniero informático con sólida experiencia técnica para quien
-> el paradigma de inteligencia artificial es nuevo. Este documento explica los conceptos de
-> forma directa y técnica, y profundiza más allá de lo presentado en clase: cada sección
-> añade detalle, matices y consecuencias prácticas que la presentación solo enuncia.
-
-> **Formato de la clase:** una primera hora de **conceptos y demostración** (secciones 1 a 5)
-> y una segunda hora de **práctica y retroalimentación** (sección 7). La sección 7 está
-> pensada para hacerse en vivo, con el modelo abierto al lado.
-
 ---
 
 ## Tabla de Contenidos

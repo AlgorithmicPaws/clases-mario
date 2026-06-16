@@ -1,12 +1,5 @@
 # Módulo 1 — Cómo Piensan los Modelos
 ### Fundamentos de IA Productiva
-
-> **Perfil del lector:** ingeniero informático con sólida experiencia técnica para quien
-> el paradigma de inteligencia artificial es nuevo. Este documento explica los conceptos
-> de forma directa y técnica, y profundiza más allá de lo presentado en clase: cada
-> sección añade detalle, matices y consecuencias prácticas que la presentación solo
-> enuncia.
-
 ---
 
 ## Tabla de Contenidos
@@ -38,6 +31,7 @@
    - 5.3 [La prueba definitiva: tu caso de uso](#53-la-prueba-definitiva-tu-caso-de-uso)
 6. [Glosario del Módulo](#6-glosario-del-módulo)
 7. [Preguntas de repaso](#7-preguntas-de-repaso)
+8. [Recursos extra](#8-recursos-extra)
 
 ---
 
@@ -97,6 +91,19 @@ estadística: las secuencias de caracteres más frecuentes se vuelven un solo to
 raras se parten en varios. Por eso una palabra común en inglés suele ser 1 token, mientras
 que una palabra técnica, un nombre propio o una palabra en español con tildes puede partirse
 en 3 o 4.
+
+El impacto del idioma se ve con un ejemplo (conteos aproximados, varían por modelo):
+
+```
+"The cat is sleeping"      →  4 tokens   (cada palabra ≈ 1 token)
+"El gato está durmiendo"   →  ~7 tokens  ("El", " g", "ato", " está", " durm", "iendo", ...)
+"otorrinolaringólogo"      →  1 palabra, pero ~6 tokens
+"🙂"                        →  varios tokens (los emojis se parten en bytes)
+```
+
+La misma frase consume más tokens en español que en inglés: eso significa **más costo y
+menos espacio efectivo** en la ventana de contexto para el mismo contenido. Puedes
+comprobarlo pegando tu propio texto en un tokenizer interactivo (ver *Recursos extra*).
 
 **¿Por qué importa saber esto?**
 
@@ -250,10 +257,31 @@ Genera: "Copiapó ganó 2-1 en el Estadio Municipal."
 → Completamente inventado, presentado con total seguridad.
 ```
 
+El mismo mecanismo produce el caso más traicionero para el trabajo profesional, la
+**cita inventada**:
+
+```
+Pregunta: "Dame una referencia académica que respalde esta afirmación."
+
+El modelo conoce la FORMA de una cita (autor, año, título plausible, revista real),
+pero no tiene la referencia exacta.
+Genera: "Pérez & Soto (2019), 'Efectos del gramaje en la durabilidad del libro',
+         Revista Iberoamericana de Artes Gráficas, 12(3), 45-58."
+→ El formato es impecable; el paper no existe.
+```
+
 A esto se suma un factor de diseño: el ajuste por preferencias humanas (RLHF, sección 4.4)
 premia las respuestas útiles y completas, lo que empuja al modelo a *responder* en lugar de
 abstenerse. Por eso un modelo tiende a llenar huecos antes que a decir "no tengo ese dato",
 salvo que esté explícitamente entrenado o instruido para reconocer sus límites.
+
+> **Hallazgo reciente (OpenAI, 2025).** El estudio *"Why Language Models Hallucinate"*
+> sostiene que las alucinaciones no son un misterio, sino el resultado predecible de cómo se
+> entrena y evalúa a los modelos: la mayoría de los *benchmarks* premian **adivinar** por
+> encima de **admitir incertidumbre**. Como en un examen tipo test donde dejar una pregunta
+> en blanco puntúa igual que fallarla, al modelo le "conviene" arriesgar una respuesta antes
+> que decir "no sé". Mientras la evaluación recompense el acierto y castigue la duda, los
+> modelos seguirán inventando con seguridad (ver *Recursos extra*).
 
 ---
 
@@ -667,9 +695,40 @@ respuesta "de examen": el objetivo es razonar en voz alta.
 
 ---
 
+## 8. Recursos extra
+
+Recursos seleccionados para profundizar en los conceptos del módulo. Empieza por los
+explicadores visuales si el tema es nuevo; los papers y la documentación oficial son la
+referencia primaria.
+
+**Cómo funcionan los modelos (explicadores visuales)**
+- [3Blue1Brown — Neural networks (serie, incl. "But what is a GPT?")](https://www.3blue1brown.com/topics/neural-networks) — la mejor intuición visual de qué es un Transformer y la atención, sin perderse en matemáticas.
+- [The Illustrated Transformer — Jay Alammar](https://jalammar.github.io/illustrated-transformer/) — el clásico que desglosa la arquitectura pieza por pieza con diagramas.
+- [Andrej Karpathy — canal de YouTube](https://www.youtube.com/@AndrejKarpathy) — sus charlas *"Intro to Large Language Models"* y *"Deep Dive into LLMs like ChatGPT"* explican de fábrica a uso todo el ciclo (pretraining → fine-tuning → RLHF).
+- [Transformer Explainer (interactivo)](https://poloclub.github.io/transformer-explainer/) — visualiza en vivo cómo un modelo GPT genera el siguiente token.
+
+**Tokens (pruébalo tú mismo)**
+- [OpenAI Tokenizer](https://platform.openai.com/tokenizer) — pega texto y mira cómo se parte en tokens y cuántos son.
+- [Tiktokenizer](https://tiktokenizer.vercel.app/) — lo mismo pero comparando varios tokenizers/modelos lado a lado.
+
+**Alucinaciones**
+- [Why Language Models Hallucinate — OpenAI (2025)](https://openai.com/index/why-language-models-hallucinate/) — por qué entrenar y evaluar premiando el acierto produce invención; la explicación detrás del recuadro de la sección 2.2. ([paper en arXiv](https://arxiv.org/abs/2509.04664))
+
+**Arquitectura, entrenamiento y alineación**
+- [Attention Is All You Need (2017)](https://arxiv.org/abs/1706.03762) — el paper original que introdujo el Transformer.
+- [Illustrating Reinforcement Learning from Human Feedback (RLHF) — Hugging Face](https://huggingface.co/blog/rlhf) — los tres pasos del RLHF explicados con diagramas.
+- [Constitutional AI: Harmlessness from AI Feedback — Anthropic](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback) — cómo Claude se alinea con una "constitución" de principios en vez de solo feedback humano.
+
+**Comparar modelos y benchmarks**
+- [LMArena / Chatbot Arena](https://lmarena.ai/) — ranking por votación humana a ciegas entre pares de modelos (Elo). Refleja preferencia real de uso.
+- [Artificial Analysis](https://artificialanalysis.ai/) — compara modelos por calidad, velocidad y **precio por token** en un solo lugar; ideal para decidir según costo.
+- [Stanford HELM](https://crfm.stanford.edu/helm/) — evaluación holística y transparente de modelos en muchas dimensiones.
+
+---
+
 *Siguiente: [Módulo 2 — Trabajar con el modelo](./modulo-2-wiki.md)*
 
 ---
 
-> Versión 2.0 — Módulo 1 de 7 | Curso: Fundamentos de IA Productiva
+> Versión 2.1 — Módulo 1 de 7 | Curso: Fundamentos de IA Productiva
 > Actualizado: junio 2026

@@ -255,6 +255,47 @@
     h1{font-size:2.3rem;}h2{font-size:1.6rem;}
     #stage{padding:56px 28px 80px;}
   }
+
+  /* ---- Impresión / export a PDF (cada slide = una página 16:9) ---- */
+  @media print{
+    @page{ size:13.333in 8.3in; margin:0; }
+    html,body{
+      height:auto !important; overflow:visible !important;
+      background:#0e1117 !important;
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    #home-link,#topic-badge,#controls{ display:none !important; }
+    #stage{ display:block !important; height:auto !important; padding:0 !important; }
+    .slide{
+      display:flex !important; flex-direction:column; justify-content:center;
+      box-sizing:border-box;
+      width:13.333in; height:8in;
+      max-width:none !important; max-height:none !important;
+      overflow:hidden !important;
+      padding:0.45in 0.62in; margin:0;
+      animation:none !important;
+      page-break-after:always; break-after:page;
+      page-break-inside:avoid; break-inside:avoid;
+    }
+    .slide:last-child{ page-break-after:avoid; break-after:auto; }
+
+    /* compactar para que cada slide quepa en una sola página */
+    html{ font-size:12px; }
+    .slide h1{ font-size:2.6rem; }
+    .slide h2{ font-size:1.55rem; margin-bottom:.45rem; }
+    .slide h3{ margin:.2rem 0; }
+    .slide p{ margin:0 0 .42rem; }
+    .slide .lead{ margin-bottom:.4rem; }
+    .slide ul,.slide ol{ margin:.3rem 0 .5rem 1.15rem; }
+    .slide li{ margin:3px 0; }
+    .slide .callout,.slide .analogy{ margin:.42rem 0; padding:9px 13px; }
+    .slide .card{ padding:12px 15px; }
+    .slide .cols{ gap:14px; margin:10px 0; }
+    .slide table{ font-size:.9em; }
+    .slide th,.slide td{ padding:5px 9px; }
+    .slide svg{ height:2in !important; width:auto !important; max-width:100% !important; display:block; margin:6px auto; }
+    .slide pre{ font-size:.78rem; line-height:1.3; padding:10px 14px; margin:.5rem 0; }
+  }
 </style>
 </head>
 <body>
@@ -427,19 +468,16 @@
 
   <section class="slide" data-topic="1 · La ventana de contexto">
     <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
-    <h2>El manual de 80 páginas del cliente</h2>
+    <h2>El manual de marca del cliente</h2>
     <div class="callout exercise"><span class="tag">El caso</span>
-      <p>Una empresa te envía su manual corporativo de 80 páginas para imprimir y te pregunta: «¿en la página 60 dice papel mate o brillante?». Necesitas la respuesta exacta para no equivocar el trabajo.</p>
+      <p>Una empresa te envía su extenso manual de normas gráficas junto con el pedido, y necesitas un dato puntual: qué papel y gramaje exige para su <b>folleto institucional</b>. El dato está en una sección perdida en el medio del documento. Equivocarlo significa reimprimir.</p>
     </div>
     <div class="card">
-      <h3>Tu tarea</h3>
+      <h3>Tu tarea · pruébalo de las dos formas</h3>
       <ol class="steps">
-        <li>Pega el manual y haz la pregunta <b>al final</b>, con el documento arriba.</li>
-        <li>Pídele que <b>cite la frase exacta</b> donde lo dice antes de responder.</li>
+        <li><b>Primero, a lo intuitivo.</b> Escribe tu pregunta y luego pega el manual debajo (o pregúntale «de memoria»). Acepta lo que responda.</li>
+        <li><b>Luego, con buenas prácticas.</b> Pon el <b>documento arriba</b> y la <b>pregunta al final</b>, y pídele que <b>cite la frase exacta</b> antes de responder.</li>
       </ol>
-    </div>
-    <div class="callout good"><span class="tag">Qué deberías observar</span>
-      <p>Documento arriba + pregunta abajo + pedir la cita reduce el <b>context rot</b> y el «lost in the middle». No metas tres manuales en el mismo chat: una tarea por conversación.</p>
     </div>
   </section>
 
@@ -543,17 +581,14 @@ Más efectivo:
     <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
     <h2>Responder a una editorial que pide bajar costos</h2>
     <div class="callout exercise"><span class="tag">El caso</span>
-      <p>Una editorial pequeña te escribe: su presupuesto no alcanza para el tiraje cotizado. Tienes que responder proponiendo alternativas (gramaje, formato, tiraje) sin perder al cliente.</p>
+      <p>Una editorial pequeña te escribe: su presupuesto no alcanza para el tiraje cotizado, pero quiere seguir trabajando contigo. Tienes que responder proponiendo alternativas (gramaje, formato, tiraje) sin perder al cliente ni la calidad del libro.</p>
     </div>
     <div class="card">
-      <h3>Tu tarea · escribe dos prompts</h3>
+      <h3>Tu tarea · pruébalo de las dos formas</h3>
       <ol class="steps">
-        <li><b>Vago:</b> «Redacta una respuesta a este cliente».</li>
-        <li><b>Dirigido:</b> rol (asesor de la imprenta), el <b>por qué</b> (mantener la relación), 3 alternativas concretas y formato (correo cálido, máx. 150 palabras).</li>
+        <li><b>Primero, a lo intuitivo.</b> Pídele sin más: «Redacta una respuesta a este cliente». Guarda el resultado.</li>
+        <li><b>Luego, con buenas prácticas.</b> Dale <b>rol</b> (asesor de la imprenta), el <b>por qué</b> (conservar la relación), pídele <b>3 alternativas concretas</b> y fija el <b>formato</b> (correo cálido, máx. 180 palabras). Compara.</li>
       </ol>
-    </div>
-    <div class="callout good"><span class="tag">Qué deberías observar</span>
-      <p>El prompt dirigido produce algo enviable casi sin retoques. Rol + contexto + «por qué» + formato es lo que separa un borrador genérico de uno útil.</p>
     </div>
   </section>
 
@@ -670,17 +705,14 @@ Razona dentro de &lt;razonamiento&gt; y da el veredicto en &lt;respuesta&gt;.</c
     <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
     <h2>Clasificar los correos de pedidos entrantes</h2>
     <div class="callout exercise"><span class="tag">El caso</span>
-      <p>Llegan decenas de correos de pedidos al día. Quieres clasificarlos por tipo de trabajo (LIBRO / AGENDA / FOLLETO / MERCHANDISING) y urgencia (ALTA / MEDIA / BAJA) de forma consistente.</p>
+      <p>Llegan decenas de correos de pedidos al día y quieres clasificarlos por tipo de trabajo (LIBRO / AGENDA / FOLLETO / MERCHANDISING) y urgencia (ALTA / MEDIA / BAJA) de forma consistente, para no depender de leerlos uno por uno.</p>
     </div>
     <div class="card">
-      <h3>Tu tarea</h3>
+      <h3>Tu tarea · pruébalo de las dos formas</h3>
       <ol class="steps">
-        <li>Escribe el prompt con <b>3 ejemplos</b> (few-shot) envueltos en etiquetas <code>&lt;ejemplo&gt;</code>.</li>
-        <li>Pídele que <b>razone</b> la urgencia en <code>&lt;razonamiento&gt;</code> y dé el veredicto en <code>&lt;respuesta&gt;</code>.</li>
+        <li><b>Primero, a lo intuitivo.</b> Pídele que clasifique los correos solo con la instrucción, sin ejemplos (zero-shot). Mira la consistencia del formato.</li>
+        <li><b>Luego, con buenas prácticas.</b> Añade <b>3 ejemplos</b> (few-shot) en etiquetas <code>&lt;ejemplo&gt;</code> y pídele <b>razonar</b> la urgencia en <code>&lt;razonamiento&gt;</code> y dar el veredicto en <code>&lt;respuesta&gt;</code>.</li>
       </ol>
-    </div>
-    <div class="callout good"><span class="tag">Qué deberías observar</span>
-      <p>Few-shot fija el formato y las categorías; XML separa ejemplos de instrucciones; CoT hace explícita la urgencia. Las tres juntas dan una clasificación fiable y repetible.</p>
     </div>
   </section>
 
@@ -763,24 +795,6 @@ Razona dentro de &lt;razonamiento&gt; y da el veredicto en &lt;respuesta&gt;.</c
     </div>
   </section>
 
-  <section class="slide" data-topic="4 · Dividir o no">
-    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
-    <h2>Lanzar una nueva agenda escolar</h2>
-    <div class="callout exercise"><span class="tag">El caso</span>
-      <p>Para una nueva agenda escolar necesitas: investigar referencias del mercado, redactar la ficha de producto, traducir la contraportada al inglés y preparar un post para redes. Todo de calidad.</p>
-    </div>
-    <div class="card">
-      <h3>Tu tarea</h3>
-      <ol class="steps">
-        <li>Pídelo todo en <b>un solo prompt</b> y revisa qué partes salen flojas.</li>
-        <li>Rehazlo <b>encadenando</b> pasos (investigar → ficha → traducir → post), revisando cada salida.</li>
-      </ol>
-    </div>
-    <div class="callout good"><span class="tag">Qué deberías observar</span>
-      <p>El prompt único cumple unas cosas y descuida otras. Encadenar te deja inspeccionar y corregir cada paso. Tareas distintas (investigar, redactar, traducir) piden pasos separados.</p>
-    </div>
-  </section>
-
   <!-- ============ TEMA 5 ============ -->
   <section class="slide divider" data-topic="5 · Evaluar la respuesta">
     <div class="num">5</div>
@@ -856,43 +870,14 @@ Razona dentro de &lt;razonamiento&gt; y da el veredicto en &lt;respuesta&gt;.</c
     <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
     <h2>La disculpa por una diferencia de color</h2>
     <div class="callout exercise"><span class="tag">El caso</span>
-      <p>Un cliente reclama porque el color de su folleto impreso no coincide con el de la pantalla. Le pides al modelo que redacte la respuesta explicando por qué pasa (RGB vs CMYK) y cómo lo resolverán.</p>
+      <p>Un cliente reclama porque el color de su folleto impreso no coincide con el de su pantalla. Le pides al modelo que redacte la respuesta explicando por qué ocurre y cómo lo resolverán. La respuesta va directo a un cliente molesto: un error técnico ahí cuesta caro.</p>
     </div>
     <div class="card">
-      <h3>Tu tarea</h3>
+      <h3>Tu tarea · pruébalo de las dos formas</h3>
       <ol class="steps">
-        <li>Evalúa la respuesta con los <b>5 criterios</b>: correctitud, completitud, coherencia, fidelidad y formato.</li>
-        <li>Vuelve a preguntar <b>en neutro</b>: «Encuentra los errores técnicos de esta explicación», no «¿está bien?».</li>
+        <li><b>Primero, a lo intuitivo.</b> Lee la respuesta del modelo y decide si la enviarías tal cual.</li>
+        <li><b>Luego, con buenas prácticas.</b> Evalúala con los <b>5 criterios</b> (correctitud, completitud, coherencia, fidelidad, formato) y vuelve a preguntar <b>en neutro</b>: «Encuentra los errores técnicos de esta explicación», no «¿está bien?».</li>
       </ol>
-    </div>
-    <div class="callout good"><span class="tag">Qué deberías observar</span>
-      <p>Suena impecable, pero puede colar un error técnico sobre color o perfiles ICC. Preguntar en neutro evita la <b>adulación</b>: tu valor está en verificar antes de enviárselo al cliente.</p>
-    </div>
-  </section>
-
-  <!-- ============ PRÁCTICA ============ -->
-  <section class="slide divider" data-topic="Práctica · 2ª hora">
-    <div class="num">★</div>
-    <div class="eyebrow">Segunda hora</div>
-    <h2>Práctica y retroalimentación</h2>
-    <p class="lead muted">Con el modelo abierto. El objetivo no es "acertar": es <em>observar la diferencia</em>.</p>
-  </section>
-
-  <section class="slide" data-topic="Práctica · 2ª hora">
-    <div class="eyebrow">Manos a la obra</div>
-    <h2>Cinco ejercicios guiados</h2>
-    <table>
-      <thead><tr><th>#</th><th>Ejercicio</th><th>Qué practica</th><th>Tiempo</th></tr></thead>
-      <tbody>
-        <tr><td><strong>1</strong></td><td>Antes y después: reescribe un prompt real con rol, instrucción específica, el "por qué" y formato</td><td>Claridad (2.1–2.4)</td><td>10 min</td></tr>
-        <tr><td><strong>2</strong></td><td>Una clasificación sin ejemplos vs. con 3 ejemplos estructurados</td><td>Few-shot (3.1)</td><td>10 min</td></tr>
-        <tr><td><strong>3</strong></td><td>Un problema de razonamiento: solo respuesta vs. con &lt;razonamiento&gt;/&lt;respuesta&gt;</td><td>Chain-of-thought (3.2)</td><td>10 min</td></tr>
-        <tr><td><strong>4</strong></td><td>Redactar algo: borrador → "critica y lista 3 mejoras" → reescribir</td><td>Chaining (4.2)</td><td>15 min</td></tr>
-        <tr><td><strong>5</strong></td><td>Pedir un dato de nicho, aplicar el checklist, verificar y repreguntar en neutro</td><td>Evaluación (5.4)</td><td>15 min</td></tr>
-      </tbody>
-    </table>
-    <div class="callout">
-      <p>Tras cada ejercicio, comparte el resultado y recibe retroalimentación. <strong>Cierre:</strong> ¿qué técnica vas a incorporar a tu trabajo desde mañana?</p>
     </div>
   </section>
 

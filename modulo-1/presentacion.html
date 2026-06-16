@@ -255,6 +255,47 @@
     h1{font-size:2.3rem;}h2{font-size:1.6rem;}
     #stage{padding:56px 28px 80px;}
   }
+
+  /* ---- Impresión / export a PDF (cada slide = una página 16:9) ---- */
+  @media print{
+    @page{ size:13.333in 8.3in; margin:0; }
+    html,body{
+      height:auto !important; overflow:visible !important;
+      background:#0e1117 !important;
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    #home-link,#topic-badge,#controls{ display:none !important; }
+    #stage{ display:block !important; height:auto !important; padding:0 !important; }
+    .slide{
+      display:flex !important; flex-direction:column; justify-content:center;
+      box-sizing:border-box;
+      width:13.333in; height:8in;
+      max-width:none !important; max-height:none !important;
+      overflow:hidden !important;
+      padding:0.45in 0.62in; margin:0;
+      animation:none !important;
+      page-break-after:always; break-after:page;
+      page-break-inside:avoid; break-inside:avoid;
+    }
+    .slide:last-child{ page-break-after:avoid; break-after:auto; }
+
+    /* compactar para que cada slide quepa en una sola página */
+    html{ font-size:12px; }
+    .slide h1{ font-size:2.6rem; }
+    .slide h2{ font-size:1.55rem; margin-bottom:.45rem; }
+    .slide h3{ margin:.2rem 0; }
+    .slide p{ margin:0 0 .42rem; }
+    .slide .lead{ margin-bottom:.4rem; }
+    .slide ul,.slide ol{ margin:.3rem 0 .5rem 1.15rem; }
+    .slide li{ margin:3px 0; }
+    .slide .callout,.slide .analogy{ margin:.42rem 0; padding:9px 13px; }
+    .slide .card{ padding:12px 15px; }
+    .slide .cols{ gap:14px; margin:10px 0; }
+    .slide table{ font-size:.9em; }
+    .slide th,.slide td{ padding:5px 9px; }
+    .slide svg{ height:2in !important; width:auto !important; max-width:100% !important; display:block; margin:6px auto; }
+    .slide pre{ font-size:.78rem; line-height:1.3; padding:10px 14px; margin:.5rem 0; }
+  }
 </style>
 </head>
 <body>
@@ -415,7 +456,7 @@
     </div>
   </section>
 
-  <section class="slide" data-topic="1 · LLM y generación">
+  <section class="slide" id="s-transformer" data-topic="1 · LLM y generación">
     <div class="eyebrow">1.4 · Dentro de la caja negra</div>
     <h2>El Transformer, sin matemáticas</h2>
     <p>La arquitectura base se llama <strong>Transformer</strong> (2017). Dos mecanismos clave bastan para la intuición:</p>
@@ -590,24 +631,6 @@ con "libro" (no con "mesa").</code></pre>
     </div>
   </section>
 
-  <section class="slide" data-topic="1 · LLM y generación">
-    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
-    <h2>Contar los caracteres de una contraportada</h2>
-    <div class="callout exercise"><span class="tag">El caso</span>
-      <p>Tienes el texto de la contraportada de un libro que vas a imprimir. La solapa admite una <b>cantidad fija de caracteres con espacios</b> antes de que el diseño se desborde.</p>
-    </div>
-    <div class="card">
-      <h3>Tu tarea</h3>
-      <ol class="steps">
-        <li>Pega el texto y pídele al modelo que cuente <b>caracteres con espacios</b> y <b>cuántas veces aparece la letra «a»</b>.</li>
-        <li>Compáralo con el contador real de tu editor de texto o InDesign.</li>
-      </ol>
-    </div>
-    <div class="callout good"><span class="tag">Qué deberías observar</span>
-      <p>El conteo exacto suele fallar: el modelo procesa <b>tokens</b>, no caracteres. Para confirmar que un texto cabe en la solapa, usa un contador real, no el número que «dice» el modelo.</p>
-    </div>
-  </section>
-
   <!-- ============ TEMA 2 ============ -->
   <section class="slide divider" data-topic="2 · Probabilidad y alucinaciones">
     <div class="num">2</div>
@@ -705,24 +728,6 @@ Genera:
     </div>
   </section>
 
-  <section class="slide" data-topic="2 · Probabilidad y alucinaciones">
-    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
-    <h2>La ficha técnica que el modelo inventa</h2>
-    <div class="callout exercise"><span class="tag">El caso</span>
-      <p>Un cliente pregunta por las especificaciones de un papel concreto —por ejemplo «Couché mate 150 g»: gramaje, opacidad, blancura y certificación FSC. Le pides al modelo los datos para responder rápido.</p>
-    </div>
-    <div class="card">
-      <h3>Tu tarea</h3>
-      <ol class="steps">
-        <li>Pídele las especificaciones exactas de ese papel por su nombre comercial.</li>
-        <li>Verifica cada cifra contra la ficha real del proveedor.</li>
-      </ol>
-    </div>
-    <div class="callout danger"><span class="tag">Qué deberías observar</span>
-      <p>Dará cifras precisas y con total seguridad, varias <b>inventadas</b> (alucinación factual). Para fichas técnicas y certificaciones, dale tú los datos del proveedor o haz que los busque; nunca los des por buenos «de memoria».</p>
-    </div>
-  </section>
-
   <!-- ============ TEMA 3 ============ -->
   <section class="slide divider" data-topic="3 · Fortalezas y fallos">
     <div class="num">3</div>
@@ -791,24 +796,6 @@ Genera:
     <div class="callout good">
       <span class="tag">Principio clave</span>
       <p>El modelo es un <strong>colaborador muy capaz, no un oráculo.</strong> Trata sus respuestas como un borrador inteligente, no como fuente de verdad. Tu rol es dar dirección y verificar lo que importa.</p>
-    </div>
-  </section>
-
-  <section class="slide" data-topic="3 · Fortalezas y fallos">
-    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
-    <h2>La cotización: dónde confiar y dónde no</h2>
-    <div class="callout exercise"><span class="tag">El caso</span>
-      <p>Cotizar un tiraje de <b>3.000 ejemplares</b>, 180 páginas interiores a $38 por página, tapa dura +$1.200 por unidad, más un 8% de merma.</p>
-    </div>
-    <div class="card">
-      <h3>Tu tarea</h3>
-      <ol class="steps">
-        <li>Pídele el costo total y el costo por unidad en un solo mensaje.</li>
-        <li>Rehazlo: pídele que primero arme el <b>desglose</b> y luego use la herramienta de cálculo/código.</li>
-      </ol>
-    </div>
-    <div class="callout good"><span class="tag">Qué deberías observar</span>
-      <p>La aritmética de varios pasos puede salir mal (fallo predecible). En cambio, redactar el desglose y la explicación para el cliente = alta confianza. La clave: separar <b>«calcular»</b> de <b>«redactar»</b>.</p>
     </div>
   </section>
 
@@ -904,24 +891,6 @@ Genera:
     </div>
   </section>
 
-  <section class="slide" data-topic="4 · Diferencias entre modelos">
-    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
-    <h2>¿Entrenar el modelo con tu catálogo?</h2>
-    <div class="callout exercise"><span class="tag">El caso</span>
-      <p>Quieres que el modelo conozca el catálogo de papeles, formatos y precios de la imprenta para cotizar y responder a clientes. Un proveedor te ofrece «fine-tunear» un modelo con tus datos.</p>
-    </div>
-    <div class="card">
-      <h3>Tu tarea</h3>
-      <ol class="steps">
-        <li>Lista qué cambia cada mes en ese catálogo (precios, stock, proveedores).</li>
-        <li>Decide: ¿fine-tuning, o darle el catálogo como <b>contexto</b> (documento/RAG) en cada consulta?</li>
-      </ol>
-    </div>
-    <div class="callout good"><span class="tag">Qué deberías observar</span>
-      <p>El fine-tuning no sirve para datos que cambian ni para «memorizar» tu catálogo: ahí encaja darle el catálogo actualizado como contexto. El fine-tuning sirve para fijar <b>formato y estilo</b>, no conocimiento volátil.</p>
-    </div>
-  </section>
-
   <!-- ============ TEMA 5 ============ -->
   <section class="slide divider" data-topic="5 · Cómo leer un benchmark">
     <div class="num">5</div>
@@ -1000,27 +969,6 @@ Genera:
     </div>
     <div class="callout good">
       <p>Este proceso toma una hora y <strong>vale más que cualquier tabla de benchmarks.</strong></p>
-    </div>
-  </section>
-
-  <section class="slide" data-topic="5 · Cómo leer un benchmark">
-    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
-    <h2>Tu propio «benchmark» de imprenta</h2>
-    <div class="callout exercise"><span class="tag">El caso</span>
-      <p>Salió un modelo nuevo y el titular dice que es «el mejor en MMLU». Tienes que decidir si lo adoptas para el trabajo diario del taller.</p>
-    </div>
-    <div class="card">
-      <h3>Tu tarea · arma un mini-test con 5 tareas reales y córrelo en 2 modelos</h3>
-      <ol class="steps">
-        <li>Redactar un correo a una editorial explicando un retraso de entrega.</li>
-        <li>Resumir un manual corporativo de 40 páginas.</li>
-        <li>Extraer las specs de un PDF de cliente a una tabla / JSON.</li>
-        <li>Traducir una contraportada al inglés.</li>
-        <li>Proponer 5 títulos para el anuario de un colegio.</li>
-      </ol>
-    </div>
-    <div class="callout good"><span class="tag">Qué deberías observar</span>
-      <p>El benchmark del titular dice poco sobre tu taller. Una hora de prueba con <b>tus</b> tareas reales decide mejor que cualquier ranking.</p>
     </div>
   </section>
 
