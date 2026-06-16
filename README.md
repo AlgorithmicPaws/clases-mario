@@ -38,11 +38,9 @@ en `wiki.html` (objeto `MODULE_FILES`, campos `file` y `deck`).
 
 ## Lo que tienes que editar
 
-1. **Link de Drive** — en `index.html`, arriba del bloque `<script>`:
-   ```js
-   const DRIVE_FOLDER_URL = "https://drive.google.com/TU-CARPETA-AQUI"; // <-- REEMPLAZAR
-   ```
-   Todas las cartas usan esta misma carpeta compartida.
+1. **Link de Drive** — ya configurado en `index.html` (constante `DRIVE_FOLDER_URL`, arriba del
+   bloque `<script>`). Todas las cartas usan esta misma carpeta compartida; para cambiarla,
+   edita esa constante.
 
 ## Añadir un módulo nuevo (ej. Módulo 3)
 
