@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fundamentos de IA Productiva — Curso</title>
+<meta name="description" content="Curso Fundamentos de IA Productiva: presentaciones, wikis y recursos por módulo.">
+<style>
+  :root{
+    --bg:#0e1117;
+    --bg-2:#161b22;
+    --bg-3:#1c2330;
+    --border:#2a3340;
+    --text:#e6edf3;
+    --muted:#bcc8d4;
+    --accent:#58a6ff;
+    --accent-2:#7ee787;
+    --warn:#f0a868;
+    --danger:#ff7b72;
+    --analogy:#bc8cff;
+    --shadow:0 10px 40px rgba(0,0,0,.5);
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(88,166,255,.12), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(188,140,255,.10), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    min-height:100vh;
+  }
+
+  /* ---- Layout ---- */
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
+
+  header.hero{
+    padding:96px 0 56px;
+    text-align:center;
+  }
+  .eyebrow{
+    color:var(--accent);
+    font-size:.8rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(2rem,5vw,3.4rem);
+    line-height:1.1;
+    letter-spacing:-.02em;
+    margin-bottom:18px;
+    background:linear-gradient(180deg,#fff,#c4d0db);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero p.sub{
+    color:var(--muted);
+    font-size:clamp(1rem,2.2vw,1.2rem);
+    max-width:680px;margin:0 auto;
+  }
+  .hero .meta{
+    margin-top:28px;
+    display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+  }
+  .chip{
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    color:var(--muted);
+    padding:7px 14px;border-radius:999px;
+    font-size:.85rem;
+  }
+
+  /* ---- Cards ---- */
+  section.modules{padding:24px 0 100px;}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:22px;
+  }
+  .card{
+    position:relative;
+    background:linear-gradient(180deg,var(--bg-2),var(--bg-3));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:28px;
+    color:var(--text);
+    font-family:inherit;
+    cursor:pointer;
+    transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    overflow:hidden;
+    text-align:left;
+  }
+  .card::before{
+    content:"";
+    position:absolute;inset:0;
+    background:radial-gradient(420px 200px at 100% 0%, rgba(88,166,255,.10), transparent 60%);
+    opacity:0;transition:opacity .25s ease;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    border-color:var(--accent);
+    box-shadow:var(--shadow);
+  }
+  .card:hover::before{opacity:1;}
+  .card:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+  .card .num{
+    font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);font-weight:700;margin-bottom:14px;
+  }
+  .card h2{font-size:1.45rem;line-height:1.2;margin-bottom:12px;letter-spacing:-.01em;color:#fff;}
+  .card p{color:var(--muted);font-size:.95rem;}
+  .card .topics{
+    margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;
+  }
+  .card .topics span{
+    font-size:.75rem;color:var(--muted);
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--border);
+    padding:4px 10px;border-radius:8px;
+  }
+  .card .cta{
+    margin-top:22px;color:var(--accent);font-size:.9rem;font-weight:600;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .card .cta svg{transition:transform .2s ease;}
+  .card:hover .cta svg{transform:translateX(4px);}
+
+  footer{
+    border-top:1px solid var(--border);
+    padding:32px 0;text-align:center;color:var(--muted);font-size:.85rem;
+  }
+
+  /* ---- Modal ---- */
+  .modal-backdrop{
+    position:fixed;inset:0;
+    background:rgba(5,8,12,.72);
+    backdrop-filter:blur(6px);
+    display:none;
+    align-items:center;justify-content:center;
+    padding:24px;z-index:50;
+    animation:fadeIn .2s ease;
+  }
+  .modal-backdrop.open{display:flex;}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{
+    background:linear-gradient(180deg,var(--bg-2),var(--bg-3));
+    border:1px solid var(--border);
+    border-radius:20px;
+    max-width:560px;width:100%;
+    padding:34px;
+    box-shadow:var(--shadow);
+    animation:pop .25s ease;
+    max-height:90vh;overflow-y:auto;
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+  .modal .num{
+    font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);font-weight:700;margin-bottom:12px;
+  }
+  .modal h2{font-size:1.7rem;line-height:1.2;margin-bottom:16px;letter-spacing:-.01em;}
+  .modal .desc{color:var(--muted);margin-bottom:14px;}
+  .modal .desc:last-of-type{margin-bottom:26px;}
+  .actions{display:flex;flex-direction:column;gap:12px;}
+  .btn{
+    display:flex;align-items:center;gap:12px;
+    width:100%;
+    padding:15px 18px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.03);
+    color:var(--text);
+    font-size:.98rem;font-weight:600;
+    text-decoration:none;
+    cursor:pointer;
+    transition:border-color .2s ease, background .2s ease, transform .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn .ico{
+    width:38px;height:38px;border-radius:9px;
+    display:grid;place-items:center;flex:none;
+  }
+  .btn .txt{display:flex;flex-direction:column;line-height:1.25;}
+  .btn .txt small{color:var(--muted);font-weight:400;font-size:.8rem;}
+  .btn.primary{border-color:rgba(126,231,135,.4);}
+  .btn.primary:hover{border-color:var(--accent-2);background:rgba(126,231,135,.07);}
+  .btn.primary .ico{background:rgba(126,231,135,.14);color:var(--accent-2);}
+  .btn.wiki:hover{border-color:var(--analogy);background:rgba(188,140,255,.07);}
+  .btn.wiki .ico{background:rgba(188,140,255,.14);color:var(--analogy);}
+  .btn.deck:hover{border-color:var(--accent);background:rgba(88,166,255,.07);}
+  .btn.deck .ico{background:rgba(88,166,255,.14);color:var(--accent);}
+  .close{
+    position:absolute;top:20px;right:24px;
+    background:none;border:none;color:var(--muted);
+    font-size:1.6rem;cursor:pointer;line-height:1;
+    transition:color .2s ease;
+  }
+  .close:hover{color:var(--text);}
+  .modal-head{position:relative;}
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Curso</div>
+      <h1>Fundamentos de IA Productiva</h1>
+      <p class="sub">Aprende cómo piensan los modelos de lenguaje y cómo trabajar con ellos de forma efectiva. Cada módulo incluye su presentación, una wiki de conceptos y recursos para profundizar.</p>
+      <div class="meta">
+        <span class="chip">Para perfiles técnicos</span>
+        <span class="chip">Presentación · Wiki · Recursos</span>
+        <span class="chip">En español</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="modules">
+    <div class="wrap">
+      <div class="grid" id="grid"><!-- cards injected by JS --></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">Fundamentos de IA Productiva · 2026</div>
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="backdrop" role="dialog" aria-modal="true" aria-labelledby="m-title">
+    <div class="modal">
+      <div class="modal-head">
+        <button class="close" id="closeBtn" aria-label="Cerrar">&times;</button>
+        <div class="num" id="m-num"></div>
+        <h2 id="m-title"></h2>
+      </div>
+      <div id="m-desc"></div>
+      <div class="actions" id="m-actions"></div>
+    </div>
+  </div>
+
+<script>
+  /* =========================================================
+     CONFIGURACIÓN
+     ---------------------------------------------------------
+     1) Pega aquí el link a tu carpeta de Drive del curso.
+        Todas las cartas usan esta misma carpeta para descargar
+        las presentaciones.
+     ========================================================= */
+  const DRIVE_FOLDER_URL = "https://drive.google.com/TU-CARPETA-AQUI"; // <-- REEMPLAZAR
+
+  const MODULES = [
+    {
+      n: 1,
+      title: "Cómo Piensan los Modelos",
+      short: "Qué es un LLM, cómo genera texto y por qué a veces inventa.",
+      desc: [
+        "Una introducción a cómo funcionan los modelos de lenguaje por dentro: tokens, probabilidad, temperatura y por qué aparecen las alucinaciones.",
+        "También cubre en qué destacan y dónde fallan de forma predecible, qué diferencia a un modelo de otro y cómo leer un benchmark sin dejarse engañar por el marketing."
+      ],
+      topics: ["LLMs", "Tokens", "Alucinaciones", "Benchmarks"],
+      deck: "modulo-1/presentacion.html",
+      wiki: "wiki.html?m=1"
+    },
+    {
+      n: 2,
+      title: "Trabajar con el Modelo",
+      short: "Ventana de contexto, prompt engineering y cómo evaluar respuestas.",
+      desc: [
+        "La parte práctica: cómo funciona la ventana de contexto, el context rot, y las bases del prompt engineering (claridad, contexto, rol y formato de salida).",
+        "Incluye técnicas de estructuración (few-shot, chain-of-thought, XML tagging), cuándo dividir una tarea en varios prompts, y criterios para evaluar si una respuesta es realmente buena."
+      ],
+      topics: ["Contexto", "Prompting", "Few-shot / CoT", "Evaluación"],
+      deck: "modulo-2/presentacion.html",
+      wiki: "wiki.html?m=2"
+    }
+  ];
+
+  /* ---- Iconos ---- */
+  const ICONS = {
+    download: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+    book: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+    present: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+    arrow: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'
+  };
+
+  /* ---- Render de cartas ---- */
+  const grid = document.getElementById('grid');
+  MODULES.forEach(m => {
+    const card = document.createElement('button');
+    card.className = 'card';
+    card.setAttribute('aria-label', `Abrir Módulo ${m.n}: ${m.title}`);
+    card.innerHTML = `
+      <div class="num">Módulo ${m.n}</div>
+      <h2>${m.title}</h2>
+      <p>${m.short}</p>
+      <div class="topics">${m.topics.map(t => `<span>${t}</span>`).join('')}</div>
+      <span class="cta">Ver módulo ${ICONS.arrow}</span>
+    `;
+    card.addEventListener('click', () => openModal(m));
+    grid.appendChild(card);
+  });
+
+  /* ---- Modal ---- */
+  const backdrop = document.getElementById('backdrop');
+  const mNum = document.getElementById('m-num');
+  const mTitle = document.getElementById('m-title');
+  const mDesc = document.getElementById('m-desc');
+  const mActions = document.getElementById('m-actions');
+  let lastFocus = null;
+
+  function openModal(m){
+    lastFocus = document.activeElement;
+    mNum.textContent = `Módulo ${m.n}`;
+    mTitle.textContent = m.title;
+    mDesc.innerHTML = m.desc.map(p => `<p class="desc">${p}</p>`).join('');
+    mActions.innerHTML = `
+      <a class="btn primary" href="${DRIVE_FOLDER_URL}" target="_blank" rel="noopener">
+        <span class="ico">${ICONS.download}</span>
+        <span class="txt">Descargar presentación<small>Carpeta de Drive del curso</small></span>
+      </a>
+      <a class="btn wiki" href="${m.wiki}">
+        <span class="ico">${ICONS.book}</span>
+        <span class="txt">Ver wiki<small>Conceptos, herramientas y fuentes</small></span>
+      </a>
+      <a class="btn deck" href="${m.deck}" target="_blank" rel="noopener">
+        <span class="ico">${ICONS.present}</span>
+        <span class="txt">Ver presentación<small>Slides interactivas en HTML</small></span>
+      </a>
+    `;
+    backdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('closeBtn').focus();
+  }
+
+  function closeModal(){
+    backdrop.classList.remove('open');
+    document.body.style.overflow = '';
+    if(lastFocus) lastFocus.focus();
+  }
+
+  document.getElementById('closeBtn').addEventListener('click', closeModal);
+  backdrop.addEventListener('click', e => { if(e.target === backdrop) closeModal(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && backdrop.classList.contains('open')) closeModal(); });
+</script>
+</body>
+</html>

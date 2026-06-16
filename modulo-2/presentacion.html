@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 2 — Trabajar con el Modelo</title>
+<style>
+  :root{
+    --bg:#0e1117;
+    --bg-2:#161b22;
+    --bg-3:#1c2330;
+    --border:#2a3340;
+    --text:#e6edf3;
+    --muted:#bcc8d4;
+    --accent:#58a6ff;
+    --accent-2:#7ee787;
+    --warn:#f0a868;
+    --danger:#ff7b72;
+    --analogy:#bc8cff;
+    --code-bg:#0a0d12;
+    --shadow:0 10px 40px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    overflow:hidden;
+  }
+
+  /* ---- Stage ---- */
+  #stage{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:64px 56px 84px;
+  }
+  .slide{
+    display:none;
+    width:100%;
+    max-width:1080px;
+    max-height:100%;
+    overflow-y:auto;
+    animation:fade .35s ease;
+  }
+  .slide.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  /* ---- Typography ---- */
+  .eyebrow{
+    color:var(--accent);
+    font-size:.8rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h1{font-size:3rem;line-height:1.1;margin-bottom:18px;font-weight:800;letter-spacing:-.02em;}
+  h2{font-size:2rem;line-height:1.15;margin-bottom:20px;font-weight:800;letter-spacing:-.01em;}
+  h3{font-size:1.15rem;color:var(--accent-2);margin:22px 0 8px;font-weight:700;}
+  p{margin-bottom:14px;color:var(--text);font-size:1.06rem;}
+  .lead{font-size:1.25rem;color:var(--muted);}
+  strong{color:#fff;font-weight:700;}
+  ul,ol{margin:8px 0 16px 22px;}
+  li{margin-bottom:8px;font-size:1.04rem;}
+  .muted{color:var(--muted);}
+  .small{font-size:.92rem;}
+
+  /* ---- Callout / quote ---- */
+  .callout{
+    background:var(--bg-2);
+    border-left:4px solid var(--accent);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:18px 0;
+  }
+  .callout.good{border-left-color:var(--accent-2);}
+  .callout.warn{border-left-color:var(--warn);}
+  .callout.danger{border-left-color:var(--danger);}
+  .callout .tag{
+    display:block;
+    font-size:.78rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .callout.good .tag{color:var(--accent-2);}
+  .callout.warn .tag{color:var(--warn);}
+  .callout.danger .tag{color:var(--danger);}
+  .callout.exercise{border-left-color:var(--analogy);background:rgba(188,140,255,.07);}
+  .callout.exercise .tag{color:var(--analogy);}
+  .callout p:last-child{margin-bottom:0;}
+  /* ---- Exercise slide ---- */
+  .ex-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--analogy);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;
+    font-weight:700;margin-bottom:14px;
+    border:1px solid var(--analogy);border-radius:999px;padding:5px 13px;
+  }
+  .ex-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--analogy);}
+  ol.steps{margin:6px 0 0 1.1em;padding:0;}
+  ol.steps li{margin:7px 0;}
+
+  /* ---- Analogía (tarjeta destacada) ---- */
+  .analogy{
+    position:relative;
+    background:linear-gradient(135deg,rgba(188,140,255,.10),var(--bg-2));
+    border:1px solid #4a3d63;
+    border-left:4px solid var(--analogy);
+    border-radius:10px;
+    padding:18px 22px;
+    margin:18px 0;
+    box-shadow:0 4px 22px rgba(124,77,178,.12);
+  }
+  .analogy .tag{
+    display:block;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:800;color:var(--analogy);margin-bottom:6px;
+  }
+  .analogy p{margin-bottom:0;color:var(--text);}
+
+  /* ---- Code ---- */
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+    overflow-x:auto;
+    margin:16px 0;
+    box-shadow:var(--shadow);
+  }
+  code{
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:.92rem;
+    color:#cdd9e5;
+    white-space:pre;
+  }
+  p code,li code,td code{
+    background:var(--bg-3);
+    padding:2px 6px;
+    border-radius:5px;
+    font-size:.88rem;
+    color:var(--accent-2);
+    white-space:normal;
+  }
+
+  /* ---- Grid columns ---- */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:16px 0;}
+  .card{
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .card h3{margin-top:0;}
+
+  /* ---- Tables ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0;
+    font-size:.96rem;
+    background:var(--bg-2);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  th,td{
+    text-align:left;
+    padding:11px 14px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  th{
+    background:var(--bg-3);
+    color:var(--accent);
+    font-weight:700;
+    font-size:.85rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  tr:last-child td{border-bottom:none;}
+  td strong{color:var(--accent-2);}
+
+  /* ---- SVG figures ---- */
+  figure{margin:18px 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:10px;}
+  figcaption{color:var(--muted);font-size:.9rem;margin-top:8px;}
+
+  /* ---- Title slide ---- */
+  .title-slide{text-align:center;}
+  .title-slide .course{color:var(--muted);font-size:1.1rem;letter-spacing:.05em;margin-bottom:8px;}
+  .title-slide .hint{margin-top:34px;color:var(--muted);font-size:.95rem;}
+  .kbd{
+    display:inline-block;background:var(--bg-3);border:1px solid var(--border);
+    border-bottom-width:3px;border-radius:6px;padding:2px 9px;font-size:.85rem;
+    font-family:monospace;color:var(--text);margin:0 2px;
+  }
+  .topic-list{display:inline-block;text-align:left;margin-top:24px;}
+  .topic-list li{font-size:1.1rem;color:var(--text);}
+
+  /* ---- Section divider slide ---- */
+  .divider{text-align:center;}
+  .divider .num{
+    font-size:6rem;font-weight:800;color:var(--bg-3);
+    -webkit-text-stroke:2px var(--accent);line-height:1;margin-bottom:8px;
+  }
+
+  /* ---- Controls ---- */
+  #controls{
+    position:fixed;bottom:0;left:0;right:0;height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;background:linear-gradient(to top,var(--bg),rgba(14,17,23,.0));
+  }
+  .nav-btn{
+    background:var(--bg-2);color:var(--text);border:1px solid var(--border);
+    border-radius:8px;padding:9px 16px;font-size:.95rem;cursor:pointer;
+    transition:.15s;display:flex;align-items:center;gap:6px;
+  }
+  .nav-btn:hover:not(:disabled){background:var(--bg-3);border-color:var(--accent);}
+  .nav-btn:disabled{opacity:.35;cursor:default;}
+  #progress-wrap{flex:1;margin:0 22px;}
+  #progress-bar{height:4px;background:var(--bg-3);border-radius:4px;overflow:hidden;}
+  #progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s ease;}
+  #counter{color:var(--muted);font-size:.85rem;text-align:center;margin-top:4px;}
+
+  /* ---- Top topic badge ---- */
+  #topic-badge{
+    position:fixed;top:16px;left:24px;z-index:5;
+    color:var(--muted);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+  }
+  #topic-badge b{color:var(--accent);}
+
+  /* ---- Home link ---- */
+  #home-link{
+    position:fixed;top:14px;right:24px;z-index:6;
+    display:inline-flex;align-items:center;gap:6px;
+    color:var(--text);text-decoration:none;
+    font-size:.82rem;font-weight:600;
+    background:var(--bg-2);border:1px solid var(--border);
+    padding:6px 13px;border-radius:9px;
+    transition:border-color .2s ease,color .2s ease;
+  }
+  #home-link:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* scrollbars */
+  .slide::-webkit-scrollbar,pre::-webkit-scrollbar{height:9px;width:9px;}
+  .slide::-webkit-scrollbar-thumb,pre::-webkit-scrollbar-thumb{background:var(--border);border-radius:5px;}
+
+  @media (max-width:1000px){
+    .cols{grid-template-columns:1fr;}
+    h1{font-size:2.3rem;}h2{font-size:1.6rem;}
+    #stage{padding:56px 28px 80px;}
+  }
+</style>
+</head>
+<body>
+
+<a id="home-link" href="../index.html">← Inicio</a>
+<div id="topic-badge"></div>
+
+<div id="stage">
+
+  <!-- ============ PORTADA ============ -->
+  <section class="slide active title-slide" data-topic="Inicio">
+    <div class="course">Fundamentos de IA Productiva</div>
+    <div class="eyebrow">Módulo 2 de 7</div>
+    <h1>Trabajar con el Modelo</h1>
+    <p class="lead">De entender cómo piensa el modelo a saber dirigirlo:<br>contexto, prompts, estructura y criterio para evaluar.</p>
+    <ol class="topic-list">
+      <li>La ventana de contexto</li>
+      <li>Prompt engineering: la base</li>
+      <li>Estrategias de estructuración</li>
+      <li>Una tarea vs. varias: cuándo dividir</li>
+      <li>Evaluar si una respuesta es buena</li>
+    </ol>
+    <p class="hint">Navega con <span class="kbd">←</span> <span class="kbd">→</span> o los botones de abajo</p>
+  </section>
+
+  <!-- ============ TEMA 1 ============ -->
+  <section class="slide divider" data-topic="1 · La ventana de contexto">
+    <div class="num">1</div>
+    <div class="eyebrow">Tema 1</div>
+    <h2>La ventana de contexto</h2>
+    <p class="lead muted">La mesa de trabajo del modelo: finita, y todo lo que pones encima cuenta.</p>
+  </section>
+
+  <section class="slide" data-topic="1 · La ventana de contexto">
+    <div class="eyebrow">1.1 · Qué es</div>
+    <h2>La mesa de trabajo del modelo</h2>
+    <div class="cols">
+      <div>
+        <div class="analogy">
+          <span class="tag">Analogía · la mesa de trabajo</span>
+          <p>Un carpintero con una mesa de tamaño fijo: planos, herramientas y la pieza en la que trabaja — pero solo hasta donde quepa. Si amontona demasiado, lo del fondo queda tapado. La ventana es esa mesa: todo lo que el modelo necesita "ver" para responder tiene que caber a la vez.</p>
+        </div>
+        <p>La <strong>ventana de contexto</strong> es la cantidad máxima de tokens que el modelo procesa en una sola interacción.</p>
+      </div>
+      <div>
+        <div class="callout danger">
+          <span class="tag">El dato que sorprende a un técnico</span>
+          <p>El modelo <strong>no tiene memoria entre llamadas.</strong> En cada mensaje se le reenvía toda la conversación desde el inicio. Lo que parece "memoria" es el historial viajando una y otra vez dentro de la ventana.</p>
+        </div>
+        <p class="small muted">Cuando la conversación ya no cabe, lo más antiguo se descarta o se resume. Lo que no está dentro, para el modelo no existe.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · La ventana de contexto">
+    <div class="eyebrow">1.2 · Qué la ocupa</div>
+    <h2>Todo cuenta, no solo "lo que escribo"</h2>
+    <figure>
+      <svg viewBox="0 0 920 330" role="img" aria-labelledby="ctx-title ctx-desc">
+        <title id="ctx-title">Composición de la ventana de contexto</title>
+        <desc id="ctx-desc">La ventana de contexto se reparte entre system prompt, herramientas, documentos, historial, el mensaje actual y la respuesta.</desc>
+        <rect x="20" y="20" width="880" height="290" rx="12" fill="#0a0d12" stroke="#2a3340"/>
+        <text x="40" y="48" fill="#58a6ff" font-size="15" font-family="monospace" font-weight="bold">VENTANA DE CONTEXTO · p. ej. 200.000 tokens</text>
+
+        <g font-family="monospace" font-size="14">
+          <rect x="40" y="64"  width="840" height="34" rx="6" fill="#161b22" stroke="#bc8cff"/>
+          <text x="56" y="86" fill="#bc8cff">[System prompt]</text><text x="240" y="86" fill="#9aa7b4">instrucciones de la plataforma + rol + reglas</text>
+
+          <rect x="40" y="104" width="840" height="34" rx="6" fill="#161b22" stroke="#58a6ff"/>
+          <text x="56" y="126" fill="#58a6ff">[Herramientas]</text><text x="240" y="126" fill="#9aa7b4">definiciones de tools (búsqueda, código…)</text>
+
+          <rect x="40" y="144" width="840" height="34" rx="6" fill="#161b22" stroke="#f0a868"/>
+          <text x="56" y="166" fill="#f0a868">[Documentos]</text><text x="240" y="166" fill="#9aa7b4">archivos pegados, PDFs, código adjunto</text>
+
+          <rect x="40" y="184" width="840" height="34" rx="6" fill="#161b22" stroke="#7ee787"/>
+          <text x="56" y="206" fill="#7ee787">[Historial]</text><text x="240" y="206" fill="#9aa7b4">todos los turnos previos de la conversación</text>
+
+          <rect x="40" y="224" width="840" height="34" rx="6" fill="#161b22" stroke="#e6edf3"/>
+          <text x="56" y="246" fill="#e6edf3">[Tu mensaje]</text><text x="240" y="246" fill="#9aa7b4">la pregunta o instrucción actual</text>
+
+          <rect x="40" y="264" width="840" height="34" rx="6" fill="#161b22" stroke="#ff7b72"/>
+          <text x="56" y="286" fill="#ff7b72">[Respuesta]</text><text x="240" y="286" fill="#9aa7b4">lo que el modelo genera ahora — también ocupa</text>
+        </g>
+      </svg>
+      <figcaption>Seis fuentes compiten por el mismo espacio finito.</figcaption>
+    </figure>
+    <div class="callout warn">
+      <span class="tag">El cambio mental</span>
+      <p>La ventana se mide en <strong>tokens, no en mensajes</strong>. Un mensaje corto con un PDF adjunto puede ocupar más que cincuenta mensajes de texto. Razona en tokens, no en turnos.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · La ventana de contexto">
+    <div class="eyebrow">1.3 · Por qué importa</div>
+    <h2>Costo, límite, latencia… y calidad</h2>
+    <table>
+      <thead><tr><th>Dimensión</th><th>Cómo la afecta la ventana</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Costo</strong></td><td>Se cobra por token de entrada <em>y</em> salida. Reenviar un historial gigante en cada turno multiplica el costo, aunque preguntes una línea.</td></tr>
+        <tr><td><strong>Límite</strong></td><td>Si lo que quieres meter no cabe, no entra. Hay que elegir qué incluir.</td></tr>
+        <tr><td><strong>Latencia</strong></td><td>Más tokens de entrada → respuesta más lenta. Una ventana medio llena va más despacio que una limpia.</td></tr>
+        <tr><td><strong>Calidad</strong></td><td style="color:var(--warn)">Contraintuitivo pero medido: más contexto puede <strong>empeorar</strong> la respuesta → siguiente slide.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <span class="tag">Caching</span>
+      <p class="small">Las plataformas pueden <strong>cachear</strong> partes estables del contexto (un documento, un system prompt largo) para no pagarlas enteras en cada turno. Por eso reutilizar el mismo documento en una conversación sale más barato que pegarlo de nuevo.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · La ventana de contexto">
+    <div class="eyebrow">1.4 · Context rot</div>
+    <h2>Más contexto no es mejor contexto</h2>
+    <p>El rendimiento se <strong>degrada</strong> a medida que crece la entrada, aunque el dato relevante siga ahí. Se le llama <em>context rot</em>.</p>
+    <div class="cols">
+      <div>
+        <div class="analogy">
+          <span class="tag">Analogía · el correo enterrado</span>
+          <p class="small">Un dato en los últimos 3 correos lo encuentras al instante. El mismo dato en la posición 4.000 de 8.000 correos: técnicamente "lo tienes", pero casi nunca lo recuperas. El modelo sufre exactamente eso.</p>
+        </div>
+        <p class="small"><strong>Lost in the middle:</strong> presta más atención al <strong>inicio</strong> y al <strong>final</strong> que al centro. Mover el dato del borde al medio puede bajar la precisión <strong>más de un 30%</strong>.</p>
+        <p class="small"><strong>Degradación por longitud:</strong> Chroma (2025) probó 18 modelos de frontera y <strong>todos</strong> rindieron peor con entradas más largas. No es defecto de un modelo: es arquitectónico.</p>
+      </div>
+      <div>
+        <figure style="margin:0;">
+          <svg viewBox="0 0 420 300" role="img" aria-labelledby="u-title u-desc">
+            <title id="u-title">Curva en U de precisión por posición</title>
+            <desc id="u-desc">La precisión es alta al inicio y al final del contexto, y baja en el medio, formando una U.</desc>
+            <line x1="56" y1="40" x2="56" y2="250" stroke="#2a3340" stroke-width="1.5"/>
+            <line x1="56" y1="250" x2="400" y2="250" stroke="#2a3340" stroke-width="1.5"/>
+            <text x="20" y="60" fill="#9aa7b4" font-size="12" font-family="monospace">alta</text>
+            <text x="20" y="246" fill="#9aa7b4" font-size="12" font-family="monospace">baja</text>
+            <!-- U curve -->
+            <path d="M70,60 C110,70 130,210 228,215 C326,210 346,70 386,60" fill="none" stroke="#58a6ff" stroke-width="3"/>
+            <circle cx="70" cy="60" r="5" fill="#7ee787"/>
+            <circle cx="228" cy="215" r="5" fill="#ff7b72"/>
+            <circle cx="386" cy="60" r="5" fill="#7ee787"/>
+            <text x="70" y="275" fill="#7ee787" font-size="12" font-family="monospace" text-anchor="middle">inicio</text>
+            <text x="228" y="275" fill="#ff7b72" font-size="12" font-family="monospace" text-anchor="middle">el medio</text>
+            <text x="386" y="275" fill="#7ee787" font-size="12" font-family="monospace" text-anchor="middle">final</text>
+            <text x="228" y="235" fill="#ff7b72" font-size="11" font-family="monospace" text-anchor="middle">se "diluye"</text>
+          </svg>
+          <figcaption class="small">Precisión según la posición del dato.</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="callout good">
+      <span class="tag">Implicación práctica</span>
+      <p>Pon lo importante <strong>al principio o al final</strong>. Con documentos largos: <strong>documento arriba, pregunta al final</strong> (mejora hasta 30% en pruebas de Anthropic). Y recuerda: <strong>menos es más</strong> — un contexto curado supera a uno enorme y ruidoso.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · La ventana de contexto">
+    <div class="eyebrow">1.5 · Gestión</div>
+    <h2>Estrategias para gestionar la ventana</h2>
+    <table>
+      <thead><tr><th>Estrategia</th><th>Cuándo usarla</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Curar, no acumular</strong></td><td>Siempre. Solo los documentos y el historial que de verdad hacen falta ahora.</td></tr>
+        <tr><td><strong>Documento arriba, pregunta abajo</strong></td><td>Al trabajar sobre un texto largo. Reduce el "lost in the middle".</td></tr>
+        <tr><td><strong>Pedir citas primero</strong></td><td>En análisis de documentos: que extraiga las citas relevantes y luego responda. Lo ancla al texto.</td></tr>
+        <tr><td><strong>Resumir y reiniciar</strong></td><td>Conversación muy larga: pide un resumen del estado y abre un chat nuevo con él.</td></tr>
+        <tr><td><strong>Una tarea por conversación</strong></td><td>Mezclar temas ensucia el contexto. Un hilo por objetivo.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p>Trata la ventana como un <strong>recurso escaso que tú administras</strong>, no como un cajón infinito. La calidad depende tanto de lo que <em>quitas</em> como de lo que pones.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · La ventana de contexto">
+    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
+    <h2>El manual de 80 páginas del cliente</h2>
+    <div class="callout exercise"><span class="tag">El caso</span>
+      <p>Una empresa te envía su manual corporativo de 80 páginas para imprimir y te pregunta: «¿en la página 60 dice papel mate o brillante?». Necesitas la respuesta exacta para no equivocar el trabajo.</p>
+    </div>
+    <div class="card">
+      <h3>Tu tarea</h3>
+      <ol class="steps">
+        <li>Pega el manual y haz la pregunta <b>al final</b>, con el documento arriba.</li>
+        <li>Pídele que <b>cite la frase exacta</b> donde lo dice antes de responder.</li>
+      </ol>
+    </div>
+    <div class="callout good"><span class="tag">Qué deberías observar</span>
+      <p>Documento arriba + pregunta abajo + pedir la cita reduce el <b>context rot</b> y el «lost in the middle». No metas tres manuales en el mismo chat: una tarea por conversación.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 2 ============ -->
+  <section class="slide divider" data-topic="2 · Prompt engineering">
+    <div class="num">2</div>
+    <div class="eyebrow">Tema 2</div>
+    <h2>Prompt engineering: la base</h2>
+    <p class="lead muted">No son palabras secretas: es comunicación clara con un colaborador literal.</p>
+  </section>
+
+  <section class="slide" data-topic="2 · Prompt engineering">
+    <div class="eyebrow">2.1 · Claridad</div>
+    <h2>Claridad y dirección: la regla de oro</h2>
+    <div class="analogy">
+      <span class="tag">Marco mental</span>
+      <p>Trata al modelo como <strong>un empleado nuevo, brillante pero sin contexto</strong> sobre tu empresa ni lo que tienes en la cabeza. Muy capaz, pero no adivina. Cuanto más preciso seas, mejor el resultado.</p>
+    </div>
+    <div class="callout good">
+      <span class="tag">La regla de oro (Anthropic)</span>
+      <p>Muéstrale tu prompt a un colega con poco contexto y pídele que lo siga. <strong>Si se confunde, el modelo también.</strong></p>
+    </div>
+    <pre><code>Menos efectivo:
+  "Crea un dashboard de analítica."
+
+Más efectivo:
+  "Crea un dashboard de analítica. Incluye tantas funciones e interacciones
+   relevantes como sea posible. Ve más allá de lo básico para lograr una
+   implementación completa."</code></pre>
+    <div class="callout warn">
+      <span class="tag">Matiz de 2026</span>
+      <p class="small">Los modelos actuales siguen instrucciones de forma muy literal. Gritar <strong>"CRÍTICO: DEBES hacer X"</strong> hoy provoca <em>overtriggering</em>. Basta lenguaje normal: <em>"Usa esta herramienta cuando…"</em>.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Prompt engineering">
+    <div class="eyebrow">2.2 · El "por qué"</div>
+    <h2>Dar contexto y motivación</h2>
+    <p>Explicarle <strong>por qué</strong> quieres algo mejora la respuesta: puede generalizar a partir de la intención en vez de seguir la regla al pie de la letra.</p>
+    <pre><code>Menos efectivo:
+  "NUNCA uses puntos suspensivos."
+
+Más efectivo:
+  "Tu respuesta la leerá en voz alta un motor de texto-a-voz, así que nunca
+   uses puntos suspensivos porque el motor no sabe pronunciarlos."</code></pre>
+    <div class="callout">
+      <p>Con el "por qué", el modelo entiende el <strong>objetivo real</strong> y decide bien en casos que tu regla no había previsto. Es la diferencia entre dar una orden y dar contexto a alguien inteligente.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Prompt engineering">
+    <div class="eyebrow">2.3 · Rol · 2.4 · Formato</div>
+    <h2>Rol y control del formato</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Dar un rol (system prompt)</h3>
+        <p class="small">Una sola frase enfoca tono y comportamiento. En chats va en "instrucciones personalizadas" o en un Proyecto; vía API es el <em>system prompt</em>.</p>
+        <pre><code>"Eres un asistente experto
+ en Python que prioriza
+ código idiomático y legible.
+ Explicas el porqué en
+ una frase."</code></pre>
+        <p class="small muted">El system prompt define <strong>quién es</strong> el modelo de forma persistente; el mensaje de usuario es la tarea de este turno.</p>
+      </div>
+      <div class="card">
+        <h3>Controlar el formato</h3>
+        <ul class="small">
+          <li><strong>Di qué hacer, no qué no hacer.</strong><br><span class="muted">"Escribe en párrafos de prosa" &gt; "No uses markdown".</span></li>
+          <li><strong>Usa indicadores con etiquetas.</strong><br><span class="muted">"...dentro de &lt;prosa&gt;...&lt;/prosa&gt;".</span></li>
+          <li><strong>Que tu prompt se parezca a la salida.</strong><br><span class="muted">Prompt sin markdown → menos markdown.</span></li>
+        </ul>
+        <p class="small muted">2026: los modelos son más concisos por defecto. Si quieres un resumen o más detalle, <strong>pídelo explícitamente</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Prompt engineering">
+    <div class="eyebrow">2.5 · Anatomía</div>
+    <h2>Anatomía de un buen prompt</h2>
+    <p>No todos los prompts necesitan todas las piezas, pero este es el esqueleto, en un orden que funciona:</p>
+    <figure>
+      <svg viewBox="0 0 880 300" role="img" aria-labelledby="an-title an-desc">
+        <title id="an-title">Estructura de un buen prompt</title>
+        <desc id="an-desc">Seis bloques en orden: rol, instrucción, datos, ejemplos, formato y la pregunta.</desc>
+        <g font-family="monospace" font-size="14">
+          <rect x="40" y="20"  width="800" height="38" rx="7" fill="#161b22" stroke="#bc8cff"/><text x="58" y="44" fill="#bc8cff">1 · ROL / CONTEXTO</text><text x="320" y="44" fill="#9aa7b4">quién eres y para qué sirve la tarea</text>
+          <rect x="40" y="64"  width="800" height="38" rx="7" fill="#161b22" stroke="#58a6ff"/><text x="58" y="88" fill="#58a6ff">2 · INSTRUCCIÓN</text><text x="320" y="88" fill="#9aa7b4">qué quieres, en pasos si hace falta</text>
+          <rect x="40" y="108" width="800" height="38" rx="7" fill="#161b22" stroke="#f0a868"/><text x="58" y="132" fill="#f0a868">3 · CONTEXTO / DATOS</text><text x="320" y="132" fill="#9aa7b4">documentos (¡arriba si son largos!)</text>
+          <rect x="40" y="152" width="800" height="38" rx="7" fill="#161b22" stroke="#7ee787"/><text x="58" y="176" fill="#7ee787">4 · EJEMPLOS</text><text x="320" y="176" fill="#9aa7b4">1–5 ejemplos del formato deseado</text>
+          <rect x="40" y="196" width="800" height="38" rx="7" fill="#161b22" stroke="#e6edf3"/><text x="58" y="220" fill="#e6edf3">5 · FORMATO DE SALIDA</text><text x="320" y="220" fill="#9aa7b4">cómo quieres exactamente la respuesta</text>
+          <rect x="40" y="240" width="800" height="38" rx="7" fill="#161b22" stroke="#ff7b72"/><text x="58" y="264" fill="#ff7b72">6 · LA PREGUNTA</text><text x="320" y="264" fill="#9aa7b4">al final, sobre todo con documentos largos</text>
+        </g>
+      </svg>
+    </figure>
+    <div class="callout good">
+      <p>Un buen prompt no es largo ni rebuscado: es <strong>claro, específico, estructurado y honesto.</strong> Casi todos los problemas de calidad se resuelven mejorando el prompt antes que cambiando de modelo.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Prompt engineering">
+    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
+    <h2>Responder a una editorial que pide bajar costos</h2>
+    <div class="callout exercise"><span class="tag">El caso</span>
+      <p>Una editorial pequeña te escribe: su presupuesto no alcanza para el tiraje cotizado. Tienes que responder proponiendo alternativas (gramaje, formato, tiraje) sin perder al cliente.</p>
+    </div>
+    <div class="card">
+      <h3>Tu tarea · escribe dos prompts</h3>
+      <ol class="steps">
+        <li><b>Vago:</b> «Redacta una respuesta a este cliente».</li>
+        <li><b>Dirigido:</b> rol (asesor de la imprenta), el <b>por qué</b> (mantener la relación), 3 alternativas concretas y formato (correo cálido, máx. 150 palabras).</li>
+      </ol>
+    </div>
+    <div class="callout good"><span class="tag">Qué deberías observar</span>
+      <p>El prompt dirigido produce algo enviable casi sin retoques. Rol + contexto + «por qué» + formato es lo que separa un borrador genérico de uno útil.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 3 ============ -->
+  <section class="slide divider" data-topic="3 · Estructuración">
+    <div class="num">3</div>
+    <div class="eyebrow">Tema 3</div>
+    <h2>Estrategias de estructuración</h2>
+    <p class="lead muted">Few-shot, chain-of-thought y XML: tres palancas que se potencian.</p>
+  </section>
+
+  <section class="slide" data-topic="3 · Estructuración">
+    <div class="eyebrow">3.1 · Few-shot</div>
+    <h2>Few-shot: enseñar con ejemplos</h2>
+    <div class="analogy">
+      <span class="tag">Analogía · mostrar en vez de explicar</span>
+      <p>La diferencia entre describir cómo doblar una camiseta y doblar dos delante de alguien. Con dos demostraciones capta el patrón al instante. El modelo aprende igual: ve el patrón y lo replica.</p>
+    </div>
+    <pre><code>Clasifica el sentimiento como POSITIVO, NEUTRO o NEGATIVO.
+
+&lt;ejemplos&gt;
+  &lt;ejemplo&gt;"Llegó tarde pero el producto está bien." → NEUTRO&lt;/ejemplo&gt;
+  &lt;ejemplo&gt;"Una maravilla, lo recomiendo a todos." → POSITIVO&lt;/ejemplo&gt;
+  &lt;ejemplo&gt;"Se rompió a la semana, pésima calidad." → NEGATIVO&lt;/ejemplo&gt;
+&lt;/ejemplos&gt;
+
+Reseña: "Cumple lo que promete, sin más." →</code></pre>
+    <div class="cols">
+      <div class="card"><h3>Cómo deben ser</h3><ul class="small"><li><strong>Relevantes</strong> a tu caso real.</li><li><strong>Diversos</strong>: cubren casos límite.</li><li><strong>Estructurados</strong> en etiquetas.</li></ul></div>
+      <div class="card"><h3>Dónde brilla</h3><p class="small"><strong>3–5 ejemplos</strong> es el punto óptimo. Ideal para <strong>clasificación, extracción y formato estricto</strong> (JSON, YAML, plantillas).</p></div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Estructuración">
+    <div class="eyebrow">3.2 · Chain-of-thought</div>
+    <h2>Chain-of-thought: razonar en pasos</h2>
+    <p>Pedirle que muestre su razonamiento <em>antes</em> de la respuesta final. Como construye texto token a token (Módulo 1), darle espacio para "pensar en voz alta" mejora el resultado en tareas de razonamiento.</p>
+    <div class="analogy">
+      <span class="tag">Analogía · mostrar el desarrollo</span>
+      <p>Como exigir a un estudiante el desarrollo y no solo el resultado: comete menos errores, y tú ves dónde se equivocó si falla.</p>
+    </div>
+    <pre><code>Simple (zero-shot CoT):
+  "...resuelve el problema. Piensa paso a paso antes de la respuesta final."
+
+Estructurado:
+  "Razona dentro de &lt;razonamiento&gt; y da la respuesta en &lt;respuesta&gt;."</code></pre>
+    <div class="callout warn">
+      <span class="tag">Matices</span>
+      <p class="small">Para razonamiento, el <strong>zero-shot CoT</strong> suele ganarle al few-shot. Los modelos actuales tienen un <strong>modo "thinking" adaptativo</strong> que lo hace internamente. Y pídele que <strong>se autoverifique</strong>: <em>"antes de terminar, comprueba tu respuesta contra [criterio]"</em>.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Estructuración">
+    <div class="eyebrow">3.3 · XML tagging</div>
+    <h2>XML tagging: estructurar el prompt</h2>
+    <div class="cols">
+      <div>
+        <div class="analogy">
+          <span class="tag">Analogía · las carpetas rotuladas</span>
+          <p class="small">Hojas sueltas mezcladas vs. carpetas rotuladas: "instrucciones", "datos", "ejemplos". Con los rótulos nadie confunde un dato con una orden. Las etiquetas XML son esos rótulos.</p>
+        </div>
+        <p class="small">Separan sin ambigüedad las partes de un prompt complejo. Los modelos Claude fueron entrenados para prestarles atención especial.</p>
+        <h3>Buenas prácticas</h3>
+        <ul class="small">
+          <li>Nombres <strong>consistentes y descriptivos</strong>.</li>
+          <li><strong>Anida</strong> cuando hay jerarquía.</li>
+          <li>No hay etiquetas "oficiales": claras y coherentes.</li>
+        </ul>
+      </div>
+      <div>
+        <pre><code>&lt;instrucciones&gt;
+  Resume el informe en 3 viñetas
+  para un comité ejecutivo.
+&lt;/instrucciones&gt;
+
+&lt;documento&gt;
+  {{texto largo del informe}}
+&lt;/documento&gt;
+
+&lt;formato&gt;
+  Tres viñetas, máx. 20 palabras
+  cada una, sin jerga técnica.
+&lt;/formato&gt;</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Estructuración">
+    <div class="eyebrow">3.4 · Combinarlas</div>
+    <h2>El patrón completo</h2>
+    <p>Las tres se potencian: <strong>XML organiza</strong>, <strong>few-shot muestra</strong> el patrón, <strong>CoT da espacio</strong> para razonar.</p>
+    <pre><code>&lt;instrucciones&gt;
+  Eres un analista de soporte. Clasifica cada ticket por urgencia
+  (ALTA/MEDIA/BAJA) y justifica brevemente.
+&lt;/instrucciones&gt;
+
+&lt;ejemplos&gt;
+  &lt;ejemplo&gt;
+    Ticket: "No puedo entrar y tengo una demo con un cliente en 10 minutos."
+    &lt;razonamiento&gt;Bloqueo total + límite de tiempo inmediato.&lt;/razonamiento&gt;
+    &lt;respuesta&gt;ALTA&lt;/respuesta&gt;
+  &lt;/ejemplo&gt;
+&lt;/ejemplos&gt;
+
+&lt;ticket&gt;"Sería bueno poder exportar a Excel algún día."&lt;/ticket&gt;
+
+Razona dentro de &lt;razonamiento&gt; y da el veredicto en &lt;respuesta&gt;.</code></pre>
+    <div class="callout good">
+      <p>Empieza <strong>simple</strong>; añade estructura solo cuando la respuesta no salga bien a la primera.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Estructuración">
+    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
+    <h2>Clasificar los correos de pedidos entrantes</h2>
+    <div class="callout exercise"><span class="tag">El caso</span>
+      <p>Llegan decenas de correos de pedidos al día. Quieres clasificarlos por tipo de trabajo (LIBRO / AGENDA / FOLLETO / MERCHANDISING) y urgencia (ALTA / MEDIA / BAJA) de forma consistente.</p>
+    </div>
+    <div class="card">
+      <h3>Tu tarea</h3>
+      <ol class="steps">
+        <li>Escribe el prompt con <b>3 ejemplos</b> (few-shot) envueltos en etiquetas <code>&lt;ejemplo&gt;</code>.</li>
+        <li>Pídele que <b>razone</b> la urgencia en <code>&lt;razonamiento&gt;</code> y dé el veredicto en <code>&lt;respuesta&gt;</code>.</li>
+      </ol>
+    </div>
+    <div class="callout good"><span class="tag">Qué deberías observar</span>
+      <p>Few-shot fija el formato y las categorías; XML separa ejemplos de instrucciones; CoT hace explícita la urgencia. Las tres juntas dan una clasificación fiable y repetible.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 4 ============ -->
+  <section class="slide divider" data-topic="4 · Dividir o no">
+    <div class="num">4</div>
+    <div class="eyebrow">Tema 4</div>
+    <h2>Una tarea vs. varias</h2>
+    <p class="lead muted">¿Todo en un prompt, o partirlo en pasos? La decisión del día a día.</p>
+  </section>
+
+  <section class="slide" data-topic="4 · Dividir o no">
+    <div class="eyebrow">4.1 · Señales</div>
+    <h2>Cuándo un prompt hace demasiado</h2>
+    <p>A más restricciones simultáneas, más probable que cumpla unas y "olvide" otras (Módulo 1). Señales de sobrecarga:</p>
+    <ul>
+      <li>Pide <strong>varias cosas de naturaleza distinta</strong> a la vez (investigar <em>y</em> redactar <em>y</em> formatear <em>y</em> traducir).</li>
+      <li>El resultado cumple unas instrucciones e ignora otras de forma inconsistente.</li>
+      <li>Necesitas <strong>inspeccionar un paso intermedio</strong> antes de seguir.</li>
+      <li>El prompt es tan largo que ya no sabes qué parte falla.</li>
+    </ul>
+    <div class="analogy">
+      <span class="tag">Analogía · el pedido en el restaurante</span>
+      <p>Puedes pedir "tráeme la carta, recomiéndame, sírveme el vino y trae la cuenta" de golpe — pero algo se perderá. Paso a paso sale mejor. Con tareas complejas, el modelo agradece lo mismo.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="4 · Dividir o no">
+    <div class="eyebrow">4.2 · Prompt chaining</div>
+    <h2>Encadenar pasos: borrador → revisión → refinar</h2>
+    <p>Descomponer en una secuencia donde la salida de un paso alimenta al siguiente. Cada paso es más simple, fiable y fácil de depurar. El patrón estrella es la <strong>autocorrección</strong>:</p>
+    <figure>
+      <svg viewBox="0 0 880 200" role="img" aria-labelledby="ch-title ch-desc">
+        <title id="ch-title">Flujo de autocorrección</title>
+        <desc id="ch-desc">Tres pasos encadenados: generar borrador, revisarlo contra criterios y refinarlo.</desc>
+        <rect x="40" y="60" width="220" height="80" rx="10" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+        <text x="150" y="92" fill="#58a6ff" font-size="15" font-family="monospace" text-anchor="middle">1 · DRAFT</text>
+        <text x="150" y="116" fill="#9aa7b4" font-size="12" font-family="monospace" text-anchor="middle">genera borrador</text>
+
+        <line x1="260" y1="100" x2="320" y2="100" stroke="#58a6ff" stroke-width="2" marker-end="url(#chx)"/>
+
+        <rect x="320" y="60" width="220" height="80" rx="10" fill="#161b22" stroke="#f0a868" stroke-width="2"/>
+        <text x="430" y="92" fill="#f0a868" font-size="15" font-family="monospace" text-anchor="middle">2 · REVISIÓN</text>
+        <text x="430" y="116" fill="#9aa7b4" font-size="12" font-family="monospace" text-anchor="middle">critícalo vs. criterios</text>
+
+        <line x1="540" y1="100" x2="600" y2="100" stroke="#58a6ff" stroke-width="2" marker-end="url(#chx)"/>
+
+        <rect x="600" y="60" width="220" height="80" rx="10" fill="#161b22" stroke="#7ee787" stroke-width="2"/>
+        <text x="710" y="92" fill="#7ee787" font-size="15" font-family="monospace" text-anchor="middle">3 · REFINAR</text>
+        <text x="710" y="116" fill="#9aa7b4" font-size="12" font-family="monospace" text-anchor="middle">aplica la crítica</text>
+
+        <defs>
+          <marker id="chx" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#58a6ff"/></marker>
+        </defs>
+      </svg>
+    </figure>
+    <div class="callout good">
+      <span class="tag">Ventaja oculta</span>
+      <p>Puedes <strong>ver y corregir cada paso</strong>. Si el resumen salió mal, lo arreglas ahí sin rehacer toda la cadena. Es depuración aplicada a prompts — el corazón del Módulo 4.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="4 · Dividir o no">
+    <div class="eyebrow">4.3 · Decisión</div>
+    <h2>¿Un prompt o varios?</h2>
+    <table>
+      <thead><tr><th>Situación</th><th>Mejor enfoque</th></tr></thead>
+      <tbody>
+        <tr><td>Resumir un documento</td><td><strong>Un solo prompt</strong></td></tr>
+        <tr><td>Extraer datos a JSON</td><td><strong>Un solo prompt</strong> (con few-shot)</td></tr>
+        <tr><td>Investigar, redactar y maquetar un informe</td><td>Encadenar pasos</td></tr>
+        <tr><td>Necesitas validar un paso intermedio</td><td>Encadenar pasos</td></tr>
+        <tr><td>Procesar 50 elementos independientes</td><td>Paralelo (uno a uno o por lotes)</td></tr>
+        <tr><td>Razonamiento complejo de varios pasos</td><td>Un prompt con CoT / thinking</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <span class="tag">Regla práctica</span>
+      <p>Empieza con <strong>un solo prompt bien escrito</strong>. Divide solo cuando el modelo se atragante, cuando necesites inspeccionar un paso, o cuando una parte falle de forma repetida. No optimices la complejidad antes de necesitarla.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="4 · Dividir o no">
+    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
+    <h2>Lanzar una nueva agenda escolar</h2>
+    <div class="callout exercise"><span class="tag">El caso</span>
+      <p>Para una nueva agenda escolar necesitas: investigar referencias del mercado, redactar la ficha de producto, traducir la contraportada al inglés y preparar un post para redes. Todo de calidad.</p>
+    </div>
+    <div class="card">
+      <h3>Tu tarea</h3>
+      <ol class="steps">
+        <li>Pídelo todo en <b>un solo prompt</b> y revisa qué partes salen flojas.</li>
+        <li>Rehazlo <b>encadenando</b> pasos (investigar → ficha → traducir → post), revisando cada salida.</li>
+      </ol>
+    </div>
+    <div class="callout good"><span class="tag">Qué deberías observar</span>
+      <p>El prompt único cumple unas cosas y descuida otras. Encadenar te deja inspeccionar y corregir cada paso. Tareas distintas (investigar, redactar, traducir) piden pasos separados.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 5 ============ -->
+  <section class="slide divider" data-topic="5 · Evaluar la respuesta">
+    <div class="num">5</div>
+    <div class="eyebrow">Tema 5</div>
+    <h2>Evaluar si una respuesta es buena</h2>
+    <p class="lead muted">La habilidad que separa al novato del experto: juzgar, no solo generar.</p>
+  </section>
+
+  <section class="slide" data-topic="5 · Evaluar la respuesta">
+    <div class="eyebrow">5.1 · La trampa</div>
+    <h2>"Suena bien" no es "es correcto"</h2>
+    <p>Los modelos producen texto fluido y seguro <strong>incluso cuando se equivocan</strong>. Esa fluidez es la trampa: asociamos confianza y buena redacción con veracidad, y el modelo es excelente en ambas por diseño (alucinaciones + RLHF, Módulo 1).</p>
+    <div class="analogy">
+      <span class="tag">Analogía · el candidato elocuente</span>
+      <p>En una entrevista, quien habla con seguridad y nunca duda <em>parece</em> el mejor. Pero la elocuencia no es competencia. Verifica lo que dice, no cómo lo dice.</p>
+    </div>
+    <div class="callout danger">
+      <span class="tag">Cuidado con la adulación (sycophancy)</span>
+      <p>El modelo tiende a darte la razón. Si preguntas <em>"¿verdad que esto está bien?"</em>, es más probable que diga que sí. Pregunta en neutro: <strong>"Encuentra los problemas de esto"</strong> en vez de <strong>"¿está bien esto?"</strong>.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="5 · Evaluar la respuesta">
+    <div class="eyebrow">5.2 · Criterios</div>
+    <h2>Los cinco criterios</h2>
+    <p>En vez de un juicio global ("me gusta / no me gusta"), evalúa por criterios concretos:</p>
+    <table>
+      <thead><tr><th>Criterio</th><th>Pregunta de control</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Correctitud</strong></td><td>¿Los hechos, datos y afirmaciones son verdaderos y verificables?</td></tr>
+        <tr><td><strong>Completitud</strong></td><td>¿Cubre todo lo que pedí, o dejó partes fuera?</td></tr>
+        <tr><td><strong>Coherencia</strong></td><td>¿El razonamiento se sostiene? ¿Hay saltos o contradicciones?</td></tr>
+        <tr><td><strong>Fidelidad a la fuente</strong></td><td>Si di un documento, ¿se basa en él o se lo inventó?</td></tr>
+        <tr><td><strong>Formato y utilidad</strong></td><td>¿Cumple el formato? ¿Me sirve tal cual o tengo que rehacerlo?</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small">Un puntaje global ("7/10") esconde <em>qué</em> falló. Evaluar criterio a criterio te dice <strong>exactamente dónde está el problema</strong> — y qué hacer al respecto.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="5 · Evaluar la respuesta">
+    <div class="eyebrow">5.3 · Rúbricas y juez · 5.4 · Checklist</div>
+    <h2>Rúbricas, el modelo como juez, y tu checklist</h2>
+    <div class="cols">
+      <div>
+        <h3>Rúbricas</h3>
+        <p class="small"><strong>Holística:</strong> un puntaje global. Rápida pero opaca.<br><strong>Analítica:</strong> un puntaje por criterio. Más trabajo, pero muestra qué mejoró o empeoró. <strong>La recomendada.</strong></p>
+        <h3>El modelo como juez</h3>
+        <p class="small">Usar un modelo para evaluar la salida de otro contra una rúbrica. Útil a escala, con cautela: dale <strong>criterios específicos</strong> y pídele puntaje <strong>por criterio</strong>. Tiene sesgos (premia lo largo y bien formateado) → primer filtro, no veredicto final.</p>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Checklist de 30 segundos</h3>
+          <ul class="small">
+            <li>¿Hay datos específicos? → verifícalos por fuera.</li>
+            <li>¿Le di una fuente? → ¿se sostiene en ella?</li>
+            <li>¿Pedí varias cosas? → ¿cumplió todas?</li>
+            <li>¿El razonamiento se sostiene paso a paso?</li>
+            <li>¿Pregunto en neutro o di pistas?</li>
+            <li>¿La acepto porque es correcta, o porque suena bien y estoy cansado?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="callout good">
+      <span class="tag">Principio clave</span>
+      <p>El modelo es un colaborador capaz, no un oráculo. Tu valor no está en generar — sino en <strong>dirigir y verificar</strong>. La evaluación es donde pones ese valor.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="5 · Evaluar la respuesta">
+    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
+    <h2>La disculpa por una diferencia de color</h2>
+    <div class="callout exercise"><span class="tag">El caso</span>
+      <p>Un cliente reclama porque el color de su folleto impreso no coincide con el de la pantalla. Le pides al modelo que redacte la respuesta explicando por qué pasa (RGB vs CMYK) y cómo lo resolverán.</p>
+    </div>
+    <div class="card">
+      <h3>Tu tarea</h3>
+      <ol class="steps">
+        <li>Evalúa la respuesta con los <b>5 criterios</b>: correctitud, completitud, coherencia, fidelidad y formato.</li>
+        <li>Vuelve a preguntar <b>en neutro</b>: «Encuentra los errores técnicos de esta explicación», no «¿está bien?».</li>
+      </ol>
+    </div>
+    <div class="callout good"><span class="tag">Qué deberías observar</span>
+      <p>Suena impecable, pero puede colar un error técnico sobre color o perfiles ICC. Preguntar en neutro evita la <b>adulación</b>: tu valor está en verificar antes de enviárselo al cliente.</p>
+    </div>
+  </section>
+
+  <!-- ============ PRÁCTICA ============ -->
+  <section class="slide divider" data-topic="Práctica · 2ª hora">
+    <div class="num">★</div>
+    <div class="eyebrow">Segunda hora</div>
+    <h2>Práctica y retroalimentación</h2>
+    <p class="lead muted">Con el modelo abierto. El objetivo no es "acertar": es <em>observar la diferencia</em>.</p>
+  </section>
+
+  <section class="slide" data-topic="Práctica · 2ª hora">
+    <div class="eyebrow">Manos a la obra</div>
+    <h2>Cinco ejercicios guiados</h2>
+    <table>
+      <thead><tr><th>#</th><th>Ejercicio</th><th>Qué practica</th><th>Tiempo</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>Antes y después: reescribe un prompt real con rol, instrucción específica, el "por qué" y formato</td><td>Claridad (2.1–2.4)</td><td>10 min</td></tr>
+        <tr><td><strong>2</strong></td><td>Una clasificación sin ejemplos vs. con 3 ejemplos estructurados</td><td>Few-shot (3.1)</td><td>10 min</td></tr>
+        <tr><td><strong>3</strong></td><td>Un problema de razonamiento: solo respuesta vs. con &lt;razonamiento&gt;/&lt;respuesta&gt;</td><td>Chain-of-thought (3.2)</td><td>10 min</td></tr>
+        <tr><td><strong>4</strong></td><td>Redactar algo: borrador → "critica y lista 3 mejoras" → reescribir</td><td>Chaining (4.2)</td><td>15 min</td></tr>
+        <tr><td><strong>5</strong></td><td>Pedir un dato de nicho, aplicar el checklist, verificar y repreguntar en neutro</td><td>Evaluación (5.4)</td><td>15 min</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p>Tras cada ejercicio, comparte el resultado y recibe retroalimentación. <strong>Cierre:</strong> ¿qué técnica vas a incorporar a tu trabajo desde mañana?</p>
+    </div>
+  </section>
+
+  <!-- ============ RESUMEN ============ -->
+  <section class="slide" data-topic="Resumen">
+    <div class="eyebrow">Cierre · Resumen del Módulo 2</div>
+    <h2>Los 5 temas, de un vistazo</h2>
+    <table>
+      <thead><tr><th>#</th><th>Tema</th><th>Idea central</th><th>Para llevar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>Ventana de contexto</td><td>Espacio finito que todo comparte; el modelo no recuerda entre llamadas</td><td>Curar, no acumular. Lo importante al inicio o al final</td></tr>
+        <tr><td><strong>2</strong></td><td>Prompt engineering</td><td>Comunicación clara con un empleado brillante sin contexto</td><td>Si un colega se confunde, el modelo también. Da el "por qué"</td></tr>
+        <tr><td><strong>3</strong></td><td>Estructuración</td><td>Few-shot muestra, CoT razona, XML organiza</td><td>Empieza simple; añade estructura solo si hace falta</td></tr>
+        <tr><td><strong>4</strong></td><td>Dividir o no</td><td>A más restricciones juntas, más se "olvida"</td><td>Un prompt por defecto; encadena para inspeccionar pasos</td></tr>
+        <tr><td><strong>5</strong></td><td>Evaluar</td><td>"Suena bien" ≠ "es correcto"; ojo a la adulación</td><td>Evalúa por criterios, pregunta en neutro, verifica</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small muted" style="margin:0">Fundamentos de IA Productiva · Módulo 2 de 7 — v1.0 · Siguiente: <strong>Módulo 3 — Interfaz y ecosistema.</strong></p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ CONTROLES ============ -->
+<div id="controls">
+  <button class="nav-btn" id="prev" aria-label="Slide anterior">← Anterior</button>
+  <div id="progress-wrap">
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div id="counter"></div>
+  </div>
+  <button class="nav-btn" id="next" aria-label="Slide siguiente">Siguiente →</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let i = 0;
+
+  const fill    = document.getElementById('progress-fill');
+  const counter = document.getElementById('counter');
+  const badge   = document.getElementById('topic-badge');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  function show(n){
+    i = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    slides[i].scrollTop = 0;
+    fill.style.width = ((i + 1) / total * 100) + '%';
+    counter.textContent = (i + 1) + ' / ' + total;
+    const topic = slides[i].dataset.topic || '';
+    badge.innerHTML = topic ? 'Tema actual · <b>' + topic + '</b>' : '';
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === total - 1;
+  }
+
+  function nextSlide(){ if (i < total - 1) show(i + 1); }
+  function prevSlide(){ if (i > 0) show(i - 1); }
+
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); nextSlide(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End')  { e.preventDefault(); show(total - 1); }
+  });
+
+  show(0);
+</script>
+</body>
+</html>

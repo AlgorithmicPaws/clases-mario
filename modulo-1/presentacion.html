@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 1 — Cómo Piensan los Modelos</title>
+<style>
+  :root{
+    --bg:#0e1117;
+    --bg-2:#161b22;
+    --bg-3:#1c2330;
+    --border:#2a3340;
+    --text:#e6edf3;
+    --muted:#bcc8d4;
+    --accent:#58a6ff;
+    --accent-2:#7ee787;
+    --warn:#f0a868;
+    --danger:#ff7b72;
+    --analogy:#bc8cff;
+    --code-bg:#0a0d12;
+    --shadow:0 10px 40px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    overflow:hidden;
+  }
+
+  /* ---- Stage ---- */
+  #stage{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:64px 56px 84px;
+  }
+  .slide{
+    display:none;
+    width:100%;
+    max-width:1080px;
+    max-height:100%;
+    overflow-y:auto;
+    animation:fade .35s ease;
+  }
+  .slide.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  /* ---- Typography ---- */
+  .eyebrow{
+    color:var(--accent);
+    font-size:.8rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h1{font-size:3rem;line-height:1.1;margin-bottom:18px;font-weight:800;letter-spacing:-.02em;}
+  h2{font-size:2rem;line-height:1.15;margin-bottom:20px;font-weight:800;letter-spacing:-.01em;}
+  h3{font-size:1.15rem;color:var(--accent-2);margin:22px 0 8px;font-weight:700;}
+  p{margin-bottom:14px;color:var(--text);font-size:1.06rem;}
+  .lead{font-size:1.25rem;color:var(--muted);}
+  strong{color:#fff;font-weight:700;}
+  ul{margin:8px 0 16px 22px;}
+  li{margin-bottom:8px;font-size:1.04rem;}
+  .muted{color:var(--muted);}
+  .small{font-size:.92rem;}
+
+  /* ---- Callout / quote ---- */
+  .callout{
+    background:var(--bg-2);
+    border-left:4px solid var(--accent);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:18px 0;
+  }
+  .callout.good{border-left-color:var(--accent-2);}
+  .callout.warn{border-left-color:var(--warn);}
+  .callout.danger{border-left-color:var(--danger);}
+  .callout .tag{
+    display:block;
+    font-size:.78rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .callout.good .tag{color:var(--accent-2);}
+  .callout.warn .tag{color:var(--warn);}
+  .callout.danger .tag{color:var(--danger);}
+  .callout.exercise{border-left-color:var(--analogy);background:rgba(188,140,255,.07);}
+  .callout.exercise .tag{color:var(--analogy);}
+  .callout p:last-child{margin-bottom:0;}
+  /* ---- Exercise slide ---- */
+  .ex-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--analogy);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;
+    font-weight:700;margin-bottom:14px;
+    border:1px solid var(--analogy);border-radius:999px;padding:5px 13px;
+  }
+  .ex-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--analogy);}
+  ol.steps{margin:6px 0 0 1.1em;padding:0;}
+  ol.steps li{margin:7px 0;}
+
+  /* ---- Analogía (tarjeta destacada) ---- */
+  .analogy{
+    position:relative;
+    background:linear-gradient(135deg,rgba(188,140,255,.10),var(--bg-2));
+    border:1px solid #4a3d63;
+    border-left:4px solid var(--analogy);
+    border-radius:10px;
+    padding:18px 22px;
+    margin:18px 0;
+    box-shadow:0 4px 22px rgba(124,77,178,.12);
+  }
+  .analogy .tag{
+    display:block;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:800;color:var(--analogy);margin-bottom:6px;
+  }
+  .analogy p{margin-bottom:0;color:var(--text);}
+
+  /* ---- Code ---- */
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+    overflow-x:auto;
+    margin:16px 0;
+    box-shadow:var(--shadow);
+  }
+  code{
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:.92rem;
+    color:#cdd9e5;
+    white-space:pre;
+  }
+  p code,li code,td code{
+    background:var(--bg-3);
+    padding:2px 6px;
+    border-radius:5px;
+    font-size:.88rem;
+    color:var(--accent-2);
+    white-space:normal;
+  }
+
+  /* ---- Grid columns ---- */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:16px 0;}
+  .card{
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .card h3{margin-top:0;}
+
+  /* ---- Tables ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0;
+    font-size:.96rem;
+    background:var(--bg-2);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  th,td{
+    text-align:left;
+    padding:11px 14px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  th{
+    background:var(--bg-3);
+    color:var(--accent);
+    font-weight:700;
+    font-size:.85rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  tr:last-child td{border-bottom:none;}
+  td strong{color:var(--accent-2);}
+
+  /* ---- SVG figures ---- */
+  figure{margin:18px 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:10px;}
+  figcaption{color:var(--muted);font-size:.9rem;margin-top:8px;}
+
+  /* ---- Title slide ---- */
+  .title-slide{text-align:center;}
+  .title-slide .course{color:var(--muted);font-size:1.1rem;letter-spacing:.05em;margin-bottom:8px;}
+  .title-slide .hint{margin-top:34px;color:var(--muted);font-size:.95rem;}
+  .kbd{
+    display:inline-block;background:var(--bg-3);border:1px solid var(--border);
+    border-bottom-width:3px;border-radius:6px;padding:2px 9px;font-size:.85rem;
+    font-family:monospace;color:var(--text);margin:0 2px;
+  }
+  .topic-list{display:inline-block;text-align:left;margin-top:24px;}
+  .topic-list li{font-size:1.1rem;color:var(--text);}
+
+  /* ---- Section divider slide ---- */
+  .divider{text-align:center;}
+  .divider .num{
+    font-size:6rem;font-weight:800;color:var(--bg-3);
+    -webkit-text-stroke:2px var(--accent);line-height:1;margin-bottom:8px;
+  }
+
+  /* ---- Controls ---- */
+  #controls{
+    position:fixed;bottom:0;left:0;right:0;height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;background:linear-gradient(to top,var(--bg),rgba(14,17,23,.0));
+  }
+  .nav-btn{
+    background:var(--bg-2);color:var(--text);border:1px solid var(--border);
+    border-radius:8px;padding:9px 16px;font-size:.95rem;cursor:pointer;
+    transition:.15s;display:flex;align-items:center;gap:6px;
+  }
+  .nav-btn:hover:not(:disabled){background:var(--bg-3);border-color:var(--accent);}
+  .nav-btn:disabled{opacity:.35;cursor:default;}
+  #progress-wrap{flex:1;margin:0 22px;}
+  #progress-bar{height:4px;background:var(--bg-3);border-radius:4px;overflow:hidden;}
+  #progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s ease;}
+  #counter{color:var(--muted);font-size:.85rem;text-align:center;margin-top:4px;}
+
+  /* ---- Top topic badge ---- */
+  #topic-badge{
+    position:fixed;top:16px;left:24px;z-index:5;
+    color:var(--muted);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+  }
+  #topic-badge b{color:var(--accent);}
+
+  /* ---- Home link ---- */
+  #home-link{
+    position:fixed;top:14px;right:24px;z-index:6;
+    display:inline-flex;align-items:center;gap:6px;
+    color:var(--text);text-decoration:none;
+    font-size:.82rem;font-weight:600;
+    background:var(--bg-2);border:1px solid var(--border);
+    padding:6px 13px;border-radius:9px;
+    transition:border-color .2s ease,color .2s ease;
+  }
+  #home-link:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* scrollbars */
+  .slide::-webkit-scrollbar,pre::-webkit-scrollbar{height:9px;width:9px;}
+  .slide::-webkit-scrollbar-thumb,pre::-webkit-scrollbar-thumb{background:var(--border);border-radius:5px;}
+
+  @media (max-width:1000px){
+    .cols{grid-template-columns:1fr;}
+    h1{font-size:2.3rem;}h2{font-size:1.6rem;}
+    #stage{padding:56px 28px 80px;}
+  }
+</style>
+</head>
+<body>
+
+<a id="home-link" href="../index.html">← Inicio</a>
+<div id="topic-badge"></div>
+
+<div id="stage">
+
+  <!-- ============ PORTADA ============ -->
+  <section class="slide active title-slide" data-topic="Inicio">
+    <div class="course">Fundamentos de IA Productiva</div>
+    <div class="eyebrow">Módulo 1 de 7</div>
+    <h1>Cómo Piensan los Modelos</h1>
+    <p class="lead">Una intuición sólida sobre qué es un LLM, por qué funciona<br>y dónde falla — sin una sola fórmula.</p>
+    <ol class="topic-list">
+      <li>¿Qué es un LLM y cómo genera texto?</li>
+      <li>Probabilidad y alucinaciones</li>
+      <li>Fortalezas reales y fallos sistemáticos</li>
+      <li>Qué diferencia a los modelos entre sí</li>
+      <li>Cómo leer un benchmark</li>
+    </ol>
+    <p class="hint">Navega con <span class="kbd">←</span> <span class="kbd">→</span> o los botones de abajo</p>
+  </section>
+
+  <!-- ============ TEMA 1 ============ -->
+  <section class="slide divider" data-topic="1 · LLM y generación">
+    <div class="num">1</div>
+    <div class="eyebrow">Tema 1</div>
+    <h2>¿Qué es un LLM y cómo genera texto?</h2>
+    <p class="lead muted">Del chef experimentado a la predicción token a token.</p>
+  </section>
+
+  <section class="slide" data-topic="1 · LLM y generación">
+    <div class="eyebrow">1.1 · La analogía del chef</div>
+    <h2>Un LLM es como un chef con 20 años de oficio</h2>
+    <div class="cols">
+      <div>
+        <div class="analogy">
+          <span class="tag">Analogía · el chef</span>
+          <p>Un chef experimentado no sigue una receta para improvisar. Ha cocinado tanto que cuando le pides <em>"algo con pollo, limón y jengibre"</em> lo crea sin haberlo visto antes: <strong>combina patrones</strong> que absorbió durante años.</p>
+        </div>
+        <p>Un <strong>LLM</strong> (Large Language Model) hace lo análogo. Leyó miles de millones de páginas — libros, código, conversaciones. No las memorizó: ajustó millones de valores internos llamados <strong>pesos</strong> para capturar los patrones del lenguaje.</p>
+      </div>
+      <div>
+        <div class="callout good">
+          <span class="tag">En resumen</span>
+          <p>Un LLM no busca en una base de datos ni sigue reglas escritas por humanos. <strong>Predice el texto más probable</strong> dada toda la conversación, usando patrones estadísticos aprendidos de una cantidad enorme de texto humano.</p>
+        </div>
+        <p class="small muted">A diferencia del autocompletado del celular —que solo mira las últimas palabras— el LLM mantiene coherencia con todo el texto previo y genera texto nuevo que nunca existió.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · LLM y generación">
+    <div class="eyebrow">1.2 · Tokens</div>
+    <h2>Tokens: la unidad mínima de trabajo</h2>
+    <p>El modelo no trabaja con letras ni con palabras completas, sino con <strong>tokens</strong>: fragmentos de texto. Como las fichas de Scrabble — las palabras se arman combinando fichas, pero las fichas no siempre coinciden con sílabas naturales.</p>
+
+    <figure>
+      <svg viewBox="0 0 920 200" role="img" aria-labelledby="tok-title tok-desc">
+        <title id="tok-title">Diagrama de tokenización</title>
+        <desc id="tok-desc">La frase "La inteligencia artificial es fascinante" dividida en siete tokens.</desc>
+        <text x="20" y="36" fill="#9aa7b4" font-size="15" font-family="monospace">Texto de entrada:</text>
+        <text x="20" y="64" fill="#e6edf3" font-size="20" font-family="monospace">"La inteligencia artificial es fascinante"</text>
+        <line x1="20" y1="86" x2="900" y2="86" stroke="#2a3340" stroke-width="1"/>
+        <text x="20" y="116" fill="#9aa7b4" font-size="15" font-family="monospace">7 tokens:</text>
+        <!-- token chips -->
+        <g font-family="monospace" font-size="16">
+          <rect x="20"  y="130" width="44"  height="40" rx="7" fill="#1c2330" stroke="#58a6ff"/><text x="42"  y="156" fill="#7ee787" text-anchor="middle">La</text>
+          <rect x="72"  y="130" width="92"  height="40" rx="7" fill="#1c2330" stroke="#58a6ff"/><text x="118" y="156" fill="#7ee787" text-anchor="middle">·intelig</text>
+          <rect x="172" y="130" width="78"  height="40" rx="7" fill="#1c2330" stroke="#58a6ff"/><text x="211" y="156" fill="#7ee787" text-anchor="middle">encia</text>
+          <rect x="258" y="130" width="84"  height="40" rx="7" fill="#1c2330" stroke="#58a6ff"/><text x="300" y="156" fill="#7ee787" text-anchor="middle">·artific</text>
+          <rect x="350" y="130" width="44"  height="40" rx="7" fill="#1c2330" stroke="#58a6ff"/><text x="372" y="156" fill="#7ee787" text-anchor="middle">ial</text>
+          <rect x="402" y="130" width="46"  height="40" rx="7" fill="#1c2330" stroke="#58a6ff"/><text x="425" y="156" fill="#7ee787" text-anchor="middle">·es</text>
+          <rect x="456" y="130" width="124" height="40" rx="7" fill="#1c2330" stroke="#58a6ff"/><text x="518" y="156" fill="#7ee787" text-anchor="middle">·fascinante</text>
+        </g>
+        <text x="600" y="156" fill="#9aa7b4" font-size="13" font-family="monospace">· = espacio inicial</text>
+      </svg>
+      <figcaption>Tokenización aproximada — la división exacta varía según el modelo.</figcaption>
+    </figure>
+
+    <div class="cols">
+      <div class="card">
+        <h3>¿Por qué importa?</h3>
+        <ul class="small">
+          <li>Los modelos <strong>cobran por tokens</strong> (los que envías + los que generan).</li>
+          <li>Hay un <strong>límite máximo</strong> por conversación (la ventana de contexto, Módulo 2).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>El detalle curioso</h3>
+        <p class="small">Que el modelo cuente mal las letras de una palabra se explica aquí: nunca ve <code>"inteligencia"</code> como una unidad — la ve como trozos.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · LLM y generación">
+    <div class="eyebrow">1.3 · Proceso de generación</div>
+    <h2>El texto se construye un token a la vez</h2>
+    <p>Cada nuevo token se añade al contexto para generar el siguiente. Es un ciclo <strong>autoregresivo</strong>: lo que parece una respuesta instantánea son cientos de predicciones encadenadas.</p>
+
+    <figure>
+      <svg viewBox="0 0 920 320" role="img" aria-labelledby="gen-title gen-desc">
+        <title id="gen-title">Diagrama del proceso de generación</title>
+        <desc id="gen-desc">El modelo recibe un contexto, calcula probabilidades para el siguiente token, elige uno, lo añade al contexto y repite hasta el token de fin.</desc>
+
+        <!-- contexto -->
+        <rect x="30" y="30" width="250" height="58" rx="9" fill="#161b22" stroke="#2a3340"/>
+        <text x="155" y="55" fill="#9aa7b4" font-size="13" font-family="monospace" text-anchor="middle">Contexto actual</text>
+        <text x="155" y="76" fill="#e6edf3" font-size="15" font-family="monospace" text-anchor="middle">"El cielo es de color"</text>
+
+        <!-- arrow -->
+        <line x1="280" y1="59" x2="345" y2="59" stroke="#58a6ff" stroke-width="2" marker-end="url(#ar)"/>
+
+        <!-- model box -->
+        <rect x="350" y="22" width="180" height="74" rx="10" fill="#1c2330" stroke="#58a6ff" stroke-width="2"/>
+        <text x="440" y="52" fill="#58a6ff" font-size="15" font-family="monospace" text-anchor="middle">MODELO</text>
+        <text x="440" y="74" fill="#9aa7b4" font-size="12" font-family="monospace" text-anchor="middle">calcula probabilidades</text>
+
+        <line x1="530" y1="59" x2="595" y2="59" stroke="#58a6ff" stroke-width="2" marker-end="url(#ar)"/>
+
+        <!-- prob bars -->
+        <g font-family="monospace" font-size="13">
+          <text x="600" y="28" fill="#9aa7b4">Distribución para el siguiente token:</text>
+          <rect x="600" y="40" width="200" height="20" rx="4" fill="#0a0d12" stroke="#2a3340"/><rect x="600" y="40" width="180" height="20" rx="4" fill="#7ee787"/><text x="808" y="55" fill="#e6edf3">azul · 0.45</text>
+          <rect x="600" y="66" width="200" height="20" rx="4" fill="#0a0d12" stroke="#2a3340"/><rect x="600" y="66" width="72"  height="20" rx="4" fill="#58a6ff"/><text x="808" y="81" fill="#e6edf3">gris · 0.18</text>
+          <rect x="600" y="92" width="200" height="20" rx="4" fill="#0a0d12" stroke="#2a3340"/><rect x="600" y="92" width="48"  height="20" rx="4" fill="#58a6ff"/><text x="808" y="107" fill="#e6edf3">rojo · 0.12</text>
+        </g>
+
+        <!-- choose -->
+        <line x1="440" y1="96" x2="440" y2="150" stroke="#58a6ff" stroke-width="2" marker-end="url(#ar)"/>
+        <rect x="320" y="150" width="240" height="50" rx="9" fill="#161b22" stroke="#7ee787"/>
+        <text x="440" y="172" fill="#7ee787" font-size="13" font-family="monospace" text-anchor="middle">Se elige un token</text>
+        <text x="440" y="190" fill="#e6edf3" font-size="14" font-family="monospace" text-anchor="middle">→ "azul"</text>
+
+        <!-- append -->
+        <line x1="320" y1="175" x2="155" y2="175" stroke="#58a6ff" stroke-width="2"/>
+        <line x1="155" y1="175" x2="155" y2="92" stroke="#58a6ff" stroke-width="2" marker-end="url(#ar)"/>
+        <text x="200" y="220" fill="#9aa7b4" font-size="13" font-family="monospace">Se añade al contexto y el ciclo se repite ↺</text>
+
+        <!-- stop -->
+        <line x1="440" y1="200" x2="440" y2="250" stroke="#f0a868" stroke-width="2" marker-end="url(#aro)"/>
+        <rect x="300" y="250" width="280" height="44" rx="9" fill="#161b22" stroke="#f0a868"/>
+        <text x="440" y="277" fill="#f0a868" font-size="14" font-family="monospace" text-anchor="middle">Token de fin → se detiene</text>
+
+        <defs>
+          <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#58a6ff"/></marker>
+          <marker id="aro" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#f0a868"/></marker>
+        </defs>
+      </svg>
+      <figcaption>Generación autoregresiva: predecir · elegir · añadir · repetir.</figcaption>
+    </figure>
+
+    <div class="callout warn">
+      <span class="tag">La idea clave</span>
+      <p>El modelo no "piensa" la respuesta completa y luego la escribe. La construye token a token, <strong>sin poder revisar lo que ya generó.</strong></p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · LLM y generación">
+    <div class="eyebrow">1.4 · Dentro de la caja negra</div>
+    <h2>El Transformer, sin matemáticas</h2>
+    <p>La arquitectura base se llama <strong>Transformer</strong> (2017). Dos mecanismos clave bastan para la intuición:</p>
+    <div class="cols">
+      <div class="card">
+        <h3>Atención (Attention)</h3>
+        <p class="small">En una conversación larga, tu cerebro recupera un detalle dicho hace 20 minutos cuando hace falta. La atención hace lo equivalente: al predecir el siguiente token, el modelo <strong>"mira hacia atrás"</strong> sobre todo el texto y decide <strong>cuánto peso</strong> darle a cada palabra anterior.</p>
+        <p class="small">La clave: ese peso <strong>no es fijo</strong>. Se recalcula para cada token y según el contexto. La misma palabra puede ser crucial en una frase e irrelevante en la siguiente.</p>
+        <p class="small">Por eso un modelo resuelve ambigüedades que el autocompletado no puede:</p>
+        <pre><code>"Dejé el libro en la mesa
+ porque era muy pesado."
+
+¿Qué era pesado?
+El modelo conecta "era pesado"
+con "libro" (no con "mesa").</code></pre>
+        <p class="small muted">Para predecir bien, la atención liga <em>era pesado</em> con <em>libro</em> y casi ignora <em>mesa</em>. Eso es resolver la referencia, sin reglas gramaticales escritas a mano.</p>
+        <p class="small">Y no mira un solo aspecto a la vez: en paralelo, distintas "cabezas" de atención rastrean cosas diferentes —una la concordancia, otra el sujeto, otra el tema general—. De ahí sale la coherencia en textos largos.</p>
+      </div>
+      <div class="card">
+        <h3>Capas de transformación</h3>
+        <p class="small">Muchas capas apiladas. Cada una recibe la salida de la anterior y la refina un poco más: las primeras detectan patrones simples (qué palabras van juntas); las profundas, relaciones abstractas (quién hace qué a quién, el tono, la intención).</p>
+        <figure style="margin:12px 0 0;">
+          <svg viewBox="0 0 320 300" role="img" aria-labelledby="cap-title cap-desc">
+            <title id="cap-title">Pila de capas de un Transformer</title>
+            <desc id="cap-desc">Los tokens entran por abajo y atraviesan capas apiladas; de abajo hacia arriba la representación pasa de patrones superficiales a significado abstracto.</desc>
+
+            <!-- flecha de profundidad -->
+            <line x1="22" y1="276" x2="22" y2="40" stroke="#bc8cff" stroke-width="2.5" marker-end="url(#cu)"/>
+            <text x="16" y="158" fill="#bc8cff" font-size="11" font-family="monospace" text-anchor="middle" transform="rotate(-90 16 158)">más abstracto →</text>
+
+            <!-- capa final · abstracto -->
+            <rect x="52" y="34" width="252" height="42" rx="8" fill="#161b22" stroke="#bc8cff"/>
+            <text x="66" y="52" fill="#bc8cff" font-size="11" font-family="monospace">Capa final</text>
+            <text x="66" y="68" fill="#e6edf3" font-size="12" font-family="monospace">tono · intención · significado</text>
+
+            <!-- capa profunda -->
+            <rect x="52" y="84" width="252" height="42" rx="8" fill="#161b22" stroke="#9a8cff"/>
+            <text x="66" y="102" fill="#9a8cff" font-size="11" font-family="monospace">Capa profunda</text>
+            <text x="66" y="118" fill="#e6edf3" font-size="12" font-family="monospace">quién hace qué a quién</text>
+
+            <!-- capa intermedia -->
+            <rect x="52" y="134" width="252" height="42" rx="8" fill="#161b22" stroke="#7aa7ff"/>
+            <text x="66" y="152" fill="#7aa7ff" font-size="11" font-family="monospace">Capa intermedia</text>
+            <text x="66" y="168" fill="#e6edf3" font-size="12" font-family="monospace">estructura gramatical</text>
+
+            <!-- capa 1 -->
+            <rect x="52" y="184" width="252" height="42" rx="8" fill="#161b22" stroke="#58a6ff"/>
+            <text x="66" y="202" fill="#58a6ff" font-size="11" font-family="monospace">Capa 1 · superficie</text>
+            <text x="66" y="218" fill="#e6edf3" font-size="12" font-family="monospace">qué palabras van juntas</text>
+
+            <!-- flechas entre capas -->
+            <g stroke="#2a3340" stroke-width="1.5">
+              <line x1="178" y1="184" x2="178" y2="176" marker-end="url(#cg)"/>
+              <line x1="178" y1="134" x2="178" y2="126" marker-end="url(#cg)"/>
+              <line x1="178" y1="84"  x2="178" y2="76"  marker-end="url(#cg)"/>
+            </g>
+
+            <!-- entrada: tokens -->
+            <rect x="52" y="252" width="252" height="38" rx="8" fill="#0a0d12" stroke="#2a3340" stroke-dasharray="4 4"/>
+            <text x="178" y="275" fill="#9aa7b4" font-size="12" font-family="monospace" text-anchor="middle">tokens de entrada</text>
+            <line x1="178" y1="252" x2="178" y2="226" stroke="#2a3340" stroke-width="1.5" marker-end="url(#cg)"/>
+
+            <defs>
+              <marker id="cu" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc8cff"/></marker>
+              <marker id="cg" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L7,4 L0,8 Z" fill="#58a6ff"/></marker>
+            </defs>
+          </svg>
+          <figcaption>Cada capa refina la representación de la anterior.</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="analogy">
+      <span class="tag">De dónde viene el nombre "GPT"</span>
+      <p class="small"><strong>GPT = Generative Pre-trained Transformer.</strong> No es un producto: son las tres ideas de este módulo juntas — <strong>G</strong>enera texto token a token (1.3), fue <strong>P</strong>re-entrenado a gran escala (4.2) y usa la arquitectura <strong>T</strong>ransformer (esta slide). Casi todos los modelos modernos —Claude, Gemini, Llama incluidos— comparten esta base. Ojo: "GPT" (la arquitectura) no es lo mismo que "ChatGPT" o "GPT-5.5" (los productos de OpenAI).</p>
+    </div>
+    <div class="callout">
+      <p>El modelo <strong>no "entiende"</strong> el texto como un humano: manipula representaciones de las relaciones entre tokens. Que eso produzca resultados aparentemente comprensivos es sorprendente y real, pero el mecanismo subyacente es estadístico.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · LLM y generación">
+    <div class="eyebrow">1.5 · Representaciones</div>
+    <h2>El espacio vectorial: un mapa de significado</h2>
+    <p>¿Qué son esas "representaciones de las relaciones entre tokens"? Cada token se convierte en un <strong>punto en un espacio de muchas dimensiones</strong> — imposible de dibujar entero, pero la intuición se ve bien en un mapa plano: los tokens con significado parecido quedan <strong>cerca</strong>, y las relaciones entre ellos se vuelven <strong>direcciones consistentes</strong>. Las capas profundas refinan ese mapa, de lo superficial a lo abstracto.</p>
+
+    <figure>
+      <svg viewBox="0 0 940 440" role="img" aria-labelledby="vec-title vec-desc">
+        <title id="vec-title">Espacio vectorial de tokens y profundidad de las capas</title>
+        <desc id="vec-desc">A la izquierda, un mapa de significado donde tokens parecidos forman grupos (realeza, animales, comida) y las relaciones aparecen como flechas paralelas de la misma dirección. A la derecha, cuatro capas apiladas que van de patrones superficiales a relaciones abstractas.</desc>
+
+        <!-- ===== Panel A: mapa de significado ===== -->
+        <rect x="14" y="14" width="574" height="412" rx="12" fill="#0a0d12" stroke="#2a3340"/>
+        <text x="30" y="40" fill="#58a6ff" font-size="15" font-family="monospace" font-weight="bold">Mapa de significado</text>
+        <text x="30" y="58" fill="#9aa7b4" font-size="12" font-family="monospace">cerca = parecido · flecha = relación</text>
+
+        <!-- cluster ellipses -->
+        <ellipse cx="135" cy="150" rx="80" ry="62" fill="rgba(126,231,135,.06)" stroke="#7ee787" stroke-dasharray="4 4" opacity=".7"/>
+        <text x="135" y="100" fill="#7ee787" font-size="12" font-family="monospace" text-anchor="middle" opacity=".85">realeza</text>
+        <ellipse cx="135" cy="345" rx="80" ry="58" fill="rgba(88,166,255,.06)" stroke="#58a6ff" stroke-dasharray="4 4" opacity=".7"/>
+        <text x="135" y="300" fill="#58a6ff" font-size="12" font-family="monospace" text-anchor="middle" opacity=".85">animales</text>
+        <ellipse cx="468" cy="160" rx="72" ry="66" fill="rgba(240,168,104,.06)" stroke="#f0a868" stroke-dasharray="4 4" opacity=".7"/>
+        <text x="468" y="108" fill="#f0a868" font-size="12" font-family="monospace" text-anchor="middle" opacity=".85">comida</text>
+
+        <!-- relationship arrows (misma dirección = género) -->
+        <line x1="98" y1="165" x2="170" y2="182" stroke="#bc8cff" stroke-width="2.5" marker-end="url(#va)"/>
+        <line x1="388" y1="320" x2="460" y2="337" stroke="#bc8cff" stroke-width="2.5" marker-end="url(#va)"/>
+        <text x="300" y="262" fill="#bc8cff" font-size="12" font-family="monospace" text-anchor="middle">misma dirección = misma relación (género)</text>
+
+        <!-- tokens: realeza -->
+        <g font-family="monospace" font-size="13" fill="#e6edf3">
+          <circle cx="135" cy="118" r="5" fill="#7ee787"/><text x="135" y="136" text-anchor="middle">príncipe</text>
+          <circle cx="90"  cy="160" r="5" fill="#7ee787"/><text x="78"  y="178" text-anchor="end">rey</text>
+          <circle cx="180" cy="182" r="5" fill="#7ee787"/><text x="192" y="186" text-anchor="start">reina</text>
+        </g>
+        <!-- tokens: animales -->
+        <g font-family="monospace" font-size="13" fill="#e6edf3">
+          <circle cx="115" cy="320" r="5" fill="#58a6ff"/><text x="103" y="324" text-anchor="end">perro</text>
+          <circle cx="185" cy="350" r="5" fill="#58a6ff"/><text x="197" y="354" text-anchor="start">gato</text>
+          <circle cx="120" cy="385" r="5" fill="#58a6ff"/><text x="120" y="403" text-anchor="middle">caballo</text>
+        </g>
+        <!-- tokens: comida -->
+        <g font-family="monospace" font-size="13" fill="#e6edf3">
+          <circle cx="438" cy="125" r="5" fill="#f0a868"/><text x="438" y="143" text-anchor="middle">pan</text>
+          <circle cx="505" cy="160" r="5" fill="#f0a868"/><text x="517" y="164" text-anchor="start">queso</text>
+          <circle cx="452" cy="205" r="5" fill="#f0a868"/><text x="452" y="223" text-anchor="middle">vino</text>
+        </g>
+        <!-- tokens: profesiones (par de género) -->
+        <g font-family="monospace" font-size="13" fill="#e6edf3">
+          <circle cx="388" cy="320" r="5" fill="#9aa7b4"/><text x="376" y="324" text-anchor="end">actor</text>
+          <circle cx="470" cy="337" r="5" fill="#9aa7b4"/><text x="482" y="341" text-anchor="start">actriz</text>
+        </g>
+
+        <!-- ===== Panel B: profundidad de capas ===== -->
+        <rect x="612" y="14" width="314" height="412" rx="12" fill="#0a0d12" stroke="#2a3340"/>
+        <text x="628" y="40" fill="#58a6ff" font-size="15" font-family="monospace" font-weight="bold">Capas: superficie → abstracto</text>
+
+        <!-- depth arrow -->
+        <line x1="632" y1="70" x2="632" y2="408" stroke="#bc8cff" stroke-width="2.5" marker-end="url(#va)"/>
+        <text x="624" y="240" fill="#bc8cff" font-size="11" font-family="monospace" text-anchor="middle" transform="rotate(-90 624 240)">más profundo</text>
+
+        <g font-family="monospace">
+          <rect x="660" y="62"  width="252" height="74" rx="9" fill="#161b22" stroke="#58a6ff"/>
+          <text x="676" y="86"  fill="#58a6ff" font-size="12">Capa 1 · superficie</text>
+          <text x="676" y="108" fill="#e6edf3" font-size="13">qué palabras</text>
+          <text x="676" y="126" fill="#e6edf3" font-size="13">tienden a ir juntas</text>
+
+          <rect x="660" y="148" width="252" height="74" rx="9" fill="#161b22" stroke="#7aa7ff"/>
+          <text x="676" y="172" fill="#7aa7ff" font-size="12">Capa intermedia</text>
+          <text x="676" y="194" fill="#e6edf3" font-size="13">estructura</text>
+          <text x="676" y="212" fill="#e6edf3" font-size="13">gramatical</text>
+
+          <rect x="660" y="234" width="252" height="74" rx="9" fill="#161b22" stroke="#9a8cff"/>
+          <text x="676" y="258" fill="#9a8cff" font-size="12">Capa más profunda</text>
+          <text x="676" y="280" fill="#e6edf3" font-size="13">quién hace</text>
+          <text x="676" y="298" fill="#e6edf3" font-size="13">qué a quién</text>
+
+          <rect x="660" y="320" width="252" height="82" rx="9" fill="#161b22" stroke="#bc8cff"/>
+          <text x="676" y="344" fill="#bc8cff" font-size="12">Capa final · abstracto</text>
+          <text x="676" y="366" fill="#e6edf3" font-size="13">tono, intención,</text>
+          <text x="676" y="384" fill="#e6edf3" font-size="13">significado global</text>
+        </g>
+
+        <defs>
+          <marker id="va" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc8cff"/></marker>
+        </defs>
+      </svg>
+      <figcaption>Mapa plano ilustrativo de un espacio real de cientos o miles de dimensiones.</figcaption>
+    </figure>
+
+    <div class="callout">
+      <p><strong>La intuición que importa:</strong> el modelo no guarda definiciones de las palabras. Guarda <em>posiciones y direcciones</em> — y de la geometría entre esos puntos emergen las relaciones de significado, sin que nadie las haya escrito a mano.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · LLM y generación">
+    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
+    <h2>Contar los caracteres de una contraportada</h2>
+    <div class="callout exercise"><span class="tag">El caso</span>
+      <p>Tienes el texto de la contraportada de un libro que vas a imprimir. La solapa admite una <b>cantidad fija de caracteres con espacios</b> antes de que el diseño se desborde.</p>
+    </div>
+    <div class="card">
+      <h3>Tu tarea</h3>
+      <ol class="steps">
+        <li>Pega el texto y pídele al modelo que cuente <b>caracteres con espacios</b> y <b>cuántas veces aparece la letra «a»</b>.</li>
+        <li>Compáralo con el contador real de tu editor de texto o InDesign.</li>
+      </ol>
+    </div>
+    <div class="callout good"><span class="tag">Qué deberías observar</span>
+      <p>El conteo exacto suele fallar: el modelo procesa <b>tokens</b>, no caracteres. Para confirmar que un texto cabe en la solapa, usa un contador real, no el número que «dice» el modelo.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 2 ============ -->
+  <section class="slide divider" data-topic="2 · Probabilidad y alucinaciones">
+    <div class="num">2</div>
+    <div class="eyebrow">Tema 2</div>
+    <h2>Probabilidad y alucinaciones</h2>
+    <p class="lead muted">El dial de la creatividad y por qué los modelos inventan con confianza.</p>
+  </section>
+
+  <section class="slide" data-topic="2 · Probabilidad y alucinaciones">
+    <div class="eyebrow">2.1 · Temperatura</div>
+    <h2>Temperatura: el dial de la creatividad</h2>
+    <p>Al elegir el siguiente token, la <strong>temperatura</strong> controla cuánta aleatoriedad se inyecta en esa elección.</p>
+    <div class="analogy">
+      <span class="tag">Analogía · el dial del horno</span>
+      <p>Es como el dial de temperatura de un horno, pero aplicado a la <strong>personalidad</strong>: bajo = siempre la misma respuesta predecible; alto = cada vez sale algo distinto.</p>
+    </div>
+    <pre><code>Distribución para el siguiente token:
+  "azul" → 45%   "gris" → 18%   "rojo" → 12%   "verde" → 8% ...
+
+Temperatura = 0   (frío, determinista)
+  → Siempre "azul". Predecible y repetible.
+  → Como un funcionario que sigue el reglamento al pie de la letra.
+
+Temperatura = 0.7 (tibia, balanceada — el default habitual)
+  → "azul" casi siempre, pero a veces "gris" o "rojo".
+  → Como un buen profesional: confiable, con criterio propio.
+
+Temperatura = 1.5 (alta, creativa)
+  → Las probabilidades se aplanan. Cualquier opción puede salir.
+  → Como un artista improvisando: a veces brillante, a veces incoherente.</code></pre>
+    <p class="small muted">Precisión (código, datos) → temperatura baja. Creatividad (redacción libre, brainstorming) → alta. En interfaces como claude.ai el modelo elige el valor apropiado según el contexto.</p>
+  </section>
+
+  <section class="slide" data-topic="2 · Probabilidad y alucinaciones">
+    <div class="eyebrow">2.2 · Por qué inventan</div>
+    <h2>Por qué los modelos inventan cosas</h2>
+    <div class="callout danger">
+      <span class="tag">El problema #1 para un usuario nuevo</span>
+      <p>Las <strong>alucinaciones</strong> son respuestas que suenan plausibles y se expresan con confianza, pero son incorrectas, inventadas o directamente falsas.</p>
+    </div>
+    <div class="cols">
+      <div>
+        <div class="analogy">
+          <span class="tag">Analogía · el que nunca dice "no sé"</span>
+          <p class="small">Ese compañero que ante cualquier pregunta responde con seguridad. A veces acierta porque lo sabe; pero cuando no sabe, improvisa algo que suena razonable. El LLM tiene ese comportamiento <em>por diseño.</em></p>
+        </div>
+        <h3>La causa técnica</h3>
+        <p class="small">No accede a una base de datos de hechos. Genera el token más probable. Si el dato está poco representado en su entrenamiento, no tiene mecanismo para decir "no lo tengo": genera lo que estadísticamente parece correcto.</p>
+      </div>
+      <div>
+        <pre><code>Pregunta: "¿Resultado del partido
+Copiapó vs O'Higgins el
+14 de marzo de 2019?"
+
+El modelo no tiene ese dato.
+Pero sabe que los resultados
+tienen la forma "X ganó Y-Z".
+
+Genera:
+"Copiapó ganó 2-1 en el
+ Estadio Municipal."
+
+→ Inventado. Presentado con
+  total confianza.</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Probabilidad y alucinaciones">
+    <div class="eyebrow">2.3 · Tipos de alucinación</div>
+    <h2>Tipos de alucinación y cómo reconocerlas</h2>
+    <table>
+      <thead><tr><th>Tipo</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Factual</strong></td><td>Inventa datos concretos: fechas, cifras, nombres</td><td>"Fundada en 1987" (falso pero preciso)</td></tr>
+        <tr><td><strong>Citación</strong></td><td>Inventa referencias que no existen</td><td>Papers con título y autores plausibles pero inexistentes</td></tr>
+        <tr><td><strong>Confabulación</strong></td><td>Mezcla hechos reales con inventados de forma coherente</td><td>Biografía real con eventos ficticios intercalados</td></tr>
+        <tr><td><strong>Razonamiento</strong></td><td>Pasos intermedios incorrectos en una deducción</td><td>Resultado correcto por camino equivocado, o viceversa</td></tr>
+        <tr><td><strong>Recencia</strong></td><td>Datos desactualizados presentados como actuales</td><td>"El CEO es [nombre de hace 3 años]"</td></tr>
+      </tbody>
+    </table>
+    <div class="cols">
+      <div class="card">
+        <h3>Señales de alerta</h3>
+        <ul class="small">
+          <li>Datos muy específicos sobre un tema oscuro o poco documentado.</li>
+          <li>Misma seguridad sobre lo verificable y lo no verificable.</li>
+          <li>Menciona fuentes sin que se las hayas pedido.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Regla práctica</h3>
+        <p class="small">Cuanto más <strong>específico y verificable</strong> sea el dato, más vale confirmarlo por fuera. Para razonamiento, síntesis y generación de texto la tasa de error es baja. Para hechos puntuales, siempre verifica.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Probabilidad y alucinaciones">
+    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
+    <h2>La ficha técnica que el modelo inventa</h2>
+    <div class="callout exercise"><span class="tag">El caso</span>
+      <p>Un cliente pregunta por las especificaciones de un papel concreto —por ejemplo «Couché mate 150 g»: gramaje, opacidad, blancura y certificación FSC. Le pides al modelo los datos para responder rápido.</p>
+    </div>
+    <div class="card">
+      <h3>Tu tarea</h3>
+      <ol class="steps">
+        <li>Pídele las especificaciones exactas de ese papel por su nombre comercial.</li>
+        <li>Verifica cada cifra contra la ficha real del proveedor.</li>
+      </ol>
+    </div>
+    <div class="callout danger"><span class="tag">Qué deberías observar</span>
+      <p>Dará cifras precisas y con total seguridad, varias <b>inventadas</b> (alucinación factual). Para fichas técnicas y certificaciones, dale tú los datos del proveedor o haz que los busque; nunca los des por buenos «de memoria».</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 3 ============ -->
+  <section class="slide divider" data-topic="3 · Fortalezas y fallos">
+    <div class="num">3</div>
+    <div class="eyebrow">Tema 3</div>
+    <h2>Fortalezas reales y fallos sistemáticos</h2>
+    <p class="lead muted">Qué confiar al modelo — y qué nunca darle por sentado.</p>
+  </section>
+
+  <section class="slide" data-topic="3 · Fortalezas y fallos">
+    <div class="eyebrow">3.1 · Fortalezas</div>
+    <h2>Lo que los modelos hacen excepcionalmente bien</h2>
+    <div class="cols">
+      <div class="card"><h3>Síntesis y comprensión</h3><p class="small">Extraer puntos clave, resumir y responder sobre un documento largo — incluso muy técnico.</p></div>
+      <div class="card"><h3>Transformación de formato</h3><p class="small">Texto no estructurado → JSON, Markdown, CSV. Reformatear tablas, extraer campos. Muy fiable.</p></div>
+      <div class="card"><h3>Generación de código</h3><p class="small">Código funcional con alta frecuencia en lenguajes populares: vio millones de repositorios.</p></div>
+      <div class="card"><h3>Reescritura y tono</h3><p class="small">Técnico ↔ accesible, formal ↔ conversacional. Alta calidad.</p></div>
+      <div class="card"><h3>Razonar sobre contexto dado</h3><p class="small">"Dado este contrato, ¿qué cláusula aplica?" Funciona muy bien si la respuesta está en el contexto provisto.</p></div>
+      <div class="card"><h3>Generación de variantes</h3><p class="small">5 nombres de función, 3 versiones de un párrafo, casos de prueba a demanda. Muy valioso a diario.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Fortalezas y fallos">
+    <div class="eyebrow">3.2 · Fallos predecibles</div>
+    <h2>Dónde fallan de forma predecible</h2>
+    <div class="cols">
+      <div>
+        <h3>Matemática y cálculo exacto</h3>
+        <p class="small">No calculan: <strong>predicen</strong> el texto que parece el resultado. A veces coincide; otras no.</p>
+        <pre><code>17 × 83 + 44
+→ Puede acertar, pero no
+  porque calculó.
+
+7931 × 6847
+→ Aquí el error sube mucho.</code></pre>
+        <p class="small muted">Solución: usa la <strong>ejecución de código</strong> integrada en lugar de confiar en el texto.</p>
+      </div>
+      <div>
+        <h3>Conteo sobre listas / caracteres</h3>
+        <p class="small">"¿Cuántas 'a' hay aquí?" es sorprendentemente difícil: procesa tokens, no caracteres.</p>
+        <h3>Conocimiento reciente o muy específico</h3>
+        <p class="small">Todo lo posterior a su fecha de corte es invisible. Eventos poco documentados → más riesgo de alucinación.</p>
+        <h3>Muchas condiciones a la vez</h3>
+        <p class="small">A más restricciones simultáneas, más probable que cumpla unas y "olvide" otras.</p>
+        <h3>Documentos muy largos</h3>
+        <p class="small">La atención a partes lejanas se degrada: los detalles del inicio se "diluyen" hacia el final.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Fortalezas y fallos">
+    <div class="eyebrow">3.3 · La regla práctica</div>
+    <h2>¿Cuánto confiar en una respuesta?</h2>
+    <table>
+      <thead><tr><th>Si la tarea requiere...</th><th>Confianza recomendada</th></tr></thead>
+      <tbody>
+        <tr><td>Síntesis de texto provisto</td><td><strong>Alta</strong></td></tr>
+        <tr><td>Generación de código (lenguaje popular)</td><td><strong>Alta</strong> con revisión</td></tr>
+        <tr><td>Razonamiento sobre reglas explícitas dadas</td><td><strong>Alta</strong></td></tr>
+        <tr><td>Hechos históricos bien documentados</td><td>Media</td></tr>
+        <tr><td>Hechos específicos recientes</td><td style="color:var(--warn)">Baja — verificar</td></tr>
+        <tr><td>Cálculo numérico exacto</td><td style="color:var(--warn)">Baja — usar código</td></tr>
+        <tr><td>Conteo de caracteres o elementos</td><td style="color:var(--danger)">Muy baja — verificar siempre</td></tr>
+        <tr><td>Eventos oscuros o poco documentados</td><td style="color:var(--danger)">Muy baja — alta prob. de alucinación</td></tr>
+      </tbody>
+    </table>
+    <div class="callout good">
+      <span class="tag">Principio clave</span>
+      <p>El modelo es un <strong>colaborador muy capaz, no un oráculo.</strong> Trata sus respuestas como un borrador inteligente, no como fuente de verdad. Tu rol es dar dirección y verificar lo que importa.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Fortalezas y fallos">
+    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
+    <h2>La cotización: dónde confiar y dónde no</h2>
+    <div class="callout exercise"><span class="tag">El caso</span>
+      <p>Cotizar un tiraje de <b>3.000 ejemplares</b>, 180 páginas interiores a $38 por página, tapa dura +$1.200 por unidad, más un 8% de merma.</p>
+    </div>
+    <div class="card">
+      <h3>Tu tarea</h3>
+      <ol class="steps">
+        <li>Pídele el costo total y el costo por unidad en un solo mensaje.</li>
+        <li>Rehazlo: pídele que primero arme el <b>desglose</b> y luego use la herramienta de cálculo/código.</li>
+      </ol>
+    </div>
+    <div class="callout good"><span class="tag">Qué deberías observar</span>
+      <p>La aritmética de varios pasos puede salir mal (fallo predecible). En cambio, redactar el desglose y la explicación para el cliente = alta confianza. La clave: separar <b>«calcular»</b> de <b>«redactar»</b>.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 4 ============ -->
+  <section class="slide divider" data-topic="4 · Diferencias entre modelos">
+    <div class="num">4</div>
+    <div class="eyebrow">Tema 4</div>
+    <h2>Qué diferencia a los modelos entre sí</h2>
+    <p class="lead muted">Parámetros, pretraining, fine-tuning y RLHF.</p>
+  </section>
+
+  <section class="slide" data-topic="4 · Diferencias entre modelos">
+    <div class="eyebrow">4.1 · Parámetros</div>
+    <h2>Tamaño: parámetros y lo que significan</h2>
+    <p>Los modelos se describen por su número de <strong>parámetros</strong> — los valores ajustados durante el entrenamiento. Se miden en miles de millones: 7B, 13B, 70B, 405B. Pensados como las <em>conexiones entre neuronas</em> de un cerebro: más conexiones no garantizan más inteligencia, pero permiten representar relaciones más complejas.</p>
+    <h3>¿Más parámetros = mejor? Sí, con matices:</h3>
+    <ul>
+      <li>Modelos más grandes requieren más hardware y son más lentos y costosos.</li>
+      <li>Un modelo pequeño bien entrenado puede superar a uno grande entrenado descuidadamente en tareas específicas.</li>
+      <li>Para la mayoría de usos cotidianos, un modelo <strong>mid-size</strong> es más que suficiente y mucho más económico que el más grande.</li>
+    </ul>
+  </section>
+
+  <section class="slide" data-topic="4 · Diferencias entre modelos">
+    <div class="eyebrow">4.2 · Pretraining</div>
+    <h2>Entrenamiento base (pretraining)</h2>
+    <p>La fase más costosa y lenta: se expone al modelo a cantidades masivas de texto y se le entrena para <strong>predecir el siguiente token</strong> una y otra vez, ajustando los pesos en cada iteración.</p>
+    <div class="cols">
+      <div>
+        <p>Es un único objetivo repetido a escala astronómica: <strong>adivinar la siguiente palabra</strong>. De tanto hacerlo, el modelo termina absorbiendo gramática, hechos y estructura del mundo — todo de forma indirecta, como efecto secundario de predecir bien.</p>
+        <p class="small muted">Es la fase que consume meses de cómputo y la mayor parte del costo de crear un modelo.</p>
+      </div>
+      <div>
+        <pre><code>Un paso de pretraining:
+
+1. Corpus: "La fotosíntesis
+   convierte luz en [____]"
+2. Modelo predice → "calor"
+3. Token real → "energía"
+4. Se ajustan los pesos
+   para reducir ese error
+5. Repetir × miles de millones</code></pre>
+      </div>
+    </div>
+    <p class="small muted">Al terminar sabe mucho, pero no es útil aún: puede continuar cualquier texto, pero no responder preguntas de forma estructurada ni seguir instrucciones.</p>
+  </section>
+
+  <section class="slide" data-topic="4 · Diferencias entre modelos">
+    <div class="eyebrow">4.3 · Fine-tuning</div>
+    <h2>Fine-tuning: especialización post-fábrica</h2>
+    <div class="analogy">
+      <span class="tag">Analogía · la residencia médica</span>
+      <p>Un médico recién graduado (modelo base) tiene formación amplia. En la residencia de cardiología (fine-tuning) no empieza de cero: <strong>profundiza sobre la base que ya tiene.</strong> Al terminar es el mismo médico, mucho más experto en ese dominio.</p>
+    </div>
+    <div class="cols">
+      <div class="card"><h3>Instruction tuning</h3><p class="small">Miles de ejemplos pregunta → respuesta. Transforma un "predictor de texto" en un "asistente".</p></div>
+      <div class="card"><h3>Domain fine-tuning</h3><p class="small">Textos de un dominio (legal, médico, técnico). Mejora en ese campo concreto.</p></div>
+      <div class="card"><h3>Format fine-tuning</h3><p class="small">Responder siempre en un formato específico (JSON, tablas, etiquetas).</p></div>
+    </div>
+    <p class="small muted">El fine-tuning <strong>no crea conocimiento de la nada</strong>: si el modelo base no conoce un dominio, no lo genera. Solo refuerza patrones existentes o ajusta comportamiento y formato.</p>
+  </section>
+
+  <section class="slide" data-topic="4 · Diferencias entre modelos">
+    <div class="eyebrow">4.4 · RLHF</div>
+    <h2>RLHF: enseñar preferencias humanas</h2>
+    <p><strong>Reinforcement Learning from Human Feedback</strong> — la técnica que hace a los modelos útiles, seguros y alineados con lo que los humanos prefieren. En tres pasos:</p>
+    <div class="cols" style="grid-template-columns:1fr 1fr 1fr;">
+      <div class="card"><h3>1 · Recopilar</h3><p class="small">Varias respuestas a la misma pregunta; humanos dicen cuál prefieren. Dataset de comparaciones.</p></div>
+      <div class="card"><h3>2 · Reward model</h3><p class="small">Un modelo auxiliar aprende a predecir qué gusta más. Actúa como juez automático.</p></div>
+      <div class="card"><h3>3 · Ajustar el LLM</h3><p class="small">El juez puntúa; se ajustan los pesos del LLM para subir la puntuación. Ciclo iterativo.</p></div>
+    </div>
+    <p class="small muted">Por esto Claude o GPT responden de forma útil, declinan peticiones problemáticas y tienen un "carácter". Cada empresa usa sus propios datos de preferencia → personalidades distintas.</p>
+  </section>
+
+  <section class="slide" data-topic="4 · Diferencias entre modelos">
+    <div class="eyebrow">4.5 · Comparativa</div>
+    <h2>Tabla comparativa <span class="muted" style="font-size:1rem;font-weight:400;">— actualizada a junio 2026</span></h2>
+    <table>
+      <thead><tr><th>Modelo</th><th>Empresa</th><th>Fortaleza / dato 2026</th><th>Cuándo usarlo</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Claude Opus 4.8</strong></td><td>Anthropic</td><td>Mejor overall hoy; líder en código (SWE-bench Verified 88,6%) y escritura larga</td><td>Tareas complejas, código, flujos autónomos</td></tr>
+        <tr><td><strong>Claude Sonnet 4.6</strong></td><td>Anthropic</td><td>~80% del código de Opus a una fracción del costo</td><td>Uso cotidiano, alto volumen</td></tr>
+        <tr><td><strong>GPT-5.5</strong></td><td>OpenAI</td><td>Generalista muy fuerte, ecosistema amplio</td><td>Uso general, multimodal</td></tr>
+        <tr><td><strong>Gemini 3.1 Pro</strong></td><td>Google</td><td>Mejor precio/rendimiento; GPQA Diamond 94,3%; contexto enorme</td><td>Razonamiento, documentos masivos</td></tr>
+        <tr><td><strong>Grok 4.3</strong></td><td>xAI</td><td>Ventana de contexto de hasta ~2M tokens</td><td>Documentos muy largos</td></tr>
+        <tr><td><strong>DeepSeek V4</strong></td><td>DeepSeek</td><td>Open weights, calidad casi-frontera muy económica</td><td>Alternativa económica, autohospedaje</td></tr>
+        <tr><td><strong>Llama 4</strong></td><td>Meta</td><td>Open source, muy rápido, contexto largo</td><td>Privacidad, control local</td></tr>
+        <tr><td><strong>Kimi K2.6 / Qwen 3</strong></td><td>Moonshot / Alibaba</td><td>Top de los modelos open weights por capacidad</td><td>Open source de alto nivel</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn">
+      <p>El panorama cambia cada pocos meses — esta tabla es de <strong>junio 2026</strong>. Dato contraintuitivo de 2026: los modelos de "razonamiento" tienden a <strong>alucinar más, no menos</strong> (todos &gt;10% en mediciones recientes). Los benchmarks son punto de partida; <strong>la prueba en tu caso de uso es siempre más informativa.</strong></p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="4 · Diferencias entre modelos">
+    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
+    <h2>¿Entrenar el modelo con tu catálogo?</h2>
+    <div class="callout exercise"><span class="tag">El caso</span>
+      <p>Quieres que el modelo conozca el catálogo de papeles, formatos y precios de la imprenta para cotizar y responder a clientes. Un proveedor te ofrece «fine-tunear» un modelo con tus datos.</p>
+    </div>
+    <div class="card">
+      <h3>Tu tarea</h3>
+      <ol class="steps">
+        <li>Lista qué cambia cada mes en ese catálogo (precios, stock, proveedores).</li>
+        <li>Decide: ¿fine-tuning, o darle el catálogo como <b>contexto</b> (documento/RAG) en cada consulta?</li>
+      </ol>
+    </div>
+    <div class="callout good"><span class="tag">Qué deberías observar</span>
+      <p>El fine-tuning no sirve para datos que cambian ni para «memorizar» tu catálogo: ahí encaja darle el catálogo actualizado como contexto. El fine-tuning sirve para fijar <b>formato y estilo</b>, no conocimiento volátil.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 5 ============ -->
+  <section class="slide divider" data-topic="5 · Cómo leer un benchmark">
+    <div class="num">5</div>
+    <div class="eyebrow">Tema 5</div>
+    <h2>Cómo leer un benchmark</h2>
+    <p class="lead muted">Qué miden, qué ocultan, y la única prueba que de verdad importa.</p>
+  </section>
+
+  <section class="slide" data-topic="5 · Cómo leer un benchmark">
+    <div class="eyebrow">5.1 · Qué mide y qué no</div>
+    <h2>Qué mide (y qué no) un benchmark</h2>
+    <p>Un <strong>benchmark</strong> es un conjunto de pruebas estandarizadas con respuestas conocidas, para medir el rendimiento en condiciones controladas y comparables.</p>
+    <div class="analogy">
+      <span class="tag">Analogía · el examen PISA</span>
+      <p>Como las pruebas PISA o el examen de admisión: miden ciertas habilidades de forma estandarizada y permiten comparar. Pero quien saca 100 puede ser un profesional mediocre, y quien sacó 80, brillante. <strong>El examen mide lo que el examen mide.</strong></p>
+    </div>
+    <div class="cols">
+      <div class="card good-card"><h3 style="color:var(--accent-2)">Qué SÍ mide</h3><ul class="small"><li>Rendimiento en ese tipo de preguntas, en ese momento</li><li>Comparación relativa entre modelos, en igualdad</li><li>Progreso de un modelo entre versiones</li></ul></div>
+      <div class="card"><h3 style="color:var(--danger)">Qué NO mide</h3><ul class="small"><li>Rendimiento en <em>tu</em> tarea específica</li><li>Calidad en conversación larga</li><li>Fiabilidad en dominios especializados o en español</li><li>Lo que importa para tu flujo real</li></ul></div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="5 · Cómo leer un benchmark">
+    <div class="eyebrow">5.2 · Benchmarks comunes</div>
+    <h2>Benchmarks comunes y su utilidad real</h2>
+    <table>
+      <thead><tr><th>Benchmark</th><th>Qué mide</th><th>Utilidad práctica</th></tr></thead>
+      <tbody>
+        <tr><td><strong>MMLU</strong></td><td>Conocimiento general en 57 dominios</td><td>Media — amplitud general</td></tr>
+        <tr><td><strong>HumanEval / SWE-bench</strong></td><td>Código funcional, resolución de bugs</td><td>Alta para quienes programan</td></tr>
+        <tr><td><strong>MATH / AIME</strong></td><td>Problemas matemáticos de competencia</td><td>Alta si necesitas razonamiento matemático</td></tr>
+        <tr><td><strong>GPQA</strong></td><td>Preguntas nivel PhD en ciencias</td><td>Razonamiento profundo; poco relevante a diario</td></tr>
+        <tr><td><strong>MT-Bench</strong></td><td>Conversación multi-turno, instrucciones</td><td>Media — capacidad de asistente</td></tr>
+        <tr><td><strong>Arena (LMSYS)</strong></td><td>Preferencias humanas en conversación libre</td><td>Alta — satisfacción de usuarios reales</td></tr>
+      </tbody>
+    </table>
+    <div class="callout danger">
+      <span class="tag">Benchmark hacking</span>
+      <p>Los laboratorios pueden optimizar sus modelos para los benchmarks públicos que conocen, inflando resultados. Un modelo con <strong>92% en MMLU</strong> no es necesariamente mejor para redactar propuestas comerciales que uno con <strong>88%</strong>. Varios de estos benchmarks clásicos (MMLU, GSM8K, HumanEval) hoy se consideran <strong>saturados o contaminados</strong> → siguiente slide.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="5 · Cómo leer un benchmark">
+    <div class="eyebrow">Actualización 2026 · Contaminación</div>
+    <h2>¿Y si el modelo ya vio el examen?</h2>
+    <p>El problema más serio de los benchmarks en 2026: las preguntas de los tests públicos <strong>se filtran a los datos de entrenamiento</strong> (crawls web, GitHub, foros). Un modelo puede puntuar alto simplemente porque <strong>memorizó las respuestas</strong> — no porque razone mejor. Y como los laboratorios conocen los tests famosos, pueden optimizar para ellos. Hoy la contaminación se asume <strong>por defecto</strong>, no como excepción.</p>
+
+    <h3>La respuesta: benchmarks resistentes a contaminación</h3>
+    <p class="small muted">Diseñados para que sus preguntas <em>no puedan</em> estar en el entrenamiento. Son los que los laboratorios serios reportan hoy:</p>
+    <table>
+      <thead><tr><th>Benchmark</th><th>Cómo evita la contaminación</th><th>Qué mide</th></tr></thead>
+      <tbody>
+        <tr><td><strong>LiveBench</strong></td><td>Se renueva con problemas nuevos cada mes</td><td>Capacidad general, siempre fresca</td></tr>
+        <tr><td><strong>LiveCodeBench</strong></td><td>Solo problemas publicados <em>después</em> del corte del modelo</td><td>Programación real, sin memorizar</td></tr>
+        <tr><td><strong>FrontierMath</strong></td><td>Problemas inéditos escritos por matemáticos, nunca publicados</td><td>Matemática de nivel investigación</td></tr>
+        <tr><td><strong>ARC-AGI 2</strong></td><td>Set de evaluación privado (holdout)</td><td>Razonamiento abstracto novedoso</td></tr>
+        <tr><td><strong>HLE</strong> <span class="muted">(Humanity's Last Exam)</span></td><td>Holdout privado; 3.000 preguntas de 1.000+ expertos</td><td>Conocimiento experto multidisciplinar</td></tr>
+        <tr><td><strong>SWE-bench Verified</strong> · <strong>GPQA Diamond</strong></td><td>Versiones revisadas/"a prueba de Google", validadas por expertos</td><td>Código real · ciencia nivel PhD</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn">
+      <span class="tag">Pregunta que vale oro</span>
+      <p>Ante cualquier puntaje, pregúntate: <strong>¿este benchmark está diseñado para que el modelo no haya podido memorizarlo?</strong> Si la respuesta es no, el número dice mucho menos de lo que parece.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="5 · Cómo leer un benchmark">
+    <div class="eyebrow">5.3 · Tu caso de uso</div>
+    <h2>La prueba definitiva: tu caso de uso</h2>
+    <p>La forma más fiable de elegir: toma <strong>5–10 tareas reales</strong> que necesitas habitualmente, ejecútalas en los 2–3 modelos candidatos y evalúa.</p>
+    <div class="cols">
+      <div class="card"><h3>1</h3><p class="small">¿Cuál resuelve mejor el problema <strong>sin instrucciones adicionales?</strong></p></div>
+      <div class="card"><h3>2</h3><p class="small">¿Cuál produce el <strong>formato</strong> que necesitas?</p></div>
+      <div class="card"><h3>3</h3><p class="small">¿Cuál comete <strong>menos errores</strong> en tu dominio?</p></div>
+      <div class="card"><h3>4</h3><p class="small">¿Cuál conviene en <strong>velocidad y costo</strong> para tu volumen?</p></div>
+    </div>
+    <div class="callout good">
+      <p>Este proceso toma una hora y <strong>vale más que cualquier tabla de benchmarks.</strong></p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="5 · Cómo leer un benchmark">
+    <div class="ex-eyebrow"><span class="dot"></span>Ejercicio práctico · Castro &amp; MacDonald</div>
+    <h2>Tu propio «benchmark» de imprenta</h2>
+    <div class="callout exercise"><span class="tag">El caso</span>
+      <p>Salió un modelo nuevo y el titular dice que es «el mejor en MMLU». Tienes que decidir si lo adoptas para el trabajo diario del taller.</p>
+    </div>
+    <div class="card">
+      <h3>Tu tarea · arma un mini-test con 5 tareas reales y córrelo en 2 modelos</h3>
+      <ol class="steps">
+        <li>Redactar un correo a una editorial explicando un retraso de entrega.</li>
+        <li>Resumir un manual corporativo de 40 páginas.</li>
+        <li>Extraer las specs de un PDF de cliente a una tabla / JSON.</li>
+        <li>Traducir una contraportada al inglés.</li>
+        <li>Proponer 5 títulos para el anuario de un colegio.</li>
+      </ol>
+    </div>
+    <div class="callout good"><span class="tag">Qué deberías observar</span>
+      <p>El benchmark del titular dice poco sobre tu taller. Una hora de prueba con <b>tus</b> tareas reales decide mejor que cualquier ranking.</p>
+    </div>
+  </section>
+
+  <!-- ============ RESUMEN ============ -->
+  <section class="slide" data-topic="Resumen">
+    <div class="eyebrow">Cierre · Resumen del Módulo 1</div>
+    <h2>Los 5 temas, de un vistazo</h2>
+    <table>
+      <thead><tr><th>#</th><th>Tema</th><th>Idea central</th><th>Para llevar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>LLM y generación</td><td>Predice el texto más probable, un token a la vez (autoregresivo)</td><td>No busca en una BD: combina patrones, como un chef</td></tr>
+        <tr><td><strong>2</strong></td><td>Probabilidad y alucinaciones</td><td>La temperatura regula el azar; sin azar de hechos, inventa con confianza</td><td>A más específico y verificable el dato, más hay que confirmarlo</td></tr>
+        <tr><td><strong>3</strong></td><td>Fortalezas y fallos</td><td>Excelente en síntesis, formato y código; flojo en cálculo y conteo</td><td>Colaborador capaz, no oráculo: da dirección y verifica</td></tr>
+        <tr><td><strong>4</strong></td><td>Diferencias entre modelos</td><td>Parámetros + pretraining + fine-tuning + RLHF definen el carácter</td><td>Mid-size suele bastar; el panorama cambia cada pocos meses</td></tr>
+        <tr><td><strong>5</strong></td><td>Leer un benchmark</td><td>Mide condiciones controladas, no tu tarea; ojo al benchmark hacking y la contaminación</td><td>La prueba real: 5–10 tareas tuyas en 2–3 modelos</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small muted" style="margin:0">Fundamentos de IA Productiva · Módulo 1 de 7 — v1.1 · Siguiente: <strong>Módulo 2 — Trabajar con el modelo.</strong></p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ CONTROLES ============ -->
+<div id="controls">
+  <button class="nav-btn" id="prev" aria-label="Slide anterior">← Anterior</button>
+  <div id="progress-wrap">
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div id="counter"></div>
+  </div>
+  <button class="nav-btn" id="next" aria-label="Slide siguiente">Siguiente →</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let i = 0;
+
+  const fill    = document.getElementById('progress-fill');
+  const counter = document.getElementById('counter');
+  const badge   = document.getElementById('topic-badge');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  function show(n){
+    i = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    slides[i].scrollTop = 0;
+    fill.style.width = ((i + 1) / total * 100) + '%';
+    counter.textContent = (i + 1) + ' / ' + total;
+    const topic = slides[i].dataset.topic || '';
+    badge.innerHTML = topic ? 'Tema actual · <b>' + topic + '</b>' : '';
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === total - 1;
+  }
+
+  function nextSlide(){ if (i < total - 1) show(i + 1); }
+  function prevSlide(){ if (i > 0) show(i - 1); }
+
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); nextSlide(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End')  { e.preventDefault(); show(total - 1); }
+  });
+
+  show(0);
+</script>
+</body>
+</html>
