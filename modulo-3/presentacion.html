@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 3 — Interfaz y Ecosistema</title>
+<style>
+  :root{
+    --bg:#0e1117;
+    --bg-2:#161b22;
+    --bg-3:#1c2330;
+    --border:#2a3340;
+    --text:#e6edf3;
+    --muted:#bcc8d4;
+    --accent:#58a6ff;
+    --accent-2:#7ee787;
+    --warn:#f0a868;
+    --danger:#ff7b72;
+    --analogy:#bc8cff;
+    --code-bg:#0a0d12;
+    --shadow:0 10px 40px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    overflow:hidden;
+  }
+
+  /* ---- Stage ---- */
+  #stage{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:64px 56px 84px;
+  }
+  .slide{
+    display:none;
+    width:100%;
+    max-width:1080px;
+    max-height:100%;
+    overflow-y:auto;
+    animation:fade .35s ease;
+  }
+  .slide.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  /* ---- Typography ---- */
+  .eyebrow{
+    color:var(--accent);
+    font-size:.8rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h1{font-size:3rem;line-height:1.1;margin-bottom:18px;font-weight:800;letter-spacing:-.02em;}
+  h2{font-size:2rem;line-height:1.15;margin-bottom:20px;font-weight:800;letter-spacing:-.01em;}
+  h3{font-size:1.15rem;color:var(--accent-2);margin:22px 0 8px;font-weight:700;}
+  p{margin-bottom:14px;color:var(--text);font-size:1.06rem;}
+  .lead{font-size:1.25rem;color:var(--muted);}
+  strong{color:#fff;font-weight:700;}
+  ul,ol{margin:8px 0 16px 22px;}
+  li{margin-bottom:8px;font-size:1.04rem;}
+  .muted{color:var(--muted);}
+  .small{font-size:.92rem;}
+
+  /* ---- Callout / quote ---- */
+  .callout{
+    background:var(--bg-2);
+    border-left:4px solid var(--accent);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:18px 0;
+  }
+  .callout.good{border-left-color:var(--accent-2);}
+  .callout.warn{border-left-color:var(--warn);}
+  .callout.danger{border-left-color:var(--danger);}
+  .callout .tag{
+    display:block;
+    font-size:.78rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .callout.good .tag{color:var(--accent-2);}
+  .callout.warn .tag{color:var(--warn);}
+  .callout.danger .tag{color:var(--danger);}
+  .callout.exercise{border-left-color:var(--analogy);background:rgba(188,140,255,.07);}
+  .callout.exercise .tag{color:var(--analogy);}
+  .callout p:last-child{margin-bottom:0;}
+  /* ---- Exercise slide ---- */
+  .ex-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--analogy);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;
+    font-weight:700;margin-bottom:14px;
+    border:1px solid var(--analogy);border-radius:999px;padding:5px 13px;
+  }
+  .ex-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--analogy);}
+  ol.steps{margin:6px 0 0 1.1em;padding:0;}
+  ol.steps li{margin:7px 0;}
+
+  /* ---- Analogía (tarjeta destacada) ---- */
+  .analogy{
+    position:relative;
+    background:linear-gradient(135deg,rgba(188,140,255,.10),var(--bg-2));
+    border:1px solid #4a3d63;
+    border-left:4px solid var(--analogy);
+    border-radius:10px;
+    padding:18px 22px;
+    margin:18px 0;
+    box-shadow:0 4px 22px rgba(124,77,178,.12);
+  }
+  .analogy .tag{
+    display:block;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:800;color:var(--analogy);margin-bottom:6px;
+  }
+  .analogy p{margin-bottom:0;color:var(--text);}
+
+  /* ---- Code ---- */
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+    overflow-x:auto;
+    margin:16px 0;
+    box-shadow:var(--shadow);
+  }
+  code{
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:.92rem;
+    color:#cdd9e5;
+    white-space:pre;
+  }
+  p code,li code,td code{
+    background:var(--bg-3);
+    padding:2px 6px;
+    border-radius:5px;
+    font-size:.88rem;
+    color:var(--accent-2);
+    white-space:normal;
+  }
+
+  /* ---- Grid columns ---- */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:16px 0;}
+  .card{
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .card h3{margin-top:0;}
+
+  /* ---- Tables ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0;
+    font-size:.96rem;
+    background:var(--bg-2);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  th,td{
+    text-align:left;
+    padding:11px 14px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  th{
+    background:var(--bg-3);
+    color:var(--accent);
+    font-weight:700;
+    font-size:.85rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  tr:last-child td{border-bottom:none;}
+  td strong{color:var(--accent-2);}
+
+  /* ---- SVG figures ---- */
+  figure{margin:18px 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:10px;}
+  figcaption{color:var(--muted);font-size:.9rem;margin-top:8px;}
+
+  /* ---- Title slide ---- */
+  .title-slide{text-align:center;}
+  .title-slide .course{color:var(--muted);font-size:1.1rem;letter-spacing:.05em;margin-bottom:8px;}
+  .title-slide .hint{margin-top:34px;color:var(--muted);font-size:.95rem;}
+  .kbd{
+    display:inline-block;background:var(--bg-3);border:1px solid var(--border);
+    border-bottom-width:3px;border-radius:6px;padding:2px 9px;font-size:.85rem;
+    font-family:monospace;color:var(--text);margin:0 2px;
+  }
+  .topic-list{display:inline-block;text-align:left;margin-top:24px;}
+  .topic-list li{font-size:1.1rem;color:var(--text);}
+
+  /* ---- Section divider slide ---- */
+  .divider{text-align:center;}
+  .divider .num{
+    font-size:6rem;font-weight:800;color:var(--bg-3);
+    -webkit-text-stroke:2px var(--accent);line-height:1;margin-bottom:8px;
+  }
+
+  /* ---- Controls ---- */
+  #controls{
+    position:fixed;bottom:0;left:0;right:0;height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;background:linear-gradient(to top,var(--bg),rgba(14,17,23,.0));
+  }
+  .nav-btn{
+    background:var(--bg-2);color:var(--text);border:1px solid var(--border);
+    border-radius:8px;padding:9px 16px;font-size:.95rem;cursor:pointer;
+    transition:.15s;display:flex;align-items:center;gap:6px;
+  }
+  .nav-btn:hover:not(:disabled){background:var(--bg-3);border-color:var(--accent);}
+  .nav-btn:disabled{opacity:.35;cursor:default;}
+  #progress-wrap{flex:1;margin:0 22px;}
+  #progress-bar{height:4px;background:var(--bg-3);border-radius:4px;overflow:hidden;}
+  #progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s ease;}
+  #counter{color:var(--muted);font-size:.85rem;text-align:center;margin-top:4px;}
+
+  /* ---- Top topic badge ---- */
+  #topic-badge{
+    position:fixed;top:16px;left:24px;z-index:5;
+    color:var(--muted);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+  }
+  #topic-badge b{color:var(--accent);}
+
+  /* ---- Home link ---- */
+  #home-link{
+    position:fixed;top:14px;right:24px;z-index:6;
+    display:inline-flex;align-items:center;gap:6px;
+    color:var(--text);text-decoration:none;
+    font-size:.82rem;font-weight:600;
+    background:var(--bg-2);border:1px solid var(--border);
+    padding:6px 13px;border-radius:9px;
+    transition:border-color .2s ease,color .2s ease;
+  }
+  #home-link:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* scrollbars */
+  .slide::-webkit-scrollbar,pre::-webkit-scrollbar{height:9px;width:9px;}
+  .slide::-webkit-scrollbar-thumb,pre::-webkit-scrollbar-thumb{background:var(--border);border-radius:5px;}
+
+  @media (max-width:1000px){
+    .cols{grid-template-columns:1fr;}
+    h1{font-size:2.3rem;}h2{font-size:1.6rem;}
+    #stage{padding:56px 28px 80px;}
+  }
+
+  /* ---- Impresión / export a PDF (cada slide = una página 16:9) ---- */
+  @media print{
+    @page{ size:13.333in 8.3in; margin:0; }
+    html,body{
+      height:auto !important; overflow:visible !important;
+      background:#0e1117 !important;
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    #home-link,#topic-badge,#controls{ display:none !important; }
+    #stage{ display:block !important; height:auto !important; padding:0 !important; }
+    .slide{
+      display:flex !important; flex-direction:column; justify-content:center;
+      box-sizing:border-box;
+      width:13.333in; height:8in;
+      max-width:none !important; max-height:none !important;
+      overflow:hidden !important;
+      padding:0.45in 0.62in; margin:0;
+      animation:none !important;
+      page-break-after:always; break-after:page;
+      page-break-inside:avoid; break-inside:avoid;
+    }
+    .slide:last-child{ page-break-after:avoid; break-after:auto; }
+
+    /* compactar para que cada slide quepa en una sola página */
+    html{ font-size:12px; }
+    .slide h1{ font-size:2.6rem; }
+    .slide h2{ font-size:1.55rem; margin-bottom:.45rem; }
+    .slide h3{ margin:.2rem 0; }
+    .slide p{ margin:0 0 .42rem; }
+    .slide .lead{ margin-bottom:.4rem; }
+    .slide ul,.slide ol{ margin:.3rem 0 .5rem 1.15rem; }
+    .slide li{ margin:3px 0; }
+    .slide .callout,.slide .analogy{ margin:.42rem 0; padding:9px 13px; }
+    .slide .card{ padding:12px 15px; }
+    .slide .cols{ gap:14px; margin:10px 0; }
+    .slide table{ font-size:.9em; }
+    .slide th,.slide td{ padding:5px 9px; }
+    .slide svg{ height:2in !important; width:auto !important; max-width:100% !important; display:block; margin:6px auto; }
+    .slide pre{ font-size:.78rem; line-height:1.3; padding:10px 14px; margin:.5rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<a id="home-link" href="../index.html">← Inicio</a>
+<div id="topic-badge"></div>
+
+<div id="stage">
+
+  <!-- ============ PORTADA ============ -->
+  <section class="slide active title-slide" data-topic="Inicio">
+    <div class="course">Fundamentos de IA Productiva</div>
+    <div class="eyebrow">Módulo 3 de 7</div>
+    <h1>Interfaz y Ecosistema</h1>
+    <p class="lead">Ya no es solo el modelo: es el producto que lo envuelve.<br>Modelos, proyectos, herramientas y conexiones con tus sistemas.</p>
+    <ol class="topic-list">
+      <li>Recorrido por la interfaz</li>
+      <li>Proyectos y contexto compartido</li>
+      <li>Herramientas complementarias</li>
+      <li>Introducción a MCP</li>
+    </ol>
+    <p class="hint">Navega con <span class="kbd">←</span> <span class="kbd">→</span> o los botones de abajo</p>
+  </section>
+
+  <!-- ============ TEMA 1 ============ -->
+  <section class="slide divider" data-topic="1 · Recorrido por la interfaz">
+    <div class="num">1</div>
+    <div class="eyebrow">Tema 1</div>
+    <h2>Recorrido por la interfaz</h2>
+    <p class="lead muted">Modelos, modos y artifacts: casi cada botón es una técnica de prompting empaquetada.</p>
+  </section>
+
+  <section class="slide" data-topic="1 · Recorrido por la interfaz">
+    <div class="eyebrow">1.1 · El selector de modelo</div>
+    <h2>Opus, Sonnet, Haiku: el tamaño justo</h2>
+    <table>
+      <thead><tr><th>Nivel</th><th>Carácter</th><th>Cuándo elegirlo</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Opus</strong></td><td>El más capaz: razonamiento profundo, tareas largas</td><td>Análisis difícil, código no trivial, varios pasos</td></tr>
+        <tr><td><strong>Sonnet</strong></td><td>El equilibrado: gran calidad, más rápido y barato</td><td>El <strong>caballo de batalla</strong> del día a día</td></tr>
+        <tr><td><strong>Haiku</strong></td><td>El rápido y económico</td><td>Tareas simples y de alto volumen</td></tr>
+      </tbody>
+    </table>
+    <div class="callout good">
+      <span class="tag">Regla práctica</span>
+      <p>Empieza por <strong>Sonnet</strong>. Sube a Opus cuando la tarea supere al modelo; baja a Haiku cuando sea mecánica. Usar Opus para "resúmeme este correo" es sacar la artillería para matar una mosca.</p>
+    </div>
+    <p class="small muted"><strong>Modos:</strong> <em>extended thinking</em> = chain-of-thought con un botón (lógica, código complejo). <em>Estilos</em> = tono y formato persistentes, parte del trabajo del system prompt hecho una vez.</p>
+  </section>
+
+  <section class="slide" data-topic="1 · Recorrido por la interfaz">
+    <div class="eyebrow">1.3 · Artifacts</div>
+    <h2>El lienzo de trabajo, al lado del chat</h2>
+    <div class="cols">
+      <div>
+        <div class="analogy">
+          <span class="tag">Analogía · el caballete</span>
+          <p>El chat es la conversación; el Artifact es el lienzo en el caballete. Pides un cambio hablando, y la obra se actualiza en su sitio — sin que cada versión entierre a la anterior.</p>
+        </div>
+        <p class="small">Un <strong>Artifact</strong> es una ventana independiente para contenido reutilizable: documentos, código, páginas web que <strong>ves funcionando</strong>, diagramas, mini-apps.</p>
+      </div>
+      <div>
+        <div class="callout good">
+          <span class="tag">El superpoder: iterar</span>
+          <p class="small">Generas un borrador → pides ajustes concretos → el Artifact se reescribe. Es el patrón <strong>borrador → revisión → refinamiento</strong> del Módulo 2, con soporte visual. Y se puede compartir y descargar: es un entregable, no una respuesta de chat.</p>
+        </div>
+        <p class="small muted"><strong>Cuándo NO:</strong> respuestas cortas o conversacionales se quedan en el chat. El Artifact es para lo que vas a conservar, editar o entregar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · Recorrido por la interfaz">
+    <div class="eyebrow">1.4 · El menú de herramientas</div>
+    <h2>Cada herramienta tapa un agujero del modelo</h2>
+    <table>
+      <thead><tr><th>Herramienta</th><th>Para qué sirve</th><th>Debilidad que tapa (Módulo 1)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Búsqueda web</strong></td><td>Información actual, con fuentes</td><td>Conocimiento desactualizado</td></tr>
+        <tr><td><strong>Ejecución de código</strong></td><td>Cálculos, análisis de datos, gráficos</td><td>Matemática y conteo poco fiables</td></tr>
+        <tr><td><strong>Generación de archivos</strong></td><td>Crear Excel, Word, PDF, PowerPoint</td><td>Entregar en formato usable</td></tr>
+        <tr><td><strong>Análisis de docs/imágenes</strong></td><td>Razonar sobre lo que le das</td><td>Tirar de "memoria" en vez del material</td></tr>
+        <tr><td><strong>Connectors (MCP)</strong></td><td>Conectar con tus apps y datos</td><td>No conoce tus sistemas</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small" style="margin:0">Las herramientas no hacen al modelo <em>más inteligente</em>; lo hacen <strong>más conectado a la realidad</strong>. Elegir la correcta es aplicar lo que sabes de sus debilidades.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 2 ============ -->
+  <section class="slide divider" data-topic="2 · Proyectos y contexto compartido">
+    <div class="num">2</div>
+    <div class="eyebrow">Tema 2</div>
+    <h2>Proyectos y contexto compartido</h2>
+    <p class="lead muted">Convierte al modelo en el colega que ya conoce al cliente, las normas y los archivos.</p>
+  </section>
+
+  <section class="slide" data-topic="2 · Proyectos y contexto compartido">
+    <div class="eyebrow">2.1 · Qué es un Proyecto</div>
+    <h2>Un contexto común y persistente</h2>
+    <div class="cols">
+      <div>
+        <div class="analogy">
+          <span class="tag">Analogía · el colega que ya está al día</span>
+          <p>Escribirle a un colega recién llegado obliga a explicar todo cada vez. Uno que ya conoce el cliente va al grano. Un Proyecto convierte al modelo en el segundo — dentro de ese ámbito.</p>
+        </div>
+        <p class="small">Frente a un chat suelto (una ventana aislada que no comparte nada), el Proyecto da <strong>instrucciones y archivos comunes</strong> a todas sus conversaciones.</p>
+      </div>
+      <div>
+        <figure style="margin:0;">
+          <svg viewBox="0 0 440 300" role="img" aria-labelledby="proj-title proj-desc">
+            <title id="proj-title">Estructura de un Proyecto</title>
+            <desc id="proj-desc">Un proyecto contiene instrucciones y knowledge compartidos por varias conversaciones.</desc>
+            <rect x="14" y="14" width="412" height="272" rx="14" fill="#0a0d12" stroke="#bc8cff"/>
+            <text x="32" y="44" fill="#bc8cff" font-size="14" font-family="monospace" font-weight="bold">PROYECTO · Imprenta Castro &amp; MacDonald</text>
+            <rect x="32" y="60" width="376" height="40" rx="8" fill="#161b22" stroke="#7ee787"/>
+            <text x="46" y="78" fill="#7ee787" font-size="13" font-family="monospace">Instrucciones</text>
+            <text x="46" y="93" fill="#9aa7b4" font-size="11.5" font-family="monospace">rol · tono · reglas que aplican siempre</text>
+            <rect x="32" y="108" width="376" height="40" rx="8" fill="#161b22" stroke="#58a6ff"/>
+            <text x="46" y="126" fill="#58a6ff" font-size="13" font-family="monospace">Knowledge</text>
+            <text x="46" y="141" fill="#9aa7b4" font-size="11.5" font-family="monospace">manual de marca · tarifas · plantillas</text>
+            <g font-family="monospace" font-size="11.5">
+              <rect x="32"  y="166" width="182" height="46" rx="8" fill="#1c2330" stroke="#2a3340"/>
+              <text x="44" y="186" fill="#e6edf3">Chat: cotización</text><text x="44" y="201" fill="#9aa7b4">Andes Verde</text>
+              <rect x="226" y="166" width="182" height="46" rx="8" fill="#1c2330" stroke="#2a3340"/>
+              <text x="238" y="186" fill="#e6edf3">Chat: reclamo</text><text x="238" y="201" fill="#9aa7b4">de color</text>
+              <rect x="32"  y="220" width="182" height="46" rx="8" fill="#1c2330" stroke="#2a3340"/>
+              <text x="44" y="240" fill="#e6edf3">Chat: clasificar</text><text x="44" y="255" fill="#9aa7b4">pedidos</text>
+              <rect x="226" y="220" width="182" height="46" rx="8" fill="#1c2330" stroke="#2a3340"/>
+              <text x="238" y="240" fill="#e6edf3">Chat: revisar</text><text x="238" y="255" fill="#9aa7b4">arte final</text>
+            </g>
+          </svg>
+          <figcaption>Todas las conversaciones ven las mismas instrucciones y archivos.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Proyectos y contexto compartido">
+    <div class="eyebrow">2.2 · Las dos piezas</div>
+    <h2>Knowledge ≠ Instrucciones</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Instrucciones del proyecto</h3>
+        <p class="small">El <strong>system prompt</strong> del Módulo 2, con interfaz. Define <strong>quién es</strong> el modelo y <strong>cómo</strong> se comporta, de forma persistente.</p>
+        <p class="small muted">"Eres el asistente de presupuestos de una imprenta. Respondes en español neutro, con cifras desglosadas, y nunca prometes plazos sin verificarlos."</p>
+      </div>
+      <div class="card">
+        <h3>Knowledge (base de conocimiento)</h3>
+        <p class="small">Los <strong>archivos</strong> que subes una vez y quedan para todas las conversaciones: manuales, tarifas, plantillas, políticas.</p>
+        <p class="small muted">En vez de pegar el mismo PDF en cada chat (gastando ventana), vive en el Proyecto y el modelo lo consulta.</p>
+      </div>
+    </div>
+    <div class="callout warn">
+      <span class="tag">Dato técnico (enlaza con el Módulo 2)</span>
+      <p class="small">Si el knowledge es pequeño, <strong>cabe entero</strong> en la ventana (máxima fidelidad). Si es grande, se usa <strong>retrieval / RAG</strong>: solo se inyectan los fragmentos relevantes. Por eso una base <strong>curada</strong> rinde más que una enorme y desordenada — es el mismo <em>context rot</em>.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Proyectos y contexto compartido">
+    <div class="eyebrow">2.3 · Cómo organizarlos</div>
+    <h2>Un proyecto, un objetivo</h2>
+    <table>
+      <thead><tr><th>Antipatrón</th><th>Mejor práctica</th></tr></thead>
+      <tbody>
+        <tr><td>Un proyecto gigante "Trabajo" con todo dentro</td><td><strong>Un proyecto por dominio real</strong> (cliente, producto, área)</td></tr>
+        <tr><td>Subir todos los archivos "por si acaso"</td><td><strong>Solo el material</strong> que de verdad usas ahí</td></tr>
+        <tr><td>Mezclar tres clientes en un proyecto</td><td><strong>Un proyecto por cliente</strong>: contextos que no se contaminan</td></tr>
+        <tr><td>Instrucciones de tres páginas</td><td><strong>Breves y estables</strong>; lo puntual va en el mensaje</td></tr>
+      </tbody>
+    </table>
+    <div class="callout good">
+      <span class="tag">Cuándo SÍ usar un proyecto</span>
+      <p class="small">Vuelves al mismo dominio, quieres comportamiento consistente, o trabajas en equipo con contexto compartido. Para una pregunta puntual, un chat suelto basta.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Proyectos y contexto compartido">
+    <div class="eyebrow">2.4 · Trampas</div>
+    <h2>El contexto persistente amplifica todo</h2>
+    <div class="callout danger">
+      <span class="tag">El knowledge desactualizado es peor que nada</span>
+      <p>Un archivo de tarifas viejo en el Proyecto se citará con confianza... y estará equivocado. El contexto persistente <strong>amplifica tanto los aciertos como los errores</strong>. Versiona y limpia.</p>
+    </div>
+    <div class="cols">
+      <div>
+        <p class="small"><strong>No asumas que "ya lo sabe".</strong> Que un archivo esté en el knowledge no garantiza que recupere el fragmento exacto en una base grande. Para datos críticos, pide que <strong>cite</strong> documento y sección.</p>
+      </div>
+      <div>
+        <p class="small"><strong>Instrucciones estables, tarea en el mensaje.</strong> Si una regla aplica siempre, va en el Proyecto. Si solo aplica a este pedido, va en el mensaje.</p>
+        <p class="small muted">Privacidad: el knowledge son tus documentos. Sé consciente de qué subes y con quién se comparte (→ Módulo 7).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 3 ============ -->
+  <section class="slide divider" data-topic="3 · Herramientas complementarias">
+    <div class="num">3</div>
+    <div class="eyebrow">Tema 3</div>
+    <h2>Herramientas complementarias</h2>
+    <p class="lead muted">El error del novato: o no usar ninguna (y dejar que adivine), o encenderlas todas por inercia.</p>
+  </section>
+
+  <section class="slide" data-topic="3 · Herramientas complementarias">
+    <div class="eyebrow">3.1 · Búsqueda web</div>
+    <h2>Romper la fecha de corte — con fuentes</h2>
+    <div class="cols">
+      <div>
+        <p class="small">Deja que el modelo <strong>consulte internet en vivo</strong> y traiga información actual con <strong>enlaces a las fuentes</strong>. Resuelve la limitación más conocida del Módulo 1: la fecha de corte.</p>
+        <p class="small"><strong>Cuándo:</strong> precios, noticias, versiones, normativa reciente, o cualquier cosa donde quieras una fuente verificable.</p>
+        <p class="small muted"><strong>Cuándo no:</strong> razonar, redactar o transformar texto. Buscar para "escríbeme un correo de disculpa" no aporta nada.</p>
+      </div>
+      <div>
+        <div class="callout good">
+          <span class="tag">El gran beneficio: trazabilidad</span>
+          <p class="small">Devuelve <strong>citas con enlace</strong>: convierte una afirmación inverificable en verificable.</p>
+        </div>
+        <div class="callout warn">
+          <p class="small" style="margin:0">Pero <strong>abre el enlace y confírmalo</strong>: que cite una fuente no garantiza que la haya leído bien.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Herramientas complementarias">
+    <div class="eyebrow">3.2 · Ejecución de código</div>
+    <h2>De adivinar el número a calcularlo</h2>
+    <p class="small">El modelo no calcula: <strong>predice</strong> el texto que parece un resultado (Módulo 1). La ejecución de código corre la operación <strong>de verdad</strong> en un sandbox y devuelve el resultado real.</p>
+    <pre><code>Sin ejecución de código:
+  "¿Cuál es el costo total de este pedido de 3 papeles?"
+  → el modelo estima y puede equivocarse en la aritmética.
+
+Con ejecución de código:
+  → escribe y corre el cálculo real → resultado exacto y reproducible.</code></pre>
+    <div class="callout good">
+      <span class="tag">Para qué brilla</span>
+      <p class="small" style="margin:0">Cálculos exactos · análisis de datos (CSV/Excel: totales, agrupar, cruzar) · gráficos · conteos deterministas. Convierte al modelo en un analista con hoja de cálculo, no en un adivino.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Herramientas complementarias">
+    <div class="eyebrow">3.3 · Generación de archivos · 3.4 · Análisis de documentos</div>
+    <h2>Cerrar la última milla</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Generar archivos</h3>
+        <p class="small">Crea <strong>archivos descargables</strong>: Excel, Word, PDF, PowerPoint. No es lo mismo que <em>describa</em> un presupuesto a que entregue el <strong>Excel listo para enviar</strong>. Convierte una respuesta en un <strong>entregable</strong>.</p>
+        <p class="small muted">Verifica el archivo, no solo el chat: una fórmula mal puesta o un total que no cuadra siguen siendo posibles.</p>
+      </div>
+      <div class="card">
+        <h3>Analizar lo que le das</h3>
+        <p class="small">Sube PDFs, hojas de cálculo e <strong>imágenes</strong> (capturas, fotos, gráficos) y razona sobre ellos. Es una <strong>fortaleza real</strong> (Módulo 1): mejor sobre material que tiene delante que tirando de memoria.</p>
+        <p class="small muted">Documento arriba, pregunta abajo, y pide citas — como en el Módulo 2.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Herramientas complementarias">
+    <div class="eyebrow">3.5 · Criterio</div>
+    <h2>Qué herramienta para qué tarea</h2>
+    <table>
+      <thead><tr><th>Si la tarea es…</th><th>Herramienta</th><th>Por qué</th></tr></thead>
+      <tbody>
+        <tr><td>Dato actual / posterior al corte</td><td><strong>Búsqueda web</strong></td><td>No lo sabe; lo busca y cita</td></tr>
+        <tr><td>Cálculo o análisis de datos</td><td><strong>Ejecución de código</strong></td><td>Calcula de verdad, no adivina</td></tr>
+        <tr><td>Entregar un Excel/Word/PDF</td><td><strong>Generación de archivos</strong></td><td>Resultado usable, no solo texto</td></tr>
+        <tr><td>Trabajar sobre tu documento</td><td><strong>Subir + analizar</strong></td><td>Razona sobre lo que tiene delante</td></tr>
+        <tr><td>Acceder a tus apps/datos</td><td><strong>Connector (MCP →)</strong></td><td>Le da contexto que no tiene</td></tr>
+        <tr><td>Razonar, redactar, resumir</td><td><strong>Ninguna</strong></td><td>El modelo solo ya lo hace bien</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ TEMA 4 ============ -->
+  <section class="slide divider" data-topic="4 · Introducción a MCP">
+    <div class="num">4</div>
+    <div class="eyebrow">Tema 4</div>
+    <h2>Introducción a MCP</h2>
+    <p class="lead muted">El estándar que deja al modelo dejar de estar aislado y operar dentro de tus sistemas.</p>
+  </section>
+
+  <section class="slide" data-topic="4 · Introducción a MCP">
+    <div class="eyebrow">4.1 · El problema</div>
+    <h2>El caos de las integraciones a medida</h2>
+    <p class="small">Tu trabajo vive en <strong>tus</strong> sistemas: correo, Drive, calendario, gestor de tareas, base de datos. Un modelo, por bueno que sea, <strong>no conoce nada de eso</strong>.</p>
+    <p class="small">La forma vieja: construir una integración a medida por cada sistema. Una para Drive, otra para el correo, otra para la base de datos… cada una con su código y mantenimiento.</p>
+    <div class="callout danger">
+      <span class="tag">N × M</span>
+      <p style="margin:0"><strong>N aplicaciones × M herramientas = un caos de integraciones.</strong> No escala.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="4 · Introducción a MCP">
+    <div class="eyebrow">4.2 · Qué es MCP</div>
+    <h2>El "USB-C" de las apps de IA</h2>
+    <div class="analogy">
+      <span class="tag">Analogía · el USB-C</span>
+      <p>Antes, cada dispositivo tenía su cargador y conector: un caos de cables incompatibles. USB-C fijó <strong>un único conector estándar</strong>: cualquier dispositivo habla con cualquier accesorio. <strong>MCP hace lo mismo para la IA.</strong></p>
+    </div>
+    <p class="small"><strong>MCP</strong> (Model Context Protocol) es un <strong>estándar abierto</strong>, creado por Anthropic y hoy adoptado por buena parte de la industria, para conectar modelos de IA con herramientas y datos externos de una forma común.</p>
+    <div class="callout">
+      <p class="small" style="margin:0">En una frase: el <strong>puerto estándar</strong> para enchufar herramientas y datos a un modelo, sin construir una integración a medida cada vez.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="4 · Introducción a MCP">
+    <div class="eyebrow">4.3 · La arquitectura (sin código)</div>
+    <h2>Host · Cliente · Servidor</h2>
+    <figure>
+      <svg viewBox="0 0 900 250" role="img" aria-labelledby="mcp-title mcp-desc">
+        <title id="mcp-title">Arquitectura de MCP</title>
+        <desc id="mcp-desc">El host (Claude) habla por el protocolo MCP con servidores que exponen herramientas y datos.</desc>
+        <rect x="40" y="80" width="250" height="90" rx="12" fill="#161b22" stroke="#7ee787"/>
+        <text x="165" y="115" fill="#7ee787" font-size="16" font-family="monospace" font-weight="bold" text-anchor="middle">HOST (Claude)</text>
+        <text x="165" y="140" fill="#9aa7b4" font-size="12.5" font-family="monospace" text-anchor="middle">la app donde trabajas</text>
+        <text x="165" y="156" fill="#9aa7b4" font-size="12.5" font-family="monospace" text-anchor="middle">(incluye el cliente MCP)</text>
+
+        <line x1="290" y1="125" x2="610" y2="125" stroke="#58a6ff" stroke-width="2.5"/>
+        <text x="450" y="113" fill="#58a6ff" font-size="13" font-family="monospace" text-anchor="middle">◄── protocolo MCP ──►</text>
+
+        <rect x="610" y="80" width="250" height="90" rx="12" fill="#161b22" stroke="#bc8cff"/>
+        <text x="735" y="115" fill="#bc8cff" font-size="16" font-family="monospace" font-weight="bold" text-anchor="middle">SERVIDOR MCP</text>
+        <text x="735" y="140" fill="#9aa7b4" font-size="12.5" font-family="monospace" text-anchor="middle">expone una herramienta o dato</text>
+        <text x="735" y="156" fill="#9aa7b4" font-size="12.5" font-family="monospace" text-anchor="middle">(Drive, GitHub, tu BD…)</text>
+
+        <text x="165" y="205" fill="#e6edf3" font-size="12.5" font-family="monospace" text-anchor="middle">tú pides en lenguaje natural</text>
+        <text x="735" y="205" fill="#e6edf3" font-size="12.5" font-family="monospace" text-anchor="middle">el servidor hace la acción real</text>
+      </svg>
+      <figcaption>Tú no ves esta maquinaria: activas un connector, das permiso y pides en lenguaje natural.</figcaption>
+    </figure>
+  </section>
+
+  <section class="slide" data-topic="4 · Introducción a MCP">
+    <div class="eyebrow">4.4 · 4.5 · Connectors en la práctica</div>
+    <h2>Del "hablar sobre" al "operar dentro"</h2>
+    <div class="cols">
+      <div>
+        <p class="small">En Claude, los servidores MCP se presentan como <strong>connectors</strong>: los activas en la configuración autorizando con tu cuenta (como "Iniciar sesión con Google"). <strong>Sin escribir código.</strong></p>
+        <ol class="steps small">
+          <li>Eliges un connector del directorio.</li>
+          <li>Autorizas y defines el alcance.</li>
+          <li>Pides en lenguaje natural en el chat.</li>
+          <li>El modelo lo usa y responde con datos reales.</li>
+        </ol>
+      </div>
+      <div>
+        <div class="callout">
+          <span class="tag">Ejemplos · la imprenta</span>
+          <p class="small" style="margin:0">"Revisa en el Drive del cliente el manual vigente y dime si nuestra cotización cumple el gramaje." · "Crea una tarea por cada pedido sin confirmar de este correo." · "Agenda la revisión de arte 3 días antes de cada entrega."</p>
+        </div>
+        <p class="small muted">El modelo pasa de <strong>hablar sobre</strong> tu trabajo a <strong>actuar dentro</strong> de tus sistemas. Eso abre la puerta a los <strong>agentes</strong> (Módulos 4–6).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="4 · Introducción a MCP">
+    <div class="eyebrow">4.6 · Permisos y seguridad</div>
+    <h2>Cuando el modelo puede actuar, verificar deja de ser opcional</h2>
+    <div class="cols">
+      <div>
+        <div class="callout warn">
+          <span class="tag">Mínimo privilegio</span>
+          <p class="small" style="margin:0">Concede solo el acceso que la tarea necesita. Si basta con <strong>leer</strong> el Drive, no des permiso de <strong>borrar</strong>. Revisa el alcance antes de autorizar.</p>
+        </div>
+        <div class="callout">
+          <span class="tag">Confianza de la fuente</span>
+          <p class="small" style="margin:0">Un servidor MCP es software de terceros. Usa connectors oficiales o de tu organización.</p>
+        </div>
+      </div>
+      <div>
+        <div class="callout danger">
+          <span class="tag">Leer vs. escribir</span>
+          <p class="small">Leer es de bajo riesgo. <strong>Escribir, borrar o enviar</strong> no: pide confirmación y revísala.</p>
+        </div>
+        <p class="small muted">Una alucinación ya no es solo una respuesta equivocada: puede ser una <strong>acción</strong> equivocada. Privacidad y datos sensibles → Módulo 7.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CIERRE ============ -->
+  <section class="slide" data-topic="Resumen">
+    <div class="eyebrow">Cierre · Resumen del Módulo 3</div>
+    <h2>Los 4 temas, de un vistazo</h2>
+    <table>
+      <thead><tr><th>#</th><th>Tema</th><th>Idea central</th><th>Para llevar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>La interfaz</td><td>Casi cada botón es una técnica de prompting empaquetada</td><td>Sonnet por defecto; Artifacts para lo que vas a editar/entregar</td></tr>
+        <tr><td><strong>2</strong></td><td>Proyectos</td><td>Contexto común y persistente; instrucciones ≠ knowledge</td><td>Un proyecto, un objetivo. Curar, no acumular</td></tr>
+        <tr><td><strong>3</strong></td><td>Herramientas</td><td>Cada una tapa un agujero conocido del modelo</td><td>Elige la que aporta; no enciendas la que no</td></tr>
+        <tr><td><strong>4</strong></td><td>MCP</td><td>El USB-C de la IA: conecta el modelo a tus sistemas</td><td>Mínimo privilegio; al actuar, verifica</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small muted" style="margin:0">Fundamentos de IA Productiva · Módulo 3 de 7 — v1.0 · Siguiente: <strong>Módulo 4 — Metodologías de desarrollo con IA.</strong></p>
+    </div>
+  </section>
+</div>
+
+<!-- ============ CONTROLES ============ -->
+<div id="controls">
+  <button class="nav-btn" id="prev" aria-label="Slide anterior">← Anterior</button>
+  <div id="progress-wrap">
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div id="counter"></div>
+  </div>
+  <button class="nav-btn" id="next" aria-label="Slide siguiente">Siguiente →</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let i = 0;
+
+  const fill    = document.getElementById('progress-fill');
+  const counter = document.getElementById('counter');
+  const badge   = document.getElementById('topic-badge');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  function show(n){
+    i = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    slides[i].scrollTop = 0;
+    fill.style.width = ((i + 1) / total * 100) + '%';
+    counter.textContent = (i + 1) + ' / ' + total;
+    const topic = slides[i].dataset.topic || '';
+    badge.innerHTML = topic ? 'Tema actual · <b>' + topic + '</b>' : '';
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === total - 1;
+  }
+
+  function nextSlide(){ if (i < total - 1) show(i + 1); }
+  function prevSlide(){ if (i > 0) show(i - 1); }
+
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); nextSlide(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End')  { e.preventDefault(); show(total - 1); }
+  });
+
+  show(0);
+</script>
+</body>
+</html>

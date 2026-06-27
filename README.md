@@ -19,18 +19,27 @@ Cada módulo vive en su propia carpeta; `index.html` y `wiki.html` quedan en la 
 │   ├── presentacion.pdf
 │   ├── wiki.md             · Contenido de la wiki (Markdown)
 │   └── wiki.pdf
-└── modulo-2/
+├── modulo-2/
+│   ├── presentacion.html
+│   ├── presentacion.pdf
+│   ├── wiki.md
+│   ├── wiki.pdf
+│   └── insumos/            · Materiales para los 5 ejercicios prácticos
+│       ├── README.md
+│       ├── 01-manual-cliente.md
+│       ├── 02-correo-editorial.md
+│       ├── 03-correos-pedidos.md
+│       ├── 04-brief-agenda.md
+│       └── 05-reclamo-color.md
+└── modulo-3/
     ├── presentacion.html
     ├── presentacion.pdf
     ├── wiki.md
     ├── wiki.pdf
-    └── insumos/            · Materiales para los 5 ejercicios prácticos
+    └── insumos/            · Materiales para la práctica guiada
         ├── README.md
-        ├── 01-manual-cliente.md
-        ├── 02-correo-editorial.md
-        ├── 03-correos-pedidos.md
-        ├── 04-brief-agenda.md
-        └── 05-reclamo-color.md
+        ├── 01-tarifas.md
+        └── 02-pedidos.md
 ```
 
 Las rutas a cada módulo están centralizadas: en `index.html` (array `MODULES`, campo `deck`) y
