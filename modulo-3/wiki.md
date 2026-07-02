@@ -783,7 +783,7 @@ referencia primaria; el resto aporta contexto o perspectiva.
 ---
 
 *Anterior: [Módulo 2 — Trabajar con el modelo](./modulo-2-wiki.md)*
-*Siguiente: Módulo 4 — Metodologías de desarrollo con IA*
+*Siguiente: [Módulo 4 — Metodologías de desarrollo con IA](./modulo-4-wiki.md)*
 
 ---
 

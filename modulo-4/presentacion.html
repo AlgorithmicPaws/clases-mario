@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 4 — Metodologías de desarrollo con IA</title>
+<style>
+  :root{
+    --bg:#0e1117;
+    --bg-2:#161b22;
+    --bg-3:#1c2330;
+    --border:#2a3340;
+    --text:#e6edf3;
+    --muted:#bcc8d4;
+    --accent:#58a6ff;
+    --accent-2:#7ee787;
+    --warn:#f0a868;
+    --danger:#ff7b72;
+    --analogy:#bc8cff;
+    --code-bg:#0a0d12;
+    --shadow:0 10px 40px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    overflow:hidden;
+  }
+
+  /* ---- Stage ---- */
+  #stage{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:64px 56px 84px;
+  }
+  .slide{
+    display:none;
+    width:100%;
+    max-width:1080px;
+    max-height:100%;
+    overflow-y:auto;
+    animation:fade .35s ease;
+  }
+  .slide.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  /* ---- Typography ---- */
+  .eyebrow{
+    color:var(--accent);
+    font-size:.8rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h1{font-size:3rem;line-height:1.1;margin-bottom:18px;font-weight:800;letter-spacing:-.02em;}
+  h2{font-size:2rem;line-height:1.15;margin-bottom:20px;font-weight:800;letter-spacing:-.01em;}
+  h3{font-size:1.15rem;color:var(--accent-2);margin:22px 0 8px;font-weight:700;}
+  p{margin-bottom:14px;color:var(--text);font-size:1.06rem;}
+  .lead{font-size:1.25rem;color:var(--muted);}
+  strong{color:#fff;font-weight:700;}
+  ul,ol{margin:8px 0 16px 22px;}
+  li{margin-bottom:8px;font-size:1.04rem;}
+  .muted{color:var(--muted);}
+  .small{font-size:.92rem;}
+
+  /* ---- Callout / quote ---- */
+  .callout{
+    background:var(--bg-2);
+    border-left:4px solid var(--accent);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:18px 0;
+  }
+  .callout.good{border-left-color:var(--accent-2);}
+  .callout.warn{border-left-color:var(--warn);}
+  .callout.danger{border-left-color:var(--danger);}
+  .callout .tag{
+    display:block;
+    font-size:.78rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .callout.good .tag{color:var(--accent-2);}
+  .callout.warn .tag{color:var(--warn);}
+  .callout.danger .tag{color:var(--danger);}
+  .callout.exercise{border-left-color:var(--analogy);background:rgba(188,140,255,.07);}
+  .callout.exercise .tag{color:var(--analogy);}
+  .callout p:last-child{margin-bottom:0;}
+  /* ---- Exercise slide ---- */
+  .ex-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--analogy);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;
+    font-weight:700;margin-bottom:14px;
+    border:1px solid var(--analogy);border-radius:999px;padding:5px 13px;
+  }
+  .ex-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--analogy);}
+  ol.steps{margin:6px 0 0 1.1em;padding:0;}
+  ol.steps li{margin:7px 0;}
+
+  /* ---- Analogía (tarjeta destacada) ---- */
+  .analogy{
+    position:relative;
+    background:linear-gradient(135deg,rgba(188,140,255,.10),var(--bg-2));
+    border:1px solid #4a3d63;
+    border-left:4px solid var(--analogy);
+    border-radius:10px;
+    padding:18px 22px;
+    margin:18px 0;
+    box-shadow:0 4px 22px rgba(124,77,178,.12);
+  }
+  .analogy .tag{
+    display:block;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:800;color:var(--analogy);margin-bottom:6px;
+  }
+  .analogy p{margin-bottom:0;color:var(--text);}
+
+  /* ---- Code ---- */
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+    overflow-x:auto;
+    margin:16px 0;
+    box-shadow:var(--shadow);
+  }
+  code{
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:.92rem;
+    color:#cdd9e5;
+    white-space:pre;
+  }
+  p code,li code,td code{
+    background:var(--bg-3);
+    padding:2px 6px;
+    border-radius:5px;
+    font-size:.88rem;
+    color:var(--accent-2);
+    white-space:normal;
+  }
+
+  /* ---- Grid columns ---- */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:16px 0;}
+  .card{
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .card h3{margin-top:0;}
+
+  /* ---- Tables ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0;
+    font-size:.96rem;
+    background:var(--bg-2);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  th,td{
+    text-align:left;
+    padding:11px 14px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  th{
+    background:var(--bg-3);
+    color:var(--accent);
+    font-weight:700;
+    font-size:.85rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  tr:last-child td{border-bottom:none;}
+  td strong{color:var(--accent-2);}
+
+  /* ---- SVG figures ---- */
+  figure{margin:18px 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:10px;}
+  figcaption{color:var(--muted);font-size:.9rem;margin-top:8px;}
+
+  /* ---- Title slide ---- */
+  .title-slide{text-align:center;}
+  .title-slide .course{color:var(--muted);font-size:1.1rem;letter-spacing:.05em;margin-bottom:8px;}
+  .title-slide .hint{margin-top:34px;color:var(--muted);font-size:.95rem;}
+  .kbd{
+    display:inline-block;background:var(--bg-3);border:1px solid var(--border);
+    border-bottom-width:3px;border-radius:6px;padding:2px 9px;font-size:.85rem;
+    font-family:monospace;color:var(--text);margin:0 2px;
+  }
+  .topic-list{display:inline-block;text-align:left;margin-top:24px;}
+  .topic-list li{font-size:1.1rem;color:var(--text);}
+
+  /* ---- Section divider slide ---- */
+  .divider{text-align:center;}
+  .divider .num{
+    font-size:6rem;font-weight:800;color:var(--bg-3);
+    -webkit-text-stroke:2px var(--accent);line-height:1;margin-bottom:8px;
+  }
+
+  /* ---- Controls ---- */
+  #controls{
+    position:fixed;bottom:0;left:0;right:0;height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;background:linear-gradient(to top,var(--bg),rgba(14,17,23,.0));
+  }
+  .nav-btn{
+    background:var(--bg-2);color:var(--text);border:1px solid var(--border);
+    border-radius:8px;padding:9px 16px;font-size:.95rem;cursor:pointer;
+    transition:.15s;display:flex;align-items:center;gap:6px;
+  }
+  .nav-btn:hover:not(:disabled){background:var(--bg-3);border-color:var(--accent);}
+  .nav-btn:disabled{opacity:.35;cursor:default;}
+  #progress-wrap{flex:1;margin:0 22px;}
+  #progress-bar{height:4px;background:var(--bg-3);border-radius:4px;overflow:hidden;}
+  #progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s ease;}
+  #counter{color:var(--muted);font-size:.85rem;text-align:center;margin-top:4px;}
+
+  /* ---- Top topic badge ---- */
+  #topic-badge{
+    position:fixed;top:16px;left:24px;z-index:5;
+    color:var(--muted);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+  }
+  #topic-badge b{color:var(--accent);}
+
+  /* ---- Home link ---- */
+  #home-link{
+    position:fixed;top:14px;right:24px;z-index:6;
+    display:inline-flex;align-items:center;gap:6px;
+    color:var(--text);text-decoration:none;
+    font-size:.82rem;font-weight:600;
+    background:var(--bg-2);border:1px solid var(--border);
+    padding:6px 13px;border-radius:9px;
+    transition:border-color .2s ease,color .2s ease;
+  }
+  #home-link:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* scrollbars */
+  .slide::-webkit-scrollbar,pre::-webkit-scrollbar{height:9px;width:9px;}
+  .slide::-webkit-scrollbar-thumb,pre::-webkit-scrollbar-thumb{background:var(--border);border-radius:5px;}
+
+  @media (max-width:1000px){
+    .cols{grid-template-columns:1fr;}
+    h1{font-size:2.3rem;}h2{font-size:1.6rem;}
+    #stage{padding:56px 28px 80px;}
+  }
+
+  /* ---- Impresión / export a PDF (cada slide = una página 16:9) ---- */
+  @media print{
+    @page{ size:13.333in 8.3in; margin:0; }
+    html,body{
+      height:auto !important; overflow:visible !important;
+      background:#0e1117 !important;
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    #home-link,#topic-badge,#controls{ display:none !important; }
+    #stage{ display:block !important; height:auto !important; padding:0 !important; }
+    .slide{
+      display:flex !important; flex-direction:column; justify-content:center;
+      box-sizing:border-box;
+      width:13.333in; height:8in;
+      max-width:none !important; max-height:none !important;
+      overflow:hidden !important;
+      padding:0.45in 0.62in; margin:0;
+      animation:none !important;
+      page-break-after:always; break-after:page;
+      page-break-inside:avoid; break-inside:avoid;
+    }
+    .slide:last-child{ page-break-after:avoid; break-after:auto; }
+
+    /* compactar para que cada slide quepa en una sola página */
+    html{ font-size:12px; }
+    .slide h1{ font-size:2.6rem; }
+    .slide h2{ font-size:1.55rem; margin-bottom:.45rem; }
+    .slide h3{ margin:.2rem 0; }
+    .slide p{ margin:0 0 .42rem; }
+    .slide .lead{ margin-bottom:.4rem; }
+    .slide ul,.slide ol{ margin:.3rem 0 .5rem 1.15rem; }
+    .slide li{ margin:3px 0; }
+    .slide .callout,.slide .analogy{ margin:.42rem 0; padding:9px 13px; }
+    .slide .card{ padding:12px 15px; }
+    .slide .cols{ gap:14px; margin:10px 0; }
+    .slide table{ font-size:.9em; }
+    .slide th,.slide td{ padding:5px 9px; }
+    .slide svg{ height:2in !important; width:auto !important; max-width:100% !important; display:block; margin:6px auto; }
+    .slide pre{ font-size:.78rem; line-height:1.3; padding:10px 14px; margin:.5rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<a id="home-link" href="../index.html">← Inicio</a>
+<div id="topic-badge"></div>
+
+<div id="stage">
+
+  <!-- ============ PORTADA ============ -->
+  <section class="slide active title-slide" data-topic="Inicio">
+    <div class="course">Fundamentos de IA Productiva</div>
+    <div class="eyebrow">Módulo 4 de 7</div>
+    <h1>Metodologías de desarrollo con IA</h1>
+    <p class="lead">Un buen prompt resuelve una tarea.<br>Una buena <strong>metodología</strong> resuelve un proyecto.</p>
+    <ol class="topic-list">
+      <li>Specdocs: pensar antes de pedir</li>
+      <li>El flujo iterativo: draft → revisión → refinamiento</li>
+      <li>Proyectos largos: coherencia entre sesiones</li>
+      <li>Memoria y contexto persistente</li>
+      <li>Cuándo la IA acelera y cuándo mete deuda</li>
+    </ol>
+    <p class="hint">Navega con <span class="kbd">←</span> <span class="kbd">→</span> o los botones de abajo</p>
+  </section>
+
+  <!-- ============ ENCUADRE ============ -->
+  <section class="slide" data-topic="Encuadre">
+    <div class="eyebrow">De usar la IA a construir con ella</div>
+    <h2>Cambia la unidad de trabajo</h2>
+    <p class="lead muted">Los Módulos 1–3 daban técnicas para <strong>una petición</strong>. Este módulo es para un <strong>entregable que se construye en el tiempo</strong>.</p>
+    <div class="cols">
+      <div class="card">
+        <h3>Una consulta</h3>
+        <p class="small">"¿Cuál es la capital de Francia?" — hay una respuesta y se acabó. Un buen prompt basta.</p>
+      </div>
+      <div class="card">
+        <h3>Un proyecto</h3>
+        <p class="small">"Prepara la propuesta para Andes Verde" — tiene requisitos, restricciones, revisiones y un "esto ya está listo". Hace falta un <strong>método</strong>.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <p class="small" style="margin:0">Cuatro cosas que un solo mensaje no cubre — y las cuatro secciones de hoy: <strong>especificar</strong> · <strong>iterar</strong> · <strong>mantener coherencia</strong> · <strong>tener criterio</strong>.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 1 ============ -->
+  <section class="slide divider" data-topic="1 · Specdocs">
+    <div class="num">1</div>
+    <div class="eyebrow">Tema 1</div>
+    <h2>Specdocs: pensar antes de pedir</h2>
+    <p class="lead muted">El plano del entregable. Cuesta veinte minutos y te ahorra tres horas de "no, así no era".</p>
+  </section>
+
+  <section class="slide" data-topic="1 · Specdocs">
+    <div class="eyebrow">1.1 · Qué es un specdoc</div>
+    <h2>Un plano breve, escrito antes de construir</h2>
+    <div class="cols">
+      <div>
+        <div class="analogy">
+          <span class="tag">Analogía · el plano</span>
+          <p>Nadie construye una casa poniendo ladrillos a ver qué sale. Primero hay un plano: cuántas habitaciones, para qué, qué presupuesto, qué <strong>no</strong> tendrá. El specdoc es el plano de tu entregable.</p>
+        </div>
+      </div>
+      <div>
+        <p class="small">Un <strong>specdoc</strong> describe <em>qué</em> quieres construir <strong>antes</strong> de pedirlo. En su forma útil cabe en media página. Doble propósito: te obliga <strong>a ti</strong> a pensar qué quieres, y le da al modelo un <strong>blanco claro</strong>.</p>
+        <p class="small muted">Es el prompt claro del Módulo 2, pero <strong>escrito una vez y reutilizado</strong> en todo el proyecto en vez de reconstruido en cada mensaje.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · Specdocs">
+    <div class="eyebrow">1.2 · Cuándo sí y cuándo no</div>
+    <h2>Una herramienta, no un ritual</h2>
+    <div class="cols">
+      <div>
+        <div class="callout good">
+          <span class="tag">Escríbelo cuando</span>
+          <p class="small" style="margin:0">El entregable es grande o de varios pasos · vas a iterar mucho o retomarlo en varias sesiones · hay restricciones que no se pueden violar · alguien debe aprobar lo que pediste.</p>
+        </div>
+      </div>
+      <div>
+        <div class="callout warn">
+          <span class="tag">NO lo escribas para</span>
+          <p class="small" style="margin:0">Una consulta puntual · algo de una sola vez · tareas donde el prompt del Módulo 2 ya es claro.</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout danger">
+      <span class="tag">La trampa inversa</span>
+      <p class="small" style="margin:0">Un specdoc de tres páginas para redactar un correo gasta más en el plano que en la casa. Si el specdoc tarda <strong>más que un primer intento y su corrección</strong>, no lo necesitabas.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · Specdocs">
+    <div class="eyebrow">1.3 · Cómo estructurarlo</div>
+    <h2>Las siete piezas</h2>
+    <table>
+      <thead><tr><th>Pieza</th><th>Responde a…</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Objetivo</strong></td><td>¿Qué quiero conseguir, en una frase?</td></tr>
+        <tr><td><strong>Contexto</strong></td><td>¿Qué información de fondo hace falta?</td></tr>
+        <tr><td><strong>Restricciones</strong></td><td>¿Qué NO se puede violar?</td></tr>
+        <tr><td><strong>Criterios de aceptación</strong></td><td>¿Cómo sé que está "listo"?</td></tr>
+        <tr><td><strong>No-objetivos</strong></td><td>¿Qué deliberadamente NO quiero?</td></tr>
+        <tr><td><strong>Formato de salida</strong></td><td>¿En qué forma lo quiero?</td></tr>
+        <tr><td><strong>Ejemplos / referencias</strong></td><td>¿Hay un modelo a imitar?</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small" style="margin:0">Las dos que más se olvidan y más valen: <strong>criterios de aceptación</strong> (sin ellos "listo" es una opinión) y <strong>no-objetivos</strong> (delimitar es la mitad de especificar).</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · Specdocs">
+    <div class="eyebrow">1.4 · Plantilla</div>
+    <h2>Copia, pega, rellena</h2>
+    <pre><code># Specdoc — [nombre del entregable]
+
+Objetivo:        [una frase: qué quiero conseguir]
+Contexto:        [3-5 líneas de fondo relevante]
+Restricciones:   [lo que NO se puede violar]
+Criterios de
+aceptación:      [cómo sabré que está listo; verificable]
+No-objetivos:    [lo que dejo fuera deliberadamente]
+Formato:         [longitud, estructura, tono]
+Referencias:     [ejemplos a imitar, si los hay]</code></pre>
+    <div class="callout good">
+      <span class="tag">Truco</span>
+      <p class="small" style="margin:0">Antes de construir nada: <em>"Voy a preparar esta propuesta; hazme cinco preguntas que debería responder antes de empezar."</em> El modelo saca a la luz las restricciones que dabas por obvias.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 2 ============ -->
+  <section class="slide divider" data-topic="2 · Flujo iterativo">
+    <div class="num">2</div>
+    <div class="eyebrow">Tema 2</div>
+    <h2>El flujo iterativo</h2>
+    <p class="lead muted">draft → revisión → refinamiento. El primer resultado no es el entregable: es el primer borrador.</p>
+  </section>
+
+  <section class="slide" data-topic="2 · Flujo iterativo">
+    <div class="eyebrow">2.1 · El ciclo</div>
+    <h2>Un bucle de tres movimientos</h2>
+    <pre><code>   ┌──────────────────────────────────────────────────────┐
+   ▼                                                      │
+ DRAFT  ─────►  REVISIÓN  ─────►  REFINAMIENTO  ──────────┘
+(genera con   (TÚ lees y juzgas  (feedback concreto;
+ el specdoc)   vs. criterios)     el borrador mejora)
+
+        … hasta cumplir los criterios de aceptación.</code></pre>
+    <p class="small muted"><strong>Draft:</strong> no busques perfección, busca algo concreto sobre lo que reaccionar (idealmente en un Artifact). · <strong>Revisión:</strong> aquí trabajas tú, con los criterios al lado. · <strong>Refinamiento:</strong> feedback concreto y accionable, no "no me gusta".</p>
+  </section>
+
+  <section class="slide" data-topic="2 · Flujo iterativo">
+    <div class="eyebrow">2.2 · Feedback</div>
+    <h2>Vago rinde poco; concreto rinde mucho</h2>
+    <table>
+      <thead><tr><th>Vago</th><th>Concreto</th></tr></thead>
+      <tbody>
+        <tr><td>"Hazlo mejor"</td><td>"La apertura no menciona el sector orgánico del cliente; añádelo"</td></tr>
+        <tr><td>"Muy largo"</td><td>"Recórtalo a una página; quita la historia de la empresa"</td></tr>
+        <tr><td>"No me convence el precio"</td><td>"El total no incluye IVA; recalcúlalo con IVA desglosado"</td></tr>
+        <tr><td>"Más formal"</td><td>"Cambia el tuteo por trato de usted y quita exclamaciones"</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small" style="margin:0">Cuanto más específico el feedback, mejor la siguiente versión. El modelo no adivina lo que tienes en la cabeza.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Flujo iterativo">
+    <div class="eyebrow">2.3 · Tu trabajo real</div>
+    <h2>Dirigir y verificar</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Dirigir</h3>
+        <p class="small">Decidir qué se hace, marcar el rumbo, dar el feedback que mueve el borrador. Tú tienes el criterio y el contexto que el modelo no tiene.</p>
+      </div>
+      <div class="card">
+        <h3>Verificar</h3>
+        <p class="small">Comprobar que cada versión cumple, sobre todo donde el modelo es débil: números que deben cuadrar, datos que deben ser ciertos, afirmaciones que suenan bien.</p>
+      </div>
+    </div>
+    <div class="callout danger">
+      <span class="tag">La trampa de la fluidez</span>
+      <p class="small" style="margin:0">El modelo escribe con tanta soltura que da pereza revisar. Pero <em>sonar bien</em> ≠ <em>estar bien</em> (Módulo 2). Dirigir es agradable; <strong>verificar es el trabajo</strong>.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Flujo iterativo">
+    <div class="eyebrow">2.4 · Cuándo parar</div>
+    <h2>Iterar tiene rendimientos decrecientes</h2>
+    <ul>
+      <li>El borrador <strong>cumple los criterios de aceptación</strong> del specdoc — tu línea de meta objetiva, no una sensación.</li>
+      <li>Los cambios ya son <strong>cosméticos</strong> y los harías tú más rápido a mano.</li>
+      <li>Estás <strong>dando vueltas</strong>: pides A, luego B, y vuelve algo parecido a A → el criterio no está claro, no falta otra ronda.</li>
+    </ul>
+    <div class="callout good">
+      <span class="tag">Regla práctica</span>
+      <p class="small" style="margin:0">Entre "otra ronda con el modelo" y "lo remato yo en dos minutos" → remátalo tú. La iteración es para saltos de calidad, no para pulir comas.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 3 ============ -->
+  <section class="slide divider" data-topic="3 · Proyectos largos">
+    <div class="num">3</div>
+    <div class="eyebrow">Tema 3</div>
+    <h2>Proyectos largos: coherencia entre sesiones</h2>
+    <p class="lead muted">Cada sesión nueva, el modelo es un colaborador brillante pero <strong>amnésico</strong>.</p>
+  </section>
+
+  <section class="slide" data-topic="3 · Proyectos largos">
+    <div class="eyebrow">3.1 · El problema</div>
+    <h2>El colaborador amnésico</h2>
+    <p class="small">La ventana de contexto es finita y cada chat es una <strong>ventana aislada</strong> (Módulo 2). En un proyecto de tres semanas, cada sesión el modelo no recuerda lo de ayer. Síntomas:</p>
+    <ul>
+      <li>La sesión de hoy <strong>se contradice</strong> con una decisión de la semana pasada.</li>
+      <li>Vuelves a explicar el mismo contexto una y otra vez.</li>
+      <li>El modelo <strong>reabre debates</strong> ya cerrados, porque no sabe que se cerraron.</li>
+      <li>Pierdes el <strong>por qué</strong> de una decisión y la deshaces sin querer.</li>
+    </ul>
+    <div class="callout">
+      <p class="small" style="margin:0">La solución no es que "recuerde por magia" — no puede. Es <strong>metodológica</strong>: crear artefactos que transporten la memoria de una sesión a la siguiente.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Proyectos largos">
+    <div class="eyebrow">3.2 · El documento de estado</div>
+    <h2>La bitácora del proyecto</h2>
+    <div class="cols">
+      <div>
+        <div class="analogy">
+          <span class="tag">Analogía · el cuaderno de bitácora</span>
+          <p>Un barco no confía la ruta a la memoria del capitán: la anota. Cada guardia lee dónde está el barco y qué se decidió, y escribe lo suyo. Cualquiera puede retomar el rumbo leyéndolo.</p>
+        </div>
+      </div>
+      <div>
+        <table>
+          <tbody>
+            <tr><td><strong>Objetivo</strong></td><td>El specdoc resumido</td></tr>
+            <tr><td><strong>Decisiones</strong></td><td>Qué y <em>por qué</em></td></tr>
+            <tr><td><strong>Estado actual</strong></td><td>Hecho / falta</td></tr>
+            <tr><td><strong>Pendientes</strong></td><td>Lo siguiente</td></tr>
+            <tr><td><strong>Cuestiones abiertas</strong></td><td>Dudas sin resolver</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="small muted">Vive en el <strong>knowledge del Proyecto</strong> (Módulo 3), no solo en un chat.</p>
+  </section>
+
+  <section class="slide" data-topic="3 · Proyectos largos">
+    <div class="eyebrow">3.3 · El handoff</div>
+    <h2>Cerrar y abrir sesión</h2>
+    <div class="cols">
+      <div>
+        <h3>Al cerrar</h3>
+        <pre><code>"Antes de terminar: resume en
+ 8-10 líneas qué decidimos hoy,
+ qué quedó a medias y los tres
+ próximos pasos. Lo guardo para
+ retomar mañana."</code></pre>
+      </div>
+      <div>
+        <h3>Al abrir</h3>
+        <pre><code>"Retomamos Andes Verde. Aquí
+ está el documento de estado.
+ Confírmame dónde nos quedamos
+ y empecemos por el primer
+ pendiente."</code></pre>
+      </div>
+    </div>
+    <div class="callout good">
+      <p class="small" style="margin:0">El resumen lo escribe <strong>el modelo</strong>: acaba de tener todo el contexto en su ventana, es cuando mejor lo comprime. Aprovechar ese resumen "en caliente" es de lo más rentable del módulo.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Proyectos largos">
+    <div class="eyebrow">3.4 · Trocear en hitos</div>
+    <h2>Divide el proyecto, protege el contexto</h2>
+    <p class="small">La misma lógica del Módulo 2 (dividir una tarea en varios prompts) a nivel de proyecto. Cada hito: su mini-ciclo especificar → iterar → verificar.</p>
+    <pre><code>Andes Verde
+  Hito 1 · Análisis del pedido + opciones de papel
+  Hito 2 · Estructura de precios y margen
+  Hito 3 · Redacción en el tono adecuado
+  Hito 4 · Revisión final y formato de entrega</code></pre>
+    <div class="callout">
+      <span class="tag">Regla de oro</span>
+      <p class="small" style="margin:0">La info importante <strong>no debe vivir solo en la ventana</strong> (volátil). Vive en un <strong>artefacto persistente</strong> — specdoc, documento de estado, knowledge. La ventana es la mesa; el documento de estado es el archivador.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 4 ============ -->
+  <section class="slide divider" data-topic="4 · Memoria persistente">
+    <div class="num">4</div>
+    <div class="eyebrow">Tema 4</div>
+    <h2>Memoria y contexto persistente</h2>
+    <p class="lead muted">"Memoria" son tres cosas distintas. Separarlas evita muchos malentendidos.</p>
+  </section>
+
+  <section class="slide" data-topic="4 · Memoria persistente">
+    <div class="eyebrow">4.1 · Tres capas</div>
+    <h2>De lo efímero a lo permanente</h2>
+    <table>
+      <thead><tr><th>Capa</th><th>Qué es</th><th>Dura</th><th>La controla…</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1 · Ventana</strong></td><td>Lo que ve en la sesión actual</td><td>Solo esta sesión</td><td>El prompt (Módulo 2)</td></tr>
+        <tr><td><strong>2 · Proyecto</strong></td><td>Knowledge + instrucciones compartidas</td><td>Mientras exista el Proyecto</td><td>El Proyecto (Módulo 3)</td></tr>
+        <tr><td><strong>3 · Personal</strong></td><td>Lo que la app recuerda de ti</td><td>Persistente, transversal</td><td>La app</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small" style="margin:0">Cuando algo "se le olvida", la pregunta útil es: <em>¿en qué capa debería haber estado guardado?</em> Un dato de proyecto que pusiste solo en el chat (capa 1) se pierde; por eso va en el documento de estado (capa 2).</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="4 · Memoria persistente">
+    <div class="eyebrow">4.2 · Qué persistir · 4.3 · El riesgo</div>
+    <h2>Curar, no acumular — y el dato caduco</h2>
+    <div class="cols">
+      <div>
+        <div class="callout good">
+          <span class="tag">Persiste</span>
+          <p class="small" style="margin:0">Contexto estable (rol, sector, formato) · decisiones y su porqué · material de referencia recurrente.</p>
+        </div>
+        <div class="callout warn">
+          <span class="tag">No persistas</span>
+          <p class="small" style="margin:0">Datos efímeros de una tarea · info que caduca sin plan de actualizar · datos sensibles (Módulo 7).</p>
+        </div>
+      </div>
+      <div>
+        <div class="callout danger">
+          <span class="tag">Contraintuitivo pero clave</span>
+          <p class="small">Un dato <strong>desactualizado</strong> es peor que no tenerlo: el modelo lo usará con total confianza y sin avisar. El contexto persistente <strong>amplifica</strong> aciertos y errores.</p>
+          <p class="small" style="margin:0">Versiona y limpia · fecha lo perecedero · para datos críticos, pide la fuente.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 5 ============ -->
+  <section class="slide divider" data-topic="5 · Acelera vs. deuda">
+    <div class="num">5</div>
+    <div class="eyebrow">Tema 5</div>
+    <h2>Cuándo la IA acelera y cuándo mete deuda</h2>
+    <p class="lead muted">La velocidad es real. Pero hay problemas que se pagan después.</p>
+  </section>
+
+  <section class="slide" data-topic="5 · Acelera vs. deuda">
+    <div class="eyebrow">5.1 · Dos deudas</div>
+    <h2>Técnica y conceptual</h2>
+    <table>
+      <thead><tr><th></th><th>Deuda técnica</th><th>Deuda conceptual</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Qué es</strong></td><td>Trabajo frágil que cuesta mantener</td><td>Aceptar lo que no entiendes</td></tr>
+        <tr><td><strong>Se paga…</strong></td><td>Al modificar o escalar</td><td>Cuando te preguntan "¿por qué?"</td></tr>
+        <tr><td><strong>Síntoma</strong></td><td>"Funciona, pero nadie lo toca"</td><td>"Lo hizo la IA, no sé bien cómo"</td></tr>
+        <tr><td><strong>Antídoto</strong></td><td>Verificar y simplificar</td><td>Entenderlo antes de usarlo</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small" style="margin:0">La deuda conceptual es la más silenciosa: el modelo produce texto <em>plausible</em>, no necesariamente <em>comprendido</em>. La velocidad es real, pero <strong>no delegues el entendimiento</strong> (Módulo 7).</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="5 · Acelera vs. deuda">
+    <div class="eyebrow">5.2 · Señales de alarma</div>
+    <h2>Cuando acelerar se vuelve endeudar</h2>
+    <ul>
+      <li><strong>Copias sin leer</strong> → firmas algo que no es tuyo (deuda conceptual).</li>
+      <li><strong>No sabrías rehacerlo sin la IA</strong> → dependes de una caja negra.</li>
+      <li><strong>Aceleraste al inicio pero corriges sin parar</strong> → cuenta el tiempo total, no solo el arranque.</li>
+      <li><strong>Suena mejor de lo que sabes que es</strong> → la trampa de la fluidez operando.</li>
+      <li><strong>Nadie en el equipo entiende el artefacto</strong> → creaste una dependencia, no una capacidad.</li>
+    </ul>
+  </section>
+
+  <section class="slide" data-topic="5 · Acelera vs. deuda">
+    <div class="eyebrow">5.3 · La prueba de la defensa</div>
+    <h2>El test que cierra el módulo</h2>
+    <div class="analogy">
+      <span class="tag">La prueba de la defensa</span>
+      <p>¿Podrías <strong>explicar y defender</strong> este resultado ante un cliente o un colega —sin la IA delante— si te preguntan <em>por qué</em> es así? Si sí, la IA te aceleró. Si no, tienes <strong>deuda conceptual disfrazada de productividad</strong>.</p>
+    </div>
+    <ul>
+      <li>IA para <strong>hacer más rápido</strong> lo que entiendes → aceleración pura.</li>
+      <li>IA para <strong>aprender</strong> algo que quieres entender → aceleración con verificación.</li>
+      <li>IA para <strong>saltarte</strong> el entender algo de lo que serás responsable → deuda.</li>
+    </ul>
+  </section>
+
+  <!-- ============ RESUMEN ============ -->
+  <section class="slide" data-topic="Resumen">
+    <div class="eyebrow">Cierre · Resumen del Módulo 4</div>
+    <h2>Los 5 temas, de un vistazo</h2>
+    <table>
+      <thead><tr><th>#</th><th>Tema</th><th>Idea central</th><th>Para llevar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>Specdocs</td><td>El plano del entregable, escrito antes de construir</td><td>Siete piezas; no olvides criterios y no-objetivos</td></tr>
+        <tr><td><strong>2</strong></td><td>Flujo iterativo</td><td>El primer resultado es un borrador, no el entregable</td><td>Feedback concreto; dirigir y verificar</td></tr>
+        <tr><td><strong>3</strong></td><td>Proyectos largos</td><td>El modelo es amnésico entre sesiones</td><td>Documento de estado + handoff; trocea en hitos</td></tr>
+        <tr><td><strong>4</strong></td><td>Memoria</td><td>Tres capas; el dato caduco es peor que ninguno</td><td>Curar, no acumular; versiona y limpia</td></tr>
+        <tr><td><strong>5</strong></td><td>Acelera vs. deuda</td><td>La velocidad no debe sustituir el entendimiento</td><td>La prueba de la defensa antes de aceptar</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small muted" style="margin:0">Fundamentos de IA Productiva · Módulo 4 de 7 — v1.0 · Siguiente: <strong>Módulo 5 — Herramientas especializadas: Claude Code.</strong></p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ CONTROLES ============ -->
+<div id="controls">
+  <button class="nav-btn" id="prev" aria-label="Slide anterior">← Anterior</button>
+  <div id="progress-wrap">
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div id="counter"></div>
+  </div>
+  <button class="nav-btn" id="next" aria-label="Slide siguiente">Siguiente →</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let i = 0;
+
+  const fill    = document.getElementById('progress-fill');
+  const counter = document.getElementById('counter');
+  const badge   = document.getElementById('topic-badge');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  function show(n){
+    i = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    slides[i].scrollTop = 0;
+    fill.style.width = ((i + 1) / total * 100) + '%';
+    counter.textContent = (i + 1) + ' / ' + total;
+    const topic = slides[i].dataset.topic || '';
+    badge.innerHTML = topic ? 'Tema actual · <b>' + topic + '</b>' : '';
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === total - 1;
+  }
+
+  function nextSlide(){ if (i < total - 1) show(i + 1); }
+  function prevSlide(){ if (i > 0) show(i - 1); }
+
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); nextSlide(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End')  { e.preventDefault(); show(total - 1); }
+  });
+
+  show(0);
+</script>
+</body>
+</html>
