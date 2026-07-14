@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 5 — IA en Acción: Galería de Casos</title>
+<style>
+  :root{
+    --bg:#0e1117;
+    --bg-2:#161b22;
+    --bg-3:#1c2330;
+    --border:#2a3340;
+    --text:#e6edf3;
+    --muted:#bcc8d4;
+    --accent:#58a6ff;
+    --accent-2:#7ee787;
+    --warn:#f0a868;
+    --danger:#ff7b72;
+    --analogy:#bc8cff;
+    --code-bg:#0a0d12;
+    --shadow:0 10px 40px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    overflow:hidden;
+  }
+
+  /* ---- Stage ---- */
+  #stage{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:64px 56px 84px;
+  }
+  .slide{
+    display:none;
+    width:100%;
+    max-width:1080px;
+    max-height:100%;
+    overflow-y:auto;
+    animation:fade .35s ease;
+  }
+  .slide.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  /* ---- Typography ---- */
+  .eyebrow{
+    color:var(--accent);
+    font-size:.8rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h1{font-size:3rem;line-height:1.1;margin-bottom:18px;font-weight:800;letter-spacing:-.02em;}
+  h2{font-size:2rem;line-height:1.15;margin-bottom:20px;font-weight:800;letter-spacing:-.01em;}
+  h3{font-size:1.15rem;color:var(--accent-2);margin:22px 0 8px;font-weight:700;}
+  p{margin-bottom:14px;color:var(--text);font-size:1.06rem;}
+  .lead{font-size:1.25rem;color:var(--muted);}
+  strong{color:#fff;font-weight:700;}
+  ul,ol{margin:8px 0 16px 22px;}
+  li{margin-bottom:8px;font-size:1.04rem;}
+  .muted{color:var(--muted);}
+  .small{font-size:.92rem;}
+
+  /* ---- Callout / quote ---- */
+  .callout{
+    background:var(--bg-2);
+    border-left:4px solid var(--accent);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:18px 0;
+  }
+  .callout.good{border-left-color:var(--accent-2);}
+  .callout.warn{border-left-color:var(--warn);}
+  .callout.danger{border-left-color:var(--danger);}
+  .callout .tag{
+    display:block;
+    font-size:.78rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .callout.good .tag{color:var(--accent-2);}
+  .callout.warn .tag{color:var(--warn);}
+  .callout.danger .tag{color:var(--danger);}
+  .callout.exercise{border-left-color:var(--analogy);background:rgba(188,140,255,.07);}
+  .callout.exercise .tag{color:var(--analogy);}
+  .callout p:last-child{margin-bottom:0;}
+  /* ---- Exercise slide ---- */
+  .ex-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--analogy);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;
+    font-weight:700;margin-bottom:14px;
+    border:1px solid var(--analogy);border-radius:999px;padding:5px 13px;
+  }
+  .ex-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--analogy);}
+  ol.steps{margin:6px 0 0 1.1em;padding:0;}
+  ol.steps li{margin:7px 0;}
+
+  /* ---- Analogía (tarjeta destacada) ---- */
+  .analogy{
+    position:relative;
+    background:linear-gradient(135deg,rgba(188,140,255,.10),var(--bg-2));
+    border:1px solid #4a3d63;
+    border-left:4px solid var(--analogy);
+    border-radius:10px;
+    padding:18px 22px;
+    margin:18px 0;
+    box-shadow:0 4px 22px rgba(124,77,178,.12);
+  }
+  .analogy .tag{
+    display:block;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:800;color:var(--analogy);margin-bottom:6px;
+  }
+  .analogy p{margin-bottom:0;color:var(--text);}
+
+  /* ---- Code ---- */
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+    overflow-x:auto;
+    margin:16px 0;
+    box-shadow:var(--shadow);
+  }
+  code{
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:.92rem;
+    color:#cdd9e5;
+    white-space:pre;
+  }
+  p code,li code,td code{
+    background:var(--bg-3);
+    padding:2px 6px;
+    border-radius:5px;
+    font-size:.88rem;
+    color:var(--accent-2);
+    white-space:normal;
+  }
+
+  /* ---- Grid columns ---- */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:16px 0;}
+  .card{
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .card h3{margin-top:0;}
+
+  /* ---- Tables ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0;
+    font-size:.96rem;
+    background:var(--bg-2);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  th,td{
+    text-align:left;
+    padding:11px 14px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  th{
+    background:var(--bg-3);
+    color:var(--accent);
+    font-weight:700;
+    font-size:.85rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  tr:last-child td{border-bottom:none;}
+  td strong{color:var(--accent-2);}
+
+  /* ---- SVG figures ---- */
+  figure{margin:18px 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:10px;}
+  figcaption{color:var(--muted);font-size:.9rem;margin-top:8px;}
+
+  /* ---- Title slide ---- */
+  .title-slide{text-align:center;}
+  .title-slide .course{color:var(--muted);font-size:1.1rem;letter-spacing:.05em;margin-bottom:8px;}
+  .title-slide .hint{margin-top:34px;color:var(--muted);font-size:.95rem;}
+  .kbd{
+    display:inline-block;background:var(--bg-3);border:1px solid var(--border);
+    border-bottom-width:3px;border-radius:6px;padding:2px 9px;font-size:.85rem;
+    font-family:monospace;color:var(--text);margin:0 2px;
+  }
+  .topic-list{display:inline-block;text-align:left;margin-top:24px;}
+  .topic-list li{font-size:1.1rem;color:var(--text);}
+
+  /* ---- Section divider slide ---- */
+  .divider{text-align:center;}
+  .divider .num{
+    font-size:6rem;font-weight:800;color:var(--bg-3);
+    -webkit-text-stroke:2px var(--accent);line-height:1;margin-bottom:8px;
+  }
+
+  /* ---- Controls ---- */
+  #controls{
+    position:fixed;bottom:0;left:0;right:0;height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;background:linear-gradient(to top,var(--bg),rgba(14,17,23,.0));
+  }
+  .nav-btn{
+    background:var(--bg-2);color:var(--text);border:1px solid var(--border);
+    border-radius:8px;padding:9px 16px;font-size:.95rem;cursor:pointer;
+    transition:.15s;display:flex;align-items:center;gap:6px;
+  }
+  .nav-btn:hover:not(:disabled){background:var(--bg-3);border-color:var(--accent);}
+  .nav-btn:disabled{opacity:.35;cursor:default;}
+  #progress-wrap{flex:1;margin:0 22px;}
+  #progress-bar{height:4px;background:var(--bg-3);border-radius:4px;overflow:hidden;}
+  #progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s ease;}
+  #counter{color:var(--muted);font-size:.85rem;text-align:center;margin-top:4px;}
+
+  /* ---- Top topic badge ---- */
+  #topic-badge{
+    position:fixed;top:16px;left:24px;z-index:5;
+    color:var(--muted);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+  }
+  #topic-badge b{color:var(--accent);}
+
+  /* ---- Home link ---- */
+  #home-link{
+    position:fixed;top:14px;right:24px;z-index:6;
+    display:inline-flex;align-items:center;gap:6px;
+    color:var(--text);text-decoration:none;
+    font-size:.82rem;font-weight:600;
+    background:var(--bg-2);border:1px solid var(--border);
+    padding:6px 13px;border-radius:9px;
+    transition:border-color .2s ease,color .2s ease;
+  }
+  #home-link:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* scrollbars */
+  .slide::-webkit-scrollbar,pre::-webkit-scrollbar{height:9px;width:9px;}
+  .slide::-webkit-scrollbar-thumb,pre::-webkit-scrollbar-thumb{background:var(--border);border-radius:5px;}
+
+  @media (max-width:1000px){
+    .cols{grid-template-columns:1fr;}
+    h1{font-size:2.3rem;}h2{font-size:1.6rem;}
+    #stage{padding:56px 28px 80px;}
+  }
+
+  /* ---- Impresión / export a PDF (cada slide = una página 16:9) ---- */
+  @media print{
+    @page{ size:13.333in 8.3in; margin:0; }
+    html,body{
+      height:auto !important; overflow:visible !important;
+      background:#0e1117 !important;
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    #home-link,#topic-badge,#controls{ display:none !important; }
+    #stage{ display:block !important; height:auto !important; padding:0 !important; }
+    .slide{
+      display:flex !important; flex-direction:column; justify-content:center;
+      box-sizing:border-box;
+      width:13.333in; height:8in;
+      max-width:none !important; max-height:none !important;
+      overflow:hidden !important;
+      padding:0.45in 0.62in; margin:0;
+      animation:none !important;
+      page-break-after:always; break-after:page;
+      page-break-inside:avoid; break-inside:avoid;
+    }
+    .slide:last-child{ page-break-after:avoid; break-after:auto; }
+
+    /* compactar para que cada slide quepa en una sola página */
+    html{ font-size:12px; }
+    .slide h1{ font-size:2.6rem; }
+    .slide h2{ font-size:1.55rem; margin-bottom:.45rem; }
+    .slide h3{ margin:.2rem 0; }
+    .slide p{ margin:0 0 .42rem; }
+    .slide .lead{ margin-bottom:.4rem; }
+    .slide ul,.slide ol{ margin:.3rem 0 .5rem 1.15rem; }
+    .slide li{ margin:3px 0; }
+    .slide .callout,.slide .analogy{ margin:.42rem 0; padding:9px 13px; }
+    .slide .card{ padding:12px 15px; }
+    .slide .cols{ gap:14px; margin:10px 0; }
+    .slide table{ font-size:.9em; }
+    .slide th,.slide td{ padding:5px 9px; }
+    .slide svg{ height:2in !important; width:auto !important; max-width:100% !important; display:block; margin:6px auto; }
+    .slide pre{ font-size:.78rem; line-height:1.3; padding:10px 14px; margin:.5rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<a id="home-link" href="../index.html">← Inicio</a>
+<div id="topic-badge"></div>
+
+<div id="stage">
+
+  <!-- ============ PORTADA ============ -->
+  <section class="slide active title-slide" data-topic="Inicio">
+    <div class="course">Fundamentos de IA Productiva</div>
+    <div class="eyebrow">Módulo 5 de 7</div>
+    <h1>IA en Acción: Galería de Casos</h1>
+    <p class="lead">No hay teoría nueva.<br>Diez cosas concretas que <strong>ya puedes hacer</strong> con lo que aprendiste.</p>
+    <ol class="topic-list">
+      <li>Entender: datos, documentos y multimedia</li>
+      <li>Crear: apps, imágenes y texto</li>
+      <li>Actuar e investigar</li>
+      <li>Pensar contigo</li>
+    </ol>
+    <p class="hint">Navega con <span class="kbd">←</span> <span class="kbd">→</span> o los botones de abajo</p>
+  </section>
+
+  <!-- ============ INTRO ============ -->
+  <section class="slide" data-topic="Cómo mirar">
+    <div class="eyebrow">Por qué este módulo es distinto</div>
+    <h2>De "¿me escribe esto?" a "¿de qué puede encargarse?"</h2>
+    <p class="lead muted">Mucha gente usa la IA para una sola cosa. Cuando ves el abanico, cambia la pregunta que te haces.</p>
+    <div class="callout">
+      <span class="tag">La idea del módulo</span>
+      <p class="small" style="margin:0">Cada caso es una <strong>combinación de capacidades que ya conoces</strong> — una herramienta del M3, una técnica del M2, un método del M4. No hay magia nueva; hay <strong>recombinación</strong>. La habilidad es mirar tu día y reconocer de qué tipo de caso se trata cada tarea.</p>
+    </div>
+    <div class="callout danger">
+      <p class="small" style="margin:0">Vale para los diez: que la IA <em>pueda</em> hacerlo no te exime de <strong>dirigir y verificar</strong> (M4). Cada ficha trae su <strong>"Ojo"</strong>: dónde comprobar antes de confiar.</p>
+    </div>
+  </section>
+
+  <!-- ============ BLOQUE A ============ -->
+  <section class="slide divider" data-topic="A · Entender">
+    <div class="num">A</div>
+    <div class="eyebrow">Bloque A</div>
+    <h2>Entender: datos, documentos y multimedia</h2>
+    <p class="lead muted">Procesar material que le das —una hoja, una foto, un contrato, una grabación— y devolverte algo útil.</p>
+  </section>
+
+  <section class="slide" data-topic="A · Entender">
+    <div class="eyebrow">A1 · Negocio y datos</div>
+    <h2>Un Excel de ventas que se explica solo</h2>
+    <p class="small"><strong>Escenario:</strong> tienes las ventas del trimestre y no quieres armar tablas dinámicas para entenderlas.</p>
+    <pre><code>Analiza estas ventas del trimestre: producto más y menos rentable,
+tendencia por mes y el dato que más te sorprenda. Hazme un gráfico
+por mes. Usa cálculo real, no estimes.</code></pre>
+    <div class="cols">
+      <div class="card"><h3>Qué esperar</h3><p class="small">Cifras exactas, un gráfico y a menudo un patrón que no habías visto. Puede entregártelo como Excel o informe.</p></div>
+      <div class="card"><h3>Capacidad</h3><p class="small"><strong>Ejecución de código</strong> (M3): corre el cálculo de verdad, tapa la debilidad aritmética (M1).</p></div>
+    </div>
+    <div class="callout warn"><span class="tag">Ojo</span><p class="small" style="margin:0">Exige que <strong>use ejecución de código</strong> para los números, y revisa que entendió las columnas. Prueba de la defensa (M4).</p></div>
+  </section>
+
+  <section class="slide" data-topic="A · Entender">
+    <div class="eyebrow">A2 · Administración</div>
+    <h2>De una foto de factura a una tabla</h2>
+    <p class="small"><strong>Escenario:</strong> un montón de recibos en papel (o fotos del móvil) que hay que pasar a contabilidad.</p>
+    <pre><code>Extrae de esta foto: proveedor, fecha, cada concepto con su importe,
+subtotal, IVA y total, en una tabla. Si algo no se lee con seguridad,
+márcalo en vez de inventarlo.</code></pre>
+    <div class="cols">
+      <div class="card"><h3>Qué esperar</h3><p class="small">Una tabla limpia lista para pegar. Puedes procesar varias fotos y consolidar.</p></div>
+      <div class="card"><h3>Capacidad</h3><p class="small"><strong>Visión</strong> (M3): el modelo "ve" la foto y lee su contenido, incluso manuscrito.</p></div>
+    </div>
+    <div class="callout warn"><span class="tag">Ojo</span><p class="small" style="margin:0">La lectura visual no es infalible con cifras pequeñas. Verifica importes; pedir que <strong>marque lo dudoso</strong> evita que aluciné un número (M1).</p></div>
+  </section>
+
+  <section class="slide" data-topic="A · Entender">
+    <div class="eyebrow">A3 · Legal y documentos</div>
+    <h2>Un contrato largo, resumido y con sus riesgos</h2>
+    <p class="small"><strong>Escenario:</strong> un contrato de 25 páginas que necesitas entender antes de firmar, sin ser abogado.</p>
+    <pre><code>Resume este contrato en una página: qué me obliga, qué obliga a la otra
+parte, plazos, penalizaciones y cláusulas de riesgo. Cita la sección de
+cada punto para poder verificarlo.</code></pre>
+    <div class="cols">
+      <div class="card"><h3>Qué esperar</h3><p class="small">Resumen ejecutivo, lista de riesgos y <strong>citas</strong> a las cláusulas para ir al original.</p></div>
+      <div class="card"><h3>Capacidad</h3><p class="small"><strong>Análisis de docs + citas</strong> (M3/M1): razona sobre lo que tiene delante y ancla cada dato.</p></div>
+    </div>
+    <div class="callout warn"><span class="tag">Ojo</span><p class="small" style="margin:0"><strong>No sustituye a un abogado</strong>: prepara tus preguntas. Abre las citas y confírmalas.</p></div>
+  </section>
+
+  <section class="slide" data-topic="A · Entender">
+    <div class="eyebrow">A4 · Audio y video</div>
+    <h2>Una reunión o un video, convertidos en acuerdos</h2>
+    <p class="small"><strong>Escenario:</strong> grabaste una reunión de una hora, o hay un video largo que no tienes tiempo de ver.</p>
+    <pre><code>De esta transcripción (o este enlace): los tres temas principales, las
+decisiones tomadas, y las tareas con responsable y fecha si se
+mencionaron. Marca lo que quedó sin cerrar.</code></pre>
+    <div class="cols">
+      <div class="card"><h3>Qué esperar</h3><p class="small">De una hora dispersa, media página con acuerdos, tareas y cabos sueltos.</p></div>
+      <div class="card"><h3>Capacidad</h3><p class="small"><strong>Multimodal + resumen</strong> (M2): comprime y organiza material largo en la salida que definiste.</p></div>
+    </div>
+    <div class="callout warn"><span class="tag">Ojo</span><p class="small" style="margin:0">Errores de transcripción se arrastran. Para acuerdos con consecuencias, verifica. Cuidado con la privacidad (M7).</p></div>
+  </section>
+
+  <!-- ============ BLOQUE B ============ -->
+  <section class="slide divider" data-topic="B · Crear">
+    <div class="num">B</div>
+    <div class="eyebrow">Bloque B</div>
+    <h2>Crear: apps, imágenes y texto</h2>
+    <p class="lead muted">Producir cosas que antes exigían programar, diseñar o escribir en un registro que no dominabas.</p>
+  </section>
+
+  <section class="slide" data-topic="B · Crear">
+    <div class="eyebrow">B1 · "Vibe coding"</div>
+    <h2>Una mini-aplicación en dos minutos</h2>
+    <p class="small"><strong>Escenario:</strong> quieres una calculadora a medida o un quiz para el equipo, pero no sabes programar.</p>
+    <pre><code>Créame una calculadora de presupuestos de impresión: tirada, número de
+páginas y tipo de papel (tres precios), que muestre subtotal, IVA y
+total. Limpia y funcionando en el navegador.</code></pre>
+    <div class="cols">
+      <div class="card"><h3>Qué esperar</h3><p class="small">Una app <strong>funcionando</strong> en un Artifact: la usas, la iteras, la compartes y la descargas.</p></div>
+      <div class="card"><h3>Capacidad</h3><p class="small"><strong>Artifacts</strong> + código (M3): te la entrega ejecutándose sin que toques código.</p></div>
+    </div>
+    <div class="callout warn"><span class="tag">Ojo</span><p class="small" style="margin:0">Para prototipos, genial. Si el negocio depende de ella, <strong>verifica la lógica</strong>: es el ejemplo perfecto de deuda técnica si la usas sin entenderla (M4).</p></div>
+  </section>
+
+  <section class="slide" data-topic="B · Crear">
+    <div class="eyebrow">B2 · Marketing y diseño</div>
+    <h2>Imágenes para una campaña</h2>
+    <p class="small"><strong>Escenario:</strong> necesitas ideas visuales para una promoción y no tienes diseñador ni banco de imágenes.</p>
+    <pre><code>Genera tres conceptos de imagen para una campaña de catálogo de
+alimentos orgánicos: tono natural, colores tierra y verdes, sensación
+artesanal. Una luminosa, una rústica y una minimalista.</code></pre>
+    <div class="cols">
+      <div class="card"><h3>Qué esperar</h3><p class="small">Varias propuestas para elegir, refinar o pasar a un diseñador. Explorar rápido antes de producir.</p></div>
+      <div class="card"><h3>Capacidad</h3><p class="small"><strong>Generación de imágenes</strong>: crea a partir de tu descripción — cuanto mejor describes, mejor sale (M2).</p></div>
+    </div>
+    <div class="callout warn"><span class="tag">Ojo</span><p class="small" style="margin:0">Pueden tener detalles raros (texto deforme) y hay que cuidar derechos y estilo de marca. Trátalas como bocetos.</p></div>
+  </section>
+
+  <section class="slide" data-topic="B · Crear">
+    <div class="eyebrow">B3 · Comunicación</div>
+    <h2>El mismo mensaje en tres tonos</h2>
+    <p class="small"><strong>Escenario:</strong> anuncias una subida de precios; no es igual decírselo a un cliente antiguo, a la prensa o al equipo.</p>
+    <pre><code>Anuncia un aumento del 8%. Tres versiones: cercana para clientes de
+confianza, formal para clientes nuevos, y breve y directa para el
+equipo interno.</code></pre>
+    <div class="cols">
+      <div class="card"><h3>Qué esperar</h3><p class="small">Tres textos con el mismo fondo y distinto registro, lado a lado para decidir.</p></div>
+      <div class="card"><h3>Capacidad</h3><p class="small"><strong>Rol, tono y estilo</strong> (M2/M3): la misma información moldeada por audiencia.</p></div>
+    </div>
+    <div class="callout warn"><span class="tag">Ojo</span><p class="small" style="margin:0">Un mensaje delicado <strong>siempre pasa por tu criterio</strong> antes de enviarse. El borrador es de la IA; el juicio es tuyo (M4).</p></div>
+  </section>
+
+  <!-- ============ BLOQUE C ============ -->
+  <section class="slide divider" data-topic="C · Actuar e investigar">
+    <div class="num">C</div>
+    <div class="eyebrow">Bloque C</div>
+    <h2>Actuar e investigar</h2>
+    <p class="lead muted">La IA deja de solo hablar: opera en tus sistemas (connectors) o busca en el mundo (web).</p>
+  </section>
+
+  <section class="slide" data-topic="C · Actuar e investigar">
+    <div class="eyebrow">C1 · Productividad / oficina</div>
+    <h2>La IA que ordena tu correo y tu agenda</h2>
+    <p class="small"><strong>Escenario:</strong> 40 correos sin leer, no sabes por dónde empezar y hay fechas escondidas que se te van a pasar.</p>
+    <pre><code>Revisa mi correo de hoy: resume lo urgente y lo que espera respuesta.
+Si un mensaje menciona una fecha, propón crear el evento en mi
+calendario (pídeme confirmación antes de crearlo).</code></pre>
+    <div class="cols">
+      <div class="card"><h3>Qué esperar</h3><p class="small">Bandeja priorizada y eventos propuestos. La IA <strong>actúa</strong>, no solo comenta.</p></div>
+      <div class="card"><h3>Capacidad</h3><p class="small"><strong>Connectors / MCP</strong> (M3): el bucle agéntico decidir → ejecutar → continuar.</p></div>
+    </div>
+    <div class="callout danger"><span class="tag">Ojo — el más sensible</span><p class="small" style="margin:0"><strong>Mínimo privilegio</strong> y <strong>confirmación antes de actuar</strong> (M3). Cuidado con la inyección de prompt indirecta: un correo malicioso podría dar órdenes al modelo.</p></div>
+  </section>
+
+  <section class="slide" data-topic="C · Actuar e investigar">
+    <div class="eyebrow">C2 · Investigación / decisiones</div>
+    <h2>Investigar un tema con fuentes citadas</h2>
+    <p class="small"><strong>Escenario:</strong> decides entre tres proveedores o entiendes una normativa nueva; necesitas info <strong>actual</strong>, no lo que el modelo recuerde.</p>
+    <pre><code>Investiga las normativas de etiquetado orgánico vigentes este año.
+Compáralas en una tabla (requisitos, costos, plazos) y cítame la
+fuente de cada dato con enlace.</code></pre>
+    <div class="cols">
+      <div class="card"><h3>Qué esperar</h3><p class="small">Informe comparativo con datos recientes y <strong>enlaces</strong> que puedes abrir. Horas convertidas en minutos.</p></div>
+      <div class="card"><h3>Capacidad</h3><p class="small"><strong>Búsqueda web</strong> (M3): internet en vivo, supera la fecha de corte (M1), con trazabilidad.</p></div>
+    </div>
+    <div class="callout warn"><span class="tag">Ojo</span><p class="small" style="margin:0">Citar <strong>no</strong> garantiza haber leído bien: abre los enlaces de lo que importa. La fuente es el principio de la verificación, no el final.</p></div>
+  </section>
+
+  <!-- ============ BLOQUE D ============ -->
+  <section class="slide divider" data-topic="D · Pensar contigo">
+    <div class="num">D</div>
+    <div class="eyebrow">Bloque D</div>
+    <h2>Pensar contigo</h2>
+    <p class="lead muted">Lo más sutil y quizá lo más transformador: un socio de pensamiento que estructura tus ideas.</p>
+  </section>
+
+  <section class="slide" data-topic="D · Pensar contigo">
+    <div class="eyebrow">D1 · Planificación</div>
+    <h2>De una idea vaga a un plan accionable</h2>
+    <p class="small"><strong>Escenario:</strong> tienes una idea difusa —"digitalizar los pedidos"— pero no sabes cómo aterrizarla.</p>
+    <pre><code>Tengo una idea vaga: digitalizar los pedidos, hoy en papel. Hazme
+primero cinco preguntas para entender el contexto. Con mis respuestas,
+arma un plan por fases y un primer paso para esta semana.</code></pre>
+    <div class="cols">
+      <div class="card"><h3>Qué esperar</h3><p class="small">Preguntas que te obligan a pensar (como un specdoc, M4) y un plan realista con arranque inmediato.</p></div>
+      <div class="card"><h3>Capacidad</h3><p class="small"><strong>Razonamiento + método</strong> (M4): especificar antes de ejecutar. Sin herramientas: solo un buen prompt.</p></div>
+    </div>
+    <div class="callout warn"><span class="tag">Ojo</span><p class="small" style="margin:0">El plan es un punto de partida. Tú conoces restricciones que el modelo no. Es la IA <strong>amplificando</strong> tu juicio, no sustituyéndolo.</p></div>
+  </section>
+
+  <!-- ============ RESUMEN ============ -->
+  <section class="slide" data-topic="Resumen">
+    <div class="eyebrow">Cierre · Resumen del Módulo 5</div>
+    <h2>Diez casos, cuatro superpoderes</h2>
+    <table>
+      <thead><tr><th>Bloque</th><th>Casos</th><th>Para llevar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>A · Entender</strong></td><td>Excel · Factura · Contrato · Reunión</td><td>Razona sobre lo que le das; verifica números y citas</td></tr>
+        <tr><td><strong>B · Crear</strong></td><td>Mini-app · Imágenes · Tres tonos</td><td>Produce sin programar/diseñar; trata como borrador</td></tr>
+        <tr><td><strong>C · Actuar</strong></td><td>Correo/agenda · Investigación web</td><td>Opera y busca; mínimo privilegio y abre las fuentes</td></tr>
+        <tr><td><strong>D · Pensar</strong></td><td>Idea → plan</td><td>Estructura tu pensamiento; ajusta con tu criterio</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small" style="margin:0">No necesitas diez herramientas nuevas: necesitas <strong>reconocer de qué tipo de caso es cada tarea</strong> — y ya sabes la capacidad que lo resuelve.</p>
+    </div>
+    <div class="callout">
+      <p class="small muted" style="margin:0">Fundamentos de IA Productiva · Módulo 5 de 7 — v1.0 · Siguiente: <strong>Módulo 6 — Herramientas especializadas.</strong></p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ CONTROLES ============ -->
+<div id="controls">
+  <button class="nav-btn" id="prev" aria-label="Slide anterior">← Anterior</button>
+  <div id="progress-wrap">
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div id="counter"></div>
+  </div>
+  <button class="nav-btn" id="next" aria-label="Slide siguiente">Siguiente →</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let i = 0;
+
+  const fill    = document.getElementById('progress-fill');
+  const counter = document.getElementById('counter');
+  const badge   = document.getElementById('topic-badge');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  function show(n){
+    i = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    slides[i].scrollTop = 0;
+    fill.style.width = ((i + 1) / total * 100) + '%';
+    counter.textContent = (i + 1) + ' / ' + total;
+    const topic = slides[i].dataset.topic || '';
+    badge.innerHTML = topic ? 'Tema actual · <b>' + topic + '</b>' : '';
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === total - 1;
+  }
+
+  function nextSlide(){ if (i < total - 1) show(i + 1); }
+  function prevSlide(){ if (i > 0) show(i - 1); }
+
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); nextSlide(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End')  { e.preventDefault(); show(total - 1); }
+  });
+
+  show(0);
+</script>
+</body>
+</html>

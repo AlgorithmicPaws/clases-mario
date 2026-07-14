@@ -40,16 +40,27 @@ Cada módulo vive en su propia carpeta; `index.html` y `wiki.html` quedan en la 
 │       ├── README.md
 │       ├── 01-tarifas.md
 │       └── 02-pedidos.md
-└── modulo-4/
+├── modulo-4/
+│   ├── presentacion.html
+│   ├── presentacion.pdf
+│   ├── wiki.md
+│   ├── wiki.pdf
+│   └── insumos/            · Materiales para la práctica (proyecto Andes Verde)
+│       ├── README.md
+│       ├── 01-pedido-andes-verde.md
+│       ├── 02-tarifas-y-margenes.md
+│       └── 03-documento-estado-plantilla.md
+└── modulo-5/
     ├── presentacion.html
     ├── presentacion.pdf
     ├── wiki.md
     ├── wiki.pdf
-    └── insumos/            · Materiales para la práctica (proyecto Andes Verde)
+    └── insumos/            · Materiales para la galería de casos
         ├── README.md
-        ├── 01-pedido-andes-verde.md
-        ├── 02-tarifas-y-margenes.md
-        └── 03-documento-estado-plantilla.md
+        ├── 01-ventas.csv
+        ├── 02-contrato-extracto.md
+        ├── 03-anuncio-precios.md
+        └── 04-idea-vaga.md
 ```
 
 Las rutas a cada módulo están centralizadas: en `index.html` (array `MODULES`, campo `deck`) y

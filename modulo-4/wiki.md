@@ -690,7 +690,7 @@ primaria; el resto aporta contexto o perspectiva sobre metodología de trabajo c
 ---
 
 *Anterior: [Módulo 3 — Interfaz y Ecosistema](./modulo-3-wiki.md)*
-*Siguiente: Módulo 5 — Herramientas especializadas: Claude Code*
+*Siguiente: [Módulo 5 — IA en Acción: Galería de Casos](./modulo-5-wiki.md)*
 
 ---
 
