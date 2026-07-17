@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 6 — Agentes: de Responder a Actuar</title>
+<style>
+  :root{
+    --bg:#0e1117;
+    --bg-2:#161b22;
+    --bg-3:#1c2330;
+    --border:#2a3340;
+    --text:#e6edf3;
+    --muted:#bcc8d4;
+    --accent:#58a6ff;
+    --accent-2:#7ee787;
+    --warn:#f0a868;
+    --danger:#ff7b72;
+    --analogy:#bc8cff;
+    --code-bg:#0a0d12;
+    --shadow:0 10px 40px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    overflow:hidden;
+  }
+
+  /* ---- Stage ---- */
+  #stage{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:64px 56px 84px;
+  }
+  .slide{
+    display:none;
+    width:100%;
+    max-width:1080px;
+    max-height:100%;
+    overflow-y:auto;
+    animation:fade .35s ease;
+  }
+  .slide.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  /* ---- Typography ---- */
+  .eyebrow{
+    color:var(--accent);
+    font-size:.8rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h1{font-size:3rem;line-height:1.1;margin-bottom:18px;font-weight:800;letter-spacing:-.02em;}
+  h2{font-size:2rem;line-height:1.15;margin-bottom:20px;font-weight:800;letter-spacing:-.01em;}
+  h3{font-size:1.15rem;color:var(--accent-2);margin:22px 0 8px;font-weight:700;}
+  p{margin-bottom:14px;color:var(--text);font-size:1.06rem;}
+  .lead{font-size:1.25rem;color:var(--muted);}
+  strong{color:#fff;font-weight:700;}
+  ul,ol{margin:8px 0 16px 22px;}
+  li{margin-bottom:8px;font-size:1.04rem;}
+  .muted{color:var(--muted);}
+  .small{font-size:.92rem;}
+
+  /* ---- Callout / quote ---- */
+  .callout{
+    background:var(--bg-2);
+    border-left:4px solid var(--accent);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:18px 0;
+  }
+  .callout.good{border-left-color:var(--accent-2);}
+  .callout.warn{border-left-color:var(--warn);}
+  .callout.danger{border-left-color:var(--danger);}
+  .callout .tag{
+    display:block;
+    font-size:.78rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .callout.good .tag{color:var(--accent-2);}
+  .callout.warn .tag{color:var(--warn);}
+  .callout.danger .tag{color:var(--danger);}
+  .callout.exercise{border-left-color:var(--analogy);background:rgba(188,140,255,.07);}
+  .callout.exercise .tag{color:var(--analogy);}
+  .callout p:last-child{margin-bottom:0;}
+  /* ---- Exercise slide ---- */
+  .ex-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--analogy);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;
+    font-weight:700;margin-bottom:14px;
+    border:1px solid var(--analogy);border-radius:999px;padding:5px 13px;
+  }
+  .ex-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--analogy);}
+  ol.steps{margin:6px 0 0 1.1em;padding:0;}
+  ol.steps li{margin:7px 0;}
+
+  /* ---- Analogía (tarjeta destacada) ---- */
+  .analogy{
+    position:relative;
+    background:linear-gradient(135deg,rgba(188,140,255,.10),var(--bg-2));
+    border:1px solid #4a3d63;
+    border-left:4px solid var(--analogy);
+    border-radius:10px;
+    padding:18px 22px;
+    margin:18px 0;
+    box-shadow:0 4px 22px rgba(124,77,178,.12);
+  }
+  .analogy .tag{
+    display:block;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:800;color:var(--analogy);margin-bottom:6px;
+  }
+  .analogy p{margin-bottom:0;color:var(--text);}
+
+  /* ---- Code ---- */
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+    overflow-x:auto;
+    margin:16px 0;
+    box-shadow:var(--shadow);
+  }
+  code{
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:.92rem;
+    color:#cdd9e5;
+    white-space:pre;
+  }
+  p code,li code,td code{
+    background:var(--bg-3);
+    padding:2px 6px;
+    border-radius:5px;
+    font-size:.88rem;
+    color:var(--accent-2);
+    white-space:normal;
+  }
+
+  /* ---- Grid columns ---- */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:16px 0;}
+  .card{
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .card h3{margin-top:0;}
+
+  /* ---- Tables ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0;
+    font-size:.96rem;
+    background:var(--bg-2);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  th,td{
+    text-align:left;
+    padding:11px 14px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  th{
+    background:var(--bg-3);
+    color:var(--accent);
+    font-weight:700;
+    font-size:.85rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  tr:last-child td{border-bottom:none;}
+  td strong{color:var(--accent-2);}
+
+  /* ---- SVG figures ---- */
+  figure{margin:18px 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:10px;}
+  figcaption{color:var(--muted);font-size:.9rem;margin-top:8px;}
+
+  /* ---- Title slide ---- */
+  .title-slide{text-align:center;}
+  .title-slide .course{color:var(--muted);font-size:1.1rem;letter-spacing:.05em;margin-bottom:8px;}
+  .title-slide .hint{margin-top:34px;color:var(--muted);font-size:.95rem;}
+  .kbd{
+    display:inline-block;background:var(--bg-3);border:1px solid var(--border);
+    border-bottom-width:3px;border-radius:6px;padding:2px 9px;font-size:.85rem;
+    font-family:monospace;color:var(--text);margin:0 2px;
+  }
+  .topic-list{display:inline-block;text-align:left;margin-top:24px;}
+  .topic-list li{font-size:1.1rem;color:var(--text);}
+
+  /* ---- Section divider slide ---- */
+  .divider{text-align:center;}
+  .divider .num{
+    font-size:6rem;font-weight:800;color:var(--bg-3);
+    -webkit-text-stroke:2px var(--accent);line-height:1;margin-bottom:8px;
+  }
+
+  /* ---- Controls ---- */
+  #controls{
+    position:fixed;bottom:0;left:0;right:0;height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;background:linear-gradient(to top,var(--bg),rgba(14,17,23,.0));
+  }
+  .nav-btn{
+    background:var(--bg-2);color:var(--text);border:1px solid var(--border);
+    border-radius:8px;padding:9px 16px;font-size:.95rem;cursor:pointer;
+    transition:.15s;display:flex;align-items:center;gap:6px;
+  }
+  .nav-btn:hover:not(:disabled){background:var(--bg-3);border-color:var(--accent);}
+  .nav-btn:disabled{opacity:.35;cursor:default;}
+  #progress-wrap{flex:1;margin:0 22px;}
+  #progress-bar{height:4px;background:var(--bg-3);border-radius:4px;overflow:hidden;}
+  #progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s ease;}
+  #counter{color:var(--muted);font-size:.85rem;text-align:center;margin-top:4px;}
+
+  /* ---- Top topic badge ---- */
+  #topic-badge{
+    position:fixed;top:16px;left:24px;z-index:5;
+    color:var(--muted);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+  }
+  #topic-badge b{color:var(--accent);}
+
+  /* ---- Home link ---- */
+  #home-link{
+    position:fixed;top:14px;right:24px;z-index:6;
+    display:inline-flex;align-items:center;gap:6px;
+    color:var(--text);text-decoration:none;
+    font-size:.82rem;font-weight:600;
+    background:var(--bg-2);border:1px solid var(--border);
+    padding:6px 13px;border-radius:9px;
+    transition:border-color .2s ease,color .2s ease;
+  }
+  #home-link:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* scrollbars */
+  .slide::-webkit-scrollbar,pre::-webkit-scrollbar{height:9px;width:9px;}
+  .slide::-webkit-scrollbar-thumb,pre::-webkit-scrollbar-thumb{background:var(--border);border-radius:5px;}
+
+  @media (max-width:1000px){
+    .cols{grid-template-columns:1fr;}
+    h1{font-size:2.3rem;}h2{font-size:1.6rem;}
+    #stage{padding:56px 28px 80px;}
+  }
+
+  /* ---- Impresión / export a PDF (cada slide = una página 16:9) ---- */
+  @media print{
+    @page{ size:13.333in 8.3in; margin:0; }
+    html,body{
+      height:auto !important; overflow:visible !important;
+      background:#0e1117 !important;
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    #home-link,#topic-badge,#controls{ display:none !important; }
+    #stage{ display:block !important; height:auto !important; padding:0 !important; }
+    .slide{
+      display:flex !important; flex-direction:column; justify-content:center;
+      box-sizing:border-box;
+      width:13.333in; height:8in;
+      max-width:none !important; max-height:none !important;
+      overflow:hidden !important;
+      padding:0.45in 0.62in; margin:0;
+      animation:none !important;
+      page-break-after:always; break-after:page;
+      page-break-inside:avoid; break-inside:avoid;
+    }
+    .slide:last-child{ page-break-after:avoid; break-after:auto; }
+
+    /* compactar para que cada slide quepa en una sola página */
+    html{ font-size:12px; }
+    .slide h1{ font-size:2.6rem; }
+    .slide h2{ font-size:1.55rem; margin-bottom:.45rem; }
+    .slide h3{ margin:.2rem 0; }
+    .slide p{ margin:0 0 .42rem; }
+    .slide .lead{ margin-bottom:.4rem; }
+    .slide ul,.slide ol{ margin:.3rem 0 .5rem 1.15rem; }
+    .slide li{ margin:3px 0; }
+    .slide .callout,.slide .analogy{ margin:.42rem 0; padding:9px 13px; }
+    .slide .card{ padding:12px 15px; }
+    .slide .cols{ gap:14px; margin:10px 0; }
+    .slide table{ font-size:.9em; }
+    .slide th,.slide td{ padding:5px 9px; }
+    .slide svg{ height:2in !important; width:auto !important; max-width:100% !important; display:block; margin:6px auto; }
+    .slide pre{ font-size:.78rem; line-height:1.3; padding:10px 14px; margin:.5rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<a id="home-link" href="../index.html">← Inicio</a>
+<div id="topic-badge"></div>
+
+<div id="stage">
+
+  <!-- ============ PORTADA ============ -->
+  <section class="slide active title-slide" data-topic="Inicio">
+    <div class="course">Fundamentos de IA Productiva</div>
+    <div class="eyebrow">Módulo 6 de 7</div>
+    <h1>Agentes: de Responder a Actuar</h1>
+    <p class="lead">Le das un <strong>objetivo</strong> y <strong>herramientas</strong>,<br>y decide los pasos por sí mismo. Ahí empieza —y termina— su poder.</p>
+    <ol class="topic-list">
+      <li>Qué es un agente (y qué no)</li>
+      <li>Cómo trabaja: el bucle agéntico</li>
+      <li>Autonomía y el humano en el bucle</li>
+      <li>Varios agentes juntos</li>
+      <li>Riesgos, límites y criterio</li>
+    </ol>
+    <p class="hint">Navega con <span class="kbd">←</span> <span class="kbd">→</span> o los botones de abajo</p>
+  </section>
+
+  <!-- ============ TEMA 1 ============ -->
+  <section class="slide divider" data-topic="1 · Qué es un agente">
+    <div class="num">1</div>
+    <div class="eyebrow">Tema 1</div>
+    <h2>Qué es un agente (y qué no)</h2>
+    <p class="lead muted">Aquel caso del M5 en que la IA revisaba tu correo y creaba eventos… era tu primer agente.</p>
+  </section>
+
+  <section class="slide" data-topic="1 · Qué es un agente">
+    <div class="eyebrow">1.1 · Del chat al agente</div>
+    <h2>Cambia quién decide los pasos</h2>
+    <table>
+      <thead><tr><th></th><th>Chat (asistente)</th><th>Agente</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tú das</strong></td><td>Una instrucción por turno</td><td>Un <strong>objetivo</strong></td></tr>
+        <tr><td><strong>Decide los pasos</strong></td><td>Tú</td><td>El modelo</td></tr>
+        <tr><td><strong>Cómo avanza</strong></td><td>Un intercambio a la vez</td><td>En <strong>bucle</strong>, encadenando</td></tr>
+        <tr><td><strong>Tu papel</strong></td><td>Conductor paso a paso</td><td>Supervisor del objetivo</td></tr>
+      </tbody>
+    </table>
+    <div class="analogy">
+      <span class="tag">Analogía · el taxi y el GPS</span>
+      <p>Un chat es el copiloto al que preguntas "¿giro aquí?". Un agente es el taxista al que das el <strong>destino</strong> y conduce solo. Ganas en no dictar cada giro; el riesgo es que si se equivoca de ruta, avanza antes de que lo notes. Por eso sigues mirando el mapa.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · Qué es un agente">
+    <div class="eyebrow">1.2 · El bucle agéntico</div>
+    <h2>El lazo de vuelta lo cambia todo</h2>
+    <pre><code>   ┌─────────────────────────────────────────────────┐
+   ▼                                                 │
+PERCIBIR ─► PLANIFICAR ─► ACTUAR (usar ─► OBSERVAR ──┘
+(objetivo    (siguiente    herramienta)  (leer result.
+ y estado)    paso)                       y decidir)
+
+     … hasta cumplir el objetivo (o pedir ayuda).</code></pre>
+    <div class="callout">
+      <p class="small" style="margin:0">Lo que lo hace un agente es que <strong>mira el resultado de su propia acción</strong> y ajusta. Un chat de un turno no puede recuperarse de un error; un agente que observa, sí. Esa auto-corrección es su fuerza — y por qué a veces persigue una madriguera.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · Qué es un agente">
+    <div class="eyebrow">1.3 · Anatomía</div>
+    <h2>Las cuatro piezas de todo agente</h2>
+    <table>
+      <thead><tr><th>Pieza</th><th>Qué es</th><th>En la imprenta</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Objetivo</strong></td><td>La meta que persigue (la pones tú)</td><td>"Prepara las cotizaciones de hoy"</td></tr>
+        <tr><td><strong>Cerebro</strong></td><td>El modelo que razona y decide</td><td>El LLM (Opus/Sonnet, M3)</td></tr>
+        <tr><td><strong>Herramientas</strong></td><td>Lo que puede <em>hacer</em></td><td>Consultar, calcular, enviar (MCP, M3)</td></tr>
+        <tr><td><strong>Memoria</strong></td><td>Lo que recuerda al trabajar</td><td>Qué ya hizo y qué falta (M4)</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><p class="small" style="margin:0"><strong>Prueba del "¿es de verdad un agente?":</strong> ¿están las cuatro piezas? Muchos "agentes" del marketing son un chat con buen prompt. Saber distinguirlo evita pagar por autonomía que no existe.</p></div>
+  </section>
+
+  <!-- ============ TEMA 2 ============ -->
+  <section class="slide divider" data-topic="2 · Cómo trabaja">
+    <div class="num">2</div>
+    <div class="eyebrow">Tema 2</div>
+    <h2>Cómo trabaja un agente</h2>
+    <p class="lead muted">Objetivo, herramientas, memoria y saber cuándo parar.</p>
+  </section>
+
+  <section class="slide" data-topic="2 · Cómo trabaja">
+    <div class="eyebrow">2.1 · El bucle en acción</div>
+    <h2>"Prepara una cotización por cada pedido de hoy"</h2>
+    <pre><code>1. PERCIBIR    Consulta el correo → 3 pedidos sin confirmar.
+2. PLANIFICAR  "Por cada uno: extraer → tarifa → calcular → redactar."
+3. ACTUAR      Abre el pedido 1, extrae cantidades y papel.
+4. OBSERVAR    "Falta el gramaje" → decide consultar el tarifario.
+5. ACTUAR      Consulta tarifario, calcula precio (ejec. de código).
+6. OBSERVAR    "Cotización 1 lista, quedan 2" → vuelve al paso 3.
+   … y al terminar, te las presenta para revisar (no envía).</code></pre>
+    <p class="small muted">El agente <strong>descompone</strong> el objetivo (como los hitos del M4, pero él), <strong>elige</strong> la herramienta según lo que observa, y <strong>se detiene</strong> antes de una acción con consecuencias.</p>
+  </section>
+
+  <section class="slide" data-topic="2 · Cómo trabaja">
+    <div class="eyebrow">2.2 · Herramientas · 2.3 · Memoria</div>
+    <h2>Las manos y la libreta del agente</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Herramientas = alcance real</h3>
+        <p class="small">Buscar web · ejecutar código · connectors (correo, agenda, datos) · leer docs/imágenes. Sin ellas es un cerebro en un frasco.</p>
+      </div>
+      <div class="card">
+        <h3>Memoria = no empezar de cero</h3>
+        <p class="small">Recuerda qué hizo y qué falta mientras trabaja. Es el "colaborador amnésico" del M4, pero dentro de una tarea autónoma.</p>
+      </div>
+    </div>
+    <div class="callout warn">
+      <span class="tag">La distinción clave (M3)</span>
+      <p class="small" style="margin:0">Herramientas que <strong>leen</strong> (bajo riesgo) vs. que <strong>actúan</strong> (enviar, borrar). El inventario de herramientas de un agente es su <strong>mapa de riesgo</strong>.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Cómo trabaja">
+    <div class="eyebrow">2.4 · Criterios de parada</div>
+    <h2>Un agente tiene que saber cuándo parar</h2>
+    <ul>
+      <li><strong>Cumplió el objetivo</strong> (contra criterios claros, como un specdoc del M4).</li>
+      <li><strong>Llegó a un punto que requiere un humano</strong> (acción irreversible, ambigüedad).</li>
+      <li><strong>Se topó con un muro</strong> y tiene la sensatez de <strong>pedir ayuda, no inventar</strong>.</li>
+      <li><strong>Agotó un límite</strong> que le pusiste: pasos, tiempo o presupuesto.</li>
+    </ul>
+    <div class="callout danger">
+      <span class="tag">El fallo clásico</span>
+      <p class="small" style="margin:0">Un mal agente que no encuentra un dato <strong>alucina uno</strong> (M1) y sigue, propagando el error. "Si no lo encuentras, para y pregúntame" es el freno de emergencia. Un buen agente sabe decir "no pude".</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 3 ============ -->
+  <section class="slide divider" data-topic="3 · Autonomía">
+    <div class="num">3</div>
+    <div class="eyebrow">Tema 3</div>
+    <h2>Autonomía y el humano en el bucle</h2>
+    <p class="lead muted">La autonomía es un dial que gradúas según el riesgo, no un interruptor.</p>
+  </section>
+
+  <section class="slide" data-topic="3 · Autonomía">
+    <div class="eyebrow">3.1 · El espectro</div>
+    <h2>De copiloto a autónomo</h2>
+    <table>
+      <thead><tr><th>Nivel</th><th>Cómo funciona</th><th>Ejemplo</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Copiloto</strong></td><td>Sugiere; tú ejecutas</td><td>Propone la cotización; tú envías</td></tr>
+        <tr><td><strong>Supervisado</strong></td><td>Actúa, pide confirmación en lo que importa</td><td>Envía tras tu "ok" en cada correo</td></tr>
+        <tr><td><strong>Semi-autónomo</strong></td><td>Hace la tarea y la presenta al final</td><td>Deja los 3 borradores; apruebas el lote</td></tr>
+        <tr><td><strong>Autónomo</strong></td><td>De principio a fin sin intervención</td><td>Envía solo (raro y arriesgado)</td></tr>
+      </tbody>
+    </table>
+    <div class="callout good">
+      <span class="tag">Regla del dial</span>
+      <p class="small" style="margin:0">Reversible y bajo riesgo → más autonomía. Irreversible o costoso → cerca de copiloto/supervisado. <strong>Empieza con poca autonomía y súbela cuando el agente se la gane.</strong></p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Autonomía">
+    <div class="eyebrow">3.2 · Human-in-the-loop</div>
+    <h2>Cuándo debe pedir permiso</h2>
+    <div class="cols">
+      <div>
+        <div class="callout warn">
+          <span class="tag">Pide permiso antes de</span>
+          <p class="small" style="margin:0"><strong>Enviar</strong> comunicaciones · <strong>gastar</strong> dinero · <strong>borrar/sobrescribir</strong> · cualquier acción difícil de deshacer.</p>
+        </div>
+      </div>
+      <div>
+        <div class="callout good">
+          <span class="tag">Puede ir solo en</span>
+          <p class="small" style="margin:0">Leer · buscar · calcular · redactar un borrador que tú revisarás. Lo reversible.</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout">
+      <p class="small" style="margin:0"><strong>La asimetría (M3):</strong> leer es barato de equivocarse; actuar no. El checkpoint humano es tu cinturón de seguridad — como el cajero que confirma una transferencia grande, no falta de confianza.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Autonomía">
+    <div class="eyebrow">3.3 · ¿Cuándo un agente?</div>
+    <h2>Tareas buenas y malas para delegar</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Buenas</h3>
+        <p class="small">Repetitivas de varios pasos con receta clara · verificables al final · errores reversibles o con checkpoint · te comen tiempo mecánico.</p>
+      </div>
+      <div class="card">
+        <h3>Malas (o máxima supervisión)</h3>
+        <p class="small">Una decisión de alto criterio · acciones irreversibles sin control · objetivos vagos · datos muy sensibles poco supervisados.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <p class="small" style="margin:0"><strong>Regla:</strong> si puedes escribirla como <strong>receta con pasos y un punto de revisión</strong>, es candidata a agente. Si es "usa tu mejor juicio", quédate en chat. Un agente automatiza <em>procesos</em>, no <em>criterio</em>.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 4 ============ -->
+  <section class="slide divider" data-topic="4 · Varios agentes">
+    <div class="num">4</div>
+    <div class="eyebrow">Tema 4</div>
+    <h2>Varios agentes trabajando juntos</h2>
+    <p class="lead muted">Un equipo de especialistas en vez de un empleado que hace de todo.</p>
+  </section>
+
+  <section class="slide" data-topic="4 · Varios agentes">
+    <div class="eyebrow">4.1 · 4.2 · Orquestador y subagentes</div>
+    <h2>Divide y coordina</h2>
+    <pre><code>┌──────────── ORQUESTADOR (coordina) ────────────┐
+│  Recibe el objetivo grande y lo reparte         │
+│   ├─► Subagente "Investigador" → reúne datos    │
+│   ├─► Subagente "Redactor"     → escribe        │
+│   └─► Subagente "Revisor"      → verifica        │
+│  Junta los resultados y entrega el trabajo      │
+└──────────────────────────────────────────────────┘</code></pre>
+    <p class="small muted">Cada subagente tiene un objetivo <strong>estrecho</strong> y un contexto más limpio (menos context rot, M2), y es más fácil de verificar. El orquestador no hace el trabajo fino: coordina.</p>
+  </section>
+
+  <section class="slide" data-topic="4 · Varios agentes">
+    <div class="eyebrow">4.3 · Cuándo NO complicarse</div>
+    <h2>La trampa del organigrama</h2>
+    <div class="analogy">
+      <span class="tag">Analogía</span>
+      <p>Montar tres agentes para lo que un buen prompt resuelve es contratar un equipo de cinco para responder un correo. Cada agente extra añade coordinación, latencia, costo y puntos de fallo.</p>
+    </div>
+    <div class="callout good">
+      <p class="small" style="margin:0"><strong>Empieza con lo más simple que funcione:</strong> un chat → luego un agente → y solo si hace falta, varios. La sofisticación la justifica la tarea, no lo impresionante que suena. "Menos y mejor" otra vez (M2, M4).</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 5 ============ -->
+  <section class="slide divider" data-topic="5 · Riesgos y criterio">
+    <div class="num">5</div>
+    <div class="eyebrow">Tema 5</div>
+    <h2>Riesgos, límites y criterio</h2>
+    <p class="lead muted">La autonomía multiplica las consecuencias de cada debilidad.</p>
+  </section>
+
+  <section class="slide" data-topic="5 · Riesgos y criterio">
+    <div class="eyebrow">5.1 · El error que se compone</div>
+    <h2>Un error temprano se propaga y se amplifica</h2>
+    <pre><code>Paso 1: lee mal una cifra (error pequeño)
+Paso 2: calcula el precio con esa cifra   → precio malo
+Paso 3: redacta la cotización con él      → documento malo
+Paso 4: (si tuviera autonomía) la envía   → error con el cliente</code></pre>
+    <div class="callout danger">
+      <p class="small" style="margin:0">Un chat comete un error y ahí queda; un agente <strong>construye sobre su propio error</strong>. Por eso los puntos de verificación importan más — y deben estar <strong>temprano</strong>. Revisar solo el final es revisar un edificio con cimientos torcidos.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="5 · Riesgos y criterio">
+    <div class="eyebrow">5.2 · 5.3 · Costo y seguridad</div>
+    <h2>Lo que la autonomía cuesta</h2>
+    <div class="cols">
+      <div>
+        <p class="small"><strong>Costo y velocidad:</strong> diez pasos = diez+ llamadas al modelo. Más lento y más caro que un chat. Y un agente perdido quema pasos sin llegar a nada.</p>
+      </div>
+      <div>
+        <p class="small"><strong>Seguridad (M3, elevada):</strong> mínimo privilegio (solo las herramientas necesarias) · inyección de prompt indirecta (contenido que lee y podría obedecer) · nunca encadenar sin control <em>leer fuentes no confiables</em> con <em>actuar</em>.</p>
+      </div>
+    </div>
+    <div class="callout warn"><p class="small" style="margin:0">La pregunta no es "¿puedo con un agente?", sino "¿<strong>vale la pena</strong>?".</p></div>
+  </section>
+
+  <section class="slide" data-topic="5 · Riesgos y criterio">
+    <div class="eyebrow">5.4 · La regla del humano responsable</div>
+    <h2>La autonomía delega la ejecución, no la responsabilidad</h2>
+    <div class="analogy">
+      <span class="tag">Prueba de la defensa · versión agente (M4)</span>
+      <p>Antes de subir la autonomía: <em>si actúa solo y se equivoca, ¿puedo detectarlo y arreglarlo a tiempo, y responder por lo que hizo?</em> Si es no, baja el dial hasta que sea sí.</p>
+    </div>
+    <p class="small muted">Si un agente envía una cotización con un error, el cliente no acepta "lo hizo la IA". Un agente es un colaborador al que <strong>diriges y verificas</strong> — el principio de todo el curso, con un colaborador que ahora tiene manos y va más rápido que tú.</p>
+  </section>
+
+  <!-- ============ RESUMEN ============ -->
+  <section class="slide" data-topic="Resumen">
+    <div class="eyebrow">Cierre · Resumen del Módulo 6</div>
+    <h2>Los 5 temas, de un vistazo</h2>
+    <table>
+      <thead><tr><th>#</th><th>Tema</th><th>Idea central</th><th>Para llevar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>Qué es un agente</td><td>Le das un objetivo; decide los pasos en bucle</td><td>Cuatro piezas: objetivo, cerebro, herramientas, memoria</td></tr>
+        <tr><td><strong>2</strong></td><td>Cómo trabaja</td><td>Percibir → planificar → actuar → observar</td><td>Herramientas = mapa de riesgo; que sepa parar</td></tr>
+        <tr><td><strong>3</strong></td><td>Autonomía</td><td>Un dial según el riesgo, no un interruptor</td><td>Human-in-the-loop antes de lo irreversible</td></tr>
+        <tr><td><strong>4</strong></td><td>Multi-agente</td><td>Equipo de especialistas + orquestador</td><td>Empieza simple; no sobre-diseñes</td></tr>
+        <tr><td><strong>5</strong></td><td>Riesgos</td><td>La autonomía amplifica errores y consecuencias</td><td>El responsable sigues siendo tú</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small muted" style="margin:0">Fundamentos de IA Productiva · Módulo 6 de 7 — v1.0 · Siguiente: <strong>Módulo 7 — Criterio y uso sostenible.</strong></p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ CONTROLES ============ -->
+<div id="controls">
+  <button class="nav-btn" id="prev" aria-label="Slide anterior">← Anterior</button>
+  <div id="progress-wrap">
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div id="counter"></div>
+  </div>
+  <button class="nav-btn" id="next" aria-label="Slide siguiente">Siguiente →</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let i = 0;
+
+  const fill    = document.getElementById('progress-fill');
+  const counter = document.getElementById('counter');
+  const badge   = document.getElementById('topic-badge');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  function show(n){
+    i = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    slides[i].scrollTop = 0;
+    fill.style.width = ((i + 1) / total * 100) + '%';
+    counter.textContent = (i + 1) + ' / ' + total;
+    const topic = slides[i].dataset.topic || '';
+    badge.innerHTML = topic ? 'Tema actual · <b>' + topic + '</b>' : '';
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === total - 1;
+  }
+
+  function nextSlide(){ if (i < total - 1) show(i + 1); }
+  function prevSlide(){ if (i > 0) show(i - 1); }
+
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); nextSlide(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End')  { e.preventDefault(); show(total - 1); }
+  });
+
+  show(0);
+</script>
+</body>
+</html>

@@ -477,7 +477,7 @@ interiorizarlas es **probarlas** con material tuyo.
 ---
 
 *Anterior: [Módulo 4 — Metodologías de desarrollo con IA](./modulo-4-wiki.md)*
-*Siguiente: Módulo 6 — Herramientas especializadas*
+*Siguiente: [Módulo 6 — Agentes: de Responder a Actuar](./modulo-6-wiki.md)*
 
 ---
 
