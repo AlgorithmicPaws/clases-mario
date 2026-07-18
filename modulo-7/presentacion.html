@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 7 — Criterio y Uso Sostenible</title>
+<style>
+  :root{
+    --bg:#0e1117;
+    --bg-2:#161b22;
+    --bg-3:#1c2330;
+    --border:#2a3340;
+    --text:#e6edf3;
+    --muted:#bcc8d4;
+    --accent:#58a6ff;
+    --accent-2:#7ee787;
+    --warn:#f0a868;
+    --danger:#ff7b72;
+    --analogy:#bc8cff;
+    --code-bg:#0a0d12;
+    --shadow:0 10px 40px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    overflow:hidden;
+  }
+
+  /* ---- Stage ---- */
+  #stage{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:64px 56px 84px;
+  }
+  .slide{
+    display:none;
+    width:100%;
+    max-width:1080px;
+    max-height:100%;
+    overflow-y:auto;
+    animation:fade .35s ease;
+  }
+  .slide.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  /* ---- Typography ---- */
+  .eyebrow{
+    color:var(--accent);
+    font-size:.8rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h1{font-size:3rem;line-height:1.1;margin-bottom:18px;font-weight:800;letter-spacing:-.02em;}
+  h2{font-size:2rem;line-height:1.15;margin-bottom:20px;font-weight:800;letter-spacing:-.01em;}
+  h3{font-size:1.15rem;color:var(--accent-2);margin:22px 0 8px;font-weight:700;}
+  p{margin-bottom:14px;color:var(--text);font-size:1.06rem;}
+  .lead{font-size:1.25rem;color:var(--muted);}
+  strong{color:#fff;font-weight:700;}
+  ul,ol{margin:8px 0 16px 22px;}
+  li{margin-bottom:8px;font-size:1.04rem;}
+  .muted{color:var(--muted);}
+  .small{font-size:.92rem;}
+
+  /* ---- Callout / quote ---- */
+  .callout{
+    background:var(--bg-2);
+    border-left:4px solid var(--accent);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:18px 0;
+  }
+  .callout.good{border-left-color:var(--accent-2);}
+  .callout.warn{border-left-color:var(--warn);}
+  .callout.danger{border-left-color:var(--danger);}
+  .callout .tag{
+    display:block;
+    font-size:.78rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .callout.good .tag{color:var(--accent-2);}
+  .callout.warn .tag{color:var(--warn);}
+  .callout.danger .tag{color:var(--danger);}
+  .callout.exercise{border-left-color:var(--analogy);background:rgba(188,140,255,.07);}
+  .callout.exercise .tag{color:var(--analogy);}
+  .callout p:last-child{margin-bottom:0;}
+  /* ---- Exercise slide ---- */
+  .ex-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--analogy);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;
+    font-weight:700;margin-bottom:14px;
+    border:1px solid var(--analogy);border-radius:999px;padding:5px 13px;
+  }
+  .ex-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--analogy);}
+  ol.steps{margin:6px 0 0 1.1em;padding:0;}
+  ol.steps li{margin:7px 0;}
+
+  /* ---- Analogía (tarjeta destacada) ---- */
+  .analogy{
+    position:relative;
+    background:linear-gradient(135deg,rgba(188,140,255,.10),var(--bg-2));
+    border:1px solid #4a3d63;
+    border-left:4px solid var(--analogy);
+    border-radius:10px;
+    padding:18px 22px;
+    margin:18px 0;
+    box-shadow:0 4px 22px rgba(124,77,178,.12);
+  }
+  .analogy .tag{
+    display:block;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:800;color:var(--analogy);margin-bottom:6px;
+  }
+  .analogy p{margin-bottom:0;color:var(--text);}
+
+  /* ---- Code ---- */
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+    overflow-x:auto;
+    margin:16px 0;
+    box-shadow:var(--shadow);
+  }
+  code{
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:.92rem;
+    color:#cdd9e5;
+    white-space:pre;
+  }
+  p code,li code,td code{
+    background:var(--bg-3);
+    padding:2px 6px;
+    border-radius:5px;
+    font-size:.88rem;
+    color:var(--accent-2);
+    white-space:normal;
+  }
+
+  /* ---- Grid columns ---- */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:16px 0;}
+  .card{
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .card h3{margin-top:0;}
+
+  /* ---- Tables ---- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0;
+    font-size:.96rem;
+    background:var(--bg-2);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  th,td{
+    text-align:left;
+    padding:11px 14px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  th{
+    background:var(--bg-3);
+    color:var(--accent);
+    font-weight:700;
+    font-size:.85rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  tr:last-child td{border-bottom:none;}
+  td strong{color:var(--accent-2);}
+
+  /* ---- SVG figures ---- */
+  figure{margin:18px 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:10px;}
+  figcaption{color:var(--muted);font-size:.9rem;margin-top:8px;}
+
+  /* ---- Title slide ---- */
+  .title-slide{text-align:center;}
+  .title-slide .course{color:var(--muted);font-size:1.1rem;letter-spacing:.05em;margin-bottom:8px;}
+  .title-slide .hint{margin-top:34px;color:var(--muted);font-size:.95rem;}
+  .kbd{
+    display:inline-block;background:var(--bg-3);border:1px solid var(--border);
+    border-bottom-width:3px;border-radius:6px;padding:2px 9px;font-size:.85rem;
+    font-family:monospace;color:var(--text);margin:0 2px;
+  }
+  .topic-list{display:inline-block;text-align:left;margin-top:24px;}
+  .topic-list li{font-size:1.1rem;color:var(--text);}
+
+  /* ---- Section divider slide ---- */
+  .divider{text-align:center;}
+  .divider .num{
+    font-size:6rem;font-weight:800;color:var(--bg-3);
+    -webkit-text-stroke:2px var(--accent);line-height:1;margin-bottom:8px;
+  }
+
+  /* ---- Controls ---- */
+  #controls{
+    position:fixed;bottom:0;left:0;right:0;height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;background:linear-gradient(to top,var(--bg),rgba(14,17,23,.0));
+  }
+  .nav-btn{
+    background:var(--bg-2);color:var(--text);border:1px solid var(--border);
+    border-radius:8px;padding:9px 16px;font-size:.95rem;cursor:pointer;
+    transition:.15s;display:flex;align-items:center;gap:6px;
+  }
+  .nav-btn:hover:not(:disabled){background:var(--bg-3);border-color:var(--accent);}
+  .nav-btn:disabled{opacity:.35;cursor:default;}
+  #progress-wrap{flex:1;margin:0 22px;}
+  #progress-bar{height:4px;background:var(--bg-3);border-radius:4px;overflow:hidden;}
+  #progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s ease;}
+  #counter{color:var(--muted);font-size:.85rem;text-align:center;margin-top:4px;}
+
+  /* ---- Top topic badge ---- */
+  #topic-badge{
+    position:fixed;top:16px;left:24px;z-index:5;
+    color:var(--muted);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+  }
+  #topic-badge b{color:var(--accent);}
+
+  /* ---- Home link ---- */
+  #home-link{
+    position:fixed;top:14px;right:24px;z-index:6;
+    display:inline-flex;align-items:center;gap:6px;
+    color:var(--text);text-decoration:none;
+    font-size:.82rem;font-weight:600;
+    background:var(--bg-2);border:1px solid var(--border);
+    padding:6px 13px;border-radius:9px;
+    transition:border-color .2s ease,color .2s ease;
+  }
+  #home-link:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* scrollbars */
+  .slide::-webkit-scrollbar,pre::-webkit-scrollbar{height:9px;width:9px;}
+  .slide::-webkit-scrollbar-thumb,pre::-webkit-scrollbar-thumb{background:var(--border);border-radius:5px;}
+
+  @media (max-width:1000px){
+    .cols{grid-template-columns:1fr;}
+    h1{font-size:2.3rem;}h2{font-size:1.6rem;}
+    #stage{padding:56px 28px 80px;}
+  }
+
+  /* ---- Impresión / export a PDF (cada slide = una página 16:9) ---- */
+  @media print{
+    @page{ size:13.333in 8.3in; margin:0; }
+    html,body{
+      height:auto !important; overflow:visible !important;
+      background:#0e1117 !important;
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    #home-link,#topic-badge,#controls{ display:none !important; }
+    #stage{ display:block !important; height:auto !important; padding:0 !important; }
+    .slide{
+      display:flex !important; flex-direction:column; justify-content:center;
+      box-sizing:border-box;
+      width:13.333in; height:8in;
+      max-width:none !important; max-height:none !important;
+      overflow:hidden !important;
+      padding:0.45in 0.62in; margin:0;
+      animation:none !important;
+      page-break-after:always; break-after:page;
+      page-break-inside:avoid; break-inside:avoid;
+    }
+    .slide:last-child{ page-break-after:avoid; break-after:auto; }
+
+    /* compactar para que cada slide quepa en una sola página */
+    html{ font-size:12px; }
+    .slide h1{ font-size:2.6rem; }
+    .slide h2{ font-size:1.55rem; margin-bottom:.45rem; }
+    .slide h3{ margin:.2rem 0; }
+    .slide p{ margin:0 0 .42rem; }
+    .slide .lead{ margin-bottom:.4rem; }
+    .slide ul,.slide ol{ margin:.3rem 0 .5rem 1.15rem; }
+    .slide li{ margin:3px 0; }
+    .slide .callout,.slide .analogy{ margin:.42rem 0; padding:9px 13px; }
+    .slide .card{ padding:12px 15px; }
+    .slide .cols{ gap:14px; margin:10px 0; }
+    .slide table{ font-size:.9em; }
+    .slide th,.slide td{ padding:5px 9px; }
+    .slide svg{ height:2in !important; width:auto !important; max-width:100% !important; display:block; margin:6px auto; }
+    .slide pre{ font-size:.78rem; line-height:1.3; padding:10px 14px; margin:.5rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<a id="home-link" href="../index.html">← Inicio</a>
+<div id="topic-badge"></div>
+
+<div id="stage">
+
+  <!-- ============ PORTADA ============ -->
+  <section class="slide active title-slide" data-topic="Inicio">
+    <div class="course">Fundamentos de IA Productiva</div>
+    <div class="eyebrow">Módulo 7 de 7 · Cierre del curso</div>
+    <h1>Criterio y Uso Sostenible</h1>
+    <p class="lead">Las capacidades de la IA seguirán creciendo.<br>Lo que no escala solo es <strong>tu criterio</strong>.</p>
+    <ol class="topic-list">
+      <li>Detectar lo plausible pero incorrecto</li>
+      <li>Sesgos y cómo compensarlos</li>
+      <li>Privacidad y datos sensibles</li>
+      <li>Mantenerse actualizado sin volverse loco</li>
+    </ol>
+    <p class="hint">Navega con <span class="kbd">←</span> <span class="kbd">→</span> o los botones de abajo</p>
+  </section>
+
+  <!-- ============ ENCUADRE ============ -->
+  <section class="slide" data-topic="Encuadre">
+    <div class="eyebrow">El módulo que cierra el círculo</div>
+    <h2>"Esto se trata a fondo en el Módulo 7"</h2>
+    <p class="small">Durante todo el curso fuimos dejando esa frase pendiente. Llegó el momento: los cuatro hilos sueltos —el error que suena bien, los sesgos, la privacidad y no quedarse atrás— se convierten en lo único que de verdad te llevas.</p>
+    <table>
+      <tbody>
+        <tr><td><strong>M1</strong> predice, no sabe</td><td><strong>M2</strong> hablarle y evaluar</td><td><strong>M3</strong> herramientas que tapan agujeros</td></tr>
+        <tr><td><strong>M4</strong> método sin deuda</td><td><strong>M5</strong> el abanico de lo posible</td><td><strong>M6</strong> cuando actúa sola</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <span class="tag">La tesis del curso</span>
+      <p class="small" style="margin:0">Todos esos módulos apuntaban al mismo sitio: <strong>tú sigues siendo el responsable</strong>. El criterio es lo único que no queda obsoleto en tres meses.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 1 ============ -->
+  <section class="slide divider" data-topic="1 · Lo plausible pero incorrecto">
+    <div class="num">1</div>
+    <div class="eyebrow">Tema 1</div>
+    <h2>Detectar lo plausible pero incorrecto</h2>
+    <p class="lead muted">Tu instinto de "esto suena raro" funciona con humanos. Aquí no te sirve.</p>
+  </section>
+
+  <section class="slide" data-topic="1 · Lo plausible pero incorrecto">
+    <div class="eyebrow">1.1 · Por qué cuesta detectarlo</div>
+    <h2>El error y el acierto se producen igual</h2>
+    <div class="analogy">
+      <span class="tag">La clave de todo</span>
+      <p>Cuando acierta, produce texto fluido y seguro. Cuando se equivoca, produce texto <strong>igual de fluido y seguro</strong>. No hay diferencia de tono entre una verdad y una alucinación.</p>
+    </div>
+    <p class="small">Con una persona, la duda se nota: titubea, dice "creo que". El modelo puede inventar una cláusula o una cifra con la misma prosa impecable. Y cuanto mejor escrito está algo, más tendemos a creerlo — la <strong>trampa de la fluidez</strong> (M4), ahora como problema central.</p>
+    <div class="callout warn">
+      <p class="small" style="margin:0">Los modelos modernos están <strong>mejor calibrados</strong> (dicen más "no estoy seguro"). Es una mejora real, pero no es garantía: <strong>la ausencia de duda no es evidencia de acierto</strong>.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · Lo plausible pero incorrecto">
+    <div class="eyebrow">1.2 · Dónde mirar</div>
+    <h2>Las siete señales de alarma</h2>
+    <table>
+      <thead><tr><th>#</th><th>Señal</th><th>Por qué falla ahí</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Datos muy específicos</strong> (cifras, fechas, leyes)</td><td>Lo específico se rellena con lo más probable</td></tr>
+        <tr><td>2</td><td><strong>Fuentes y citas</strong></td><td>Puede inventar títulos, autores o URLs</td></tr>
+        <tr><td>3</td><td><strong>Posterior a su fecha de corte</strong></td><td>No lo tiene; si no busca, improvisa</td></tr>
+        <tr><td>4</td><td><strong>Aritmética y conteos</strong></td><td>No calcula: predice el texto del resultado</td></tr>
+        <tr><td>5</td><td><strong>Nichos muy especializados</strong></td><td>Poco material → más relleno plausible</td></tr>
+        <tr><td>6</td><td><strong>Cuando le insistes</strong></td><td>Tiende a ceder aunque tuviera razón</td></tr>
+        <tr><td>7</td><td><strong>Premisa falsa</strong></td><td>Explica algo falso que <em>tú</em> diste por cierto</td></tr>
+      </tbody>
+    </table>
+    <div class="callout good">
+      <span class="tag">Truco para la señal 7</span>
+      <p class="small" style="margin:0">En vez de <em>"¿por qué pasa X?"</em>, pregunta <strong>"¿pasa X? Si es así, ¿por qué?"</strong>. Le das permiso explícito para contradecirte.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · Lo plausible pero incorrecto">
+    <div class="eyebrow">1.3 · Técnicas de verificación</div>
+    <h2>Siete formas de comprobar</h2>
+    <div class="cols">
+      <div>
+        <ul>
+          <li><strong>Pide la fuente y ábrela</strong> — la cita es para que vayas al original.</li>
+          <li><strong>Ancla al documento</strong> — dale el material; es mejor leyendo que recordando.</li>
+          <li><strong>Que calcule de verdad</strong> — ejecución de código para todo número (M3).</li>
+          <li><strong>Pregunta al revés</strong> — "¿qué razones hay para pensar que esto está mal?"</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><strong>Pide nivel de confianza</strong> — "marca qué es seguro, estimado o no verificable".</li>
+          <li><strong>Triangula</strong> — pregunta de otra forma en un chat nuevo, sin el contexto previo.</li>
+          <li><strong>Prueba de la defensa</strong> (M4) — ¿lo defenderías sin la IA delante?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="1 · Lo plausible pero incorrecto">
+    <div class="eyebrow">1.4 · Calibrar el esfuerzo</div>
+    <h2>¿Qué pasa si esto está mal y no me doy cuenta?</h2>
+    <table>
+      <thead><tr><th>Riesgo</th><th>Ejemplo</th><th>Cuánto verificar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Bajo</strong></td><td>Lluvia de ideas, borrador para ti</td><td>Casi nada: si sirve, sirve</td></tr>
+        <tr><td><strong>Medio</strong></td><td>Correo interno, resumen para el equipo</td><td>Lectura crítica; comprueba datos</td></tr>
+        <tr><td><strong>Alto</strong></td><td>Propuesta a cliente, cifras, contenido público</td><td>Cada dato; fuentes abiertas</td></tr>
+        <tr><td><strong>Crítico</strong></td><td>Contrato, impuestos, salud, nómina</td><td>Verificación humana experta <strong>obligatoria</strong></td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small" style="margin:0">Verificarlo todo es tan poco práctico como no verificar nada. Si la respuesta es "pierdo un cliente" o "pago una multa", la IA te dio un <strong>borrador</strong>, no una respuesta.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 2 ============ -->
+  <section class="slide divider" data-topic="2 · Sesgos">
+    <div class="num">2</div>
+    <div class="eyebrow">Tema 2</div>
+    <h2>Sesgos y cómo compensarlos</h2>
+    <p class="lead muted">Un sesgo es una desviación <strong>sistemática</strong> — y por eso mismo, compensable.</p>
+  </section>
+
+  <section class="slide" data-topic="2 · Sesgos">
+    <div class="eyebrow">2.1 · De dónde vienen</div>
+    <h2>Dos orígenes, dos efectos</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Del corpus de entrenamiento</h3>
+        <p class="small">Hereda lo que hay en el texto del mundo. Si ciertos idiomas, países o perspectivas están sobrerrepresentados, el modelo refleja ese desequilibrio.</p>
+      </div>
+      <div class="card">
+        <h3>Del ajuste con humanos (RLHF)</h3>
+        <p class="small">Se le entrena para dar respuestas que la gente califica como buenas. Efecto secundario: aprende a ser <strong>agradable</strong> — y agradable ≠ correcto.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <p class="small" style="margin:0">"Sesgo" no significa mala intención ni postura política: significa <strong>desviación sistemática</strong>. Como es sistemática, se corrige — igual que un instrumento que mide siempre dos grados de más.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="2 · Sesgos">
+    <div class="eyebrow">2.2 · Los que más te afectan</div>
+    <h2>Seis sesgos del día a día</h2>
+    <ul>
+      <li><strong>Complacencia</strong> (el más importante) — tiende a darte la razón y a ceder si le llevas la contraria. <em>Es el enemigo del criterio: si buscas validación, la obtendrás.</em></li>
+      <li><strong>Confirmación por cómo preguntas</strong> — "dame argumentos para X" te dará argumentos para X, aunque X sea mala idea.</li>
+      <li><strong>Cultural y lingüístico</strong> — dominado por contenido en inglés; puede errar en normativas, costumbres y precios locales.</li>
+      <li><strong>Homogeneización</strong> — tiende al consejo promedio y a la idea más obvia.</li>
+      <li><strong>Posición y recencia</strong> — atiende más al principio y al final que al medio (context rot, M2).</li>
+      <li><strong>Estereotipos</strong> — puede reproducir asociaciones frecuentes al generar personas, roles o imágenes.</li>
+    </ul>
+  </section>
+
+  <section class="slide" data-topic="2 · Sesgos">
+    <div class="eyebrow">2.3 · Compensarlos</div>
+    <h2>Casi todo se corrige con cómo preguntas</h2>
+    <table>
+      <thead><tr><th>Sesgo</th><th>Cómo lo compensas</th></tr></thead>
+      <tbody>
+        <tr><td>Complacencia</td><td>"Critica mi idea", "¿en qué estoy equivocado?"</td></tr>
+        <tr><td>Confirmación</td><td>"Argumenta a favor y en contra con la misma fuerza"</td></tr>
+        <tr><td>Cultural / local</td><td>Da tu contexto: país, sector, normativa, moneda</td></tr>
+        <tr><td>Homogeneización</td><td>"Dame 10 opciones, incluyendo 3 poco convencionales"</td></tr>
+        <tr><td>Posición</td><td>Lo crítico al principio o al final; divide lo largo</td></tr>
+      </tbody>
+    </table>
+    <div class="analogy">
+      <span class="tag">La técnica más rentable del módulo</span>
+      <p>En vez de <em>"¿qué te parece mi plan?"</em> (invita a la complacencia), usa <strong>"encuentra los tres puntos más débiles de mi plan y explica cómo fallarían"</strong>. Cambias validación por información útil. Ponlo en las instrucciones de tu Proyecto (M3) y lo tienes siempre activo.</p>
+    </div>
+  </section>
+
+  <!-- ============ TEMA 3 ============ -->
+  <section class="slide divider" data-topic="3 · Privacidad">
+    <div class="num">3</div>
+    <div class="eyebrow">Tema 3</div>
+    <h2>Privacidad y datos sensibles</h2>
+    <p class="lead muted">No estás escribiendo en un cuaderno privado: estás enviando información a un tercero.</p>
+  </section>
+
+  <section class="slide" data-topic="3 · Privacidad">
+    <div class="eyebrow">3.1 · Qué pasa con lo que escribes</div>
+    <h2>Depende del producto y del plan</h2>
+    <ul>
+      <li><strong>Retención</strong> — cuánto tiempo se guardan tus conversaciones.</li>
+      <li><strong>Uso para entrenamiento</strong> — suele haber diferencias importantes entre planes de <strong>consumidor</strong> y de <strong>empresa/API</strong>.</li>
+      <li><strong>Quién accede</strong> — revisión de seguridad, administradores de tu organización.</li>
+      <li><strong>Controles</strong> — historial desactivable, borrado, retención configurable.</li>
+    </ul>
+    <div class="callout good">
+      <span class="tag">La recomendación que no caduca</span>
+      <p class="small" style="margin:0"><strong>Lee la política del plan concreto que usas</strong>, y revísala de vez en cuando. Y si trabajas en una organización: ¿existe una política interna de uso de IA? Si no, esa conversación vale la pena iniciarla.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Privacidad">
+    <div class="eyebrow">3.2 · Qué NO poner en un prompt</div>
+    <h2>La lista corta</h2>
+    <div class="cols">
+      <div>
+        <div class="callout danger">
+          <span class="tag">Nunca</span>
+          <p class="small" style="margin:0">Credenciales y secretos (si se te escapa una, <strong>rótala</strong>) · datos personales de terceros · información bajo NDA o secreto comercial · datos regulados (salud, bancarios, menores).</p>
+        </div>
+      </div>
+      <div>
+        <div class="callout warn">
+          <span class="tag">Con cuidado</span>
+          <p class="small" style="margin:0">Documentos internos completos · código propietario crítico · grabaciones de reuniones donde los demás no consintieron.</p>
+        </div>
+      </div>
+    </div>
+    <div class="analogy">
+      <span class="tag">La regla de la pantalla compartida</span>
+      <p>Antes de enviar: <em>"¿me sentiría cómodo si esto apareciera proyectado en una reunión?"</em> Si la respuesta es no, anonimízalo. Imperfecta, pero atrapa casi todos los errores graves.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="3 · Privacidad">
+    <div class="eyebrow">3.3 · Trabajar sin exponer</div>
+    <h2>Minimización de datos</h2>
+    <p class="small">La reacción exagerada —"entonces no uso IA para nada de trabajo"— te deja fuera de todo el valor del curso. La postura útil: <strong>trabajar con datos, desacoplados de las personas</strong>.</p>
+    <ul>
+      <li><strong>Anonimiza y sustituye</strong> — "Cliente A", importes redondeados. Casi nunca necesita los nombres reales.</li>
+      <li><strong>Manda el extracto, no el expediente</strong> — menos exposición y <em>mejores</em> respuestas (menos ruido, M2).</li>
+      <li><strong>Agrega en vez de detallar</strong> — totales y tendencias en lugar de registros individuales.</li>
+      <li><strong>Usa el entorno corporativo</strong> si trabajas con datos sensibles a menudo.</li>
+      <li><strong>Higiene</strong> — borra chats delicados; revisa knowledge (M3) y memoria (M4): lo que persiste, persiste.</li>
+    </ul>
+    <div class="callout good"><p class="small" style="margin:0">Comparte <strong>lo mínimo necesario</strong>. No es solo privacidad: casi siempre mejora la calidad del resultado.</p></div>
+  </section>
+
+  <section class="slide" data-topic="3 · Privacidad">
+    <div class="eyebrow">3.4 · Connectors y agentes</div>
+    <h2>Cuando el riesgo cambia de naturaleza</h2>
+    <p class="small">Todo lo anterior asumía que <strong>tú</strong> decides qué enviar. Con connectors (M3) y agentes (M6), esa premisa se rompe.</p>
+    <ul>
+      <li><strong>Ya no controlas qué entra al contexto</strong> — si le das tu correo, no elegiste tú qué mensajes se procesan.</li>
+      <li><strong>Puede actuar hacia afuera</strong> — propagar un dato sensible sin que lo veas.</li>
+      <li><strong>Inyección de prompt indirecta</strong> — datos no confiables + capacidad de actuar = el escenario más peligroso del curso.</li>
+    </ul>
+    <div class="callout danger">
+      <span class="tag">Obligatorio, no opcional</span>
+      <p class="small" style="margin:0"><strong>Mínimo privilegio</strong> · <strong>humano en el bucle</strong> para lo irreversible · no encadenes lectura no confiable con escritura · revisa permisos periódicamente.</p>
+    </div>
+    <p class="small muted" style="margin-bottom:0">Cuanta más autonomía le das, menos control tienes sobre qué datos toca. <strong>La autonomía es una decisión de privacidad</strong>, no solo de productividad.</p>
+  </section>
+
+  <!-- ============ TEMA 4 ============ -->
+  <section class="slide divider" data-topic="4 · Mantenerse al día">
+    <div class="num">4</div>
+    <div class="eyebrow">Tema 4</div>
+    <h2>Mantenerse actualizado sin volverse loco</h2>
+    <p class="lead muted">Lo que cambia rápido es la superficie. Lo que aprendiste son los cimientos.</p>
+  </section>
+
+  <section class="slide" data-topic="4 · Mantenerse al día">
+    <div class="eyebrow">4.1 · Señal vs. ruido</div>
+    <h2>¿Esto cambia algo de lo que hago mañana?</h2>
+    <table>
+      <thead><tr><th>Suele ser señal</th><th>Suele ser ruido</th></tr></thead>
+      <tbody>
+        <tr><td>Documentación y notas de versión del producto que usas</td><td>"10 prompts que te harán millonario"</td></tr>
+        <tr><td>Cambios en <strong>capacidades</strong> (modalidad, contexto, herramientas)</td><td>Cambios menores de nombre o interfaz</td></tr>
+        <tr><td>Cambios en <strong>políticas de datos</strong></td><td>Predicciones a 5 años</td></tr>
+        <tr><td>Casos reales de tu sector, con límites</td><td>Demos sin contexto ni verificación</td></tr>
+        <tr><td>Investigación sobre límites y evaluación</td><td>"La IA acabará con [profesión]"</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><p class="small" style="margin:0">Si la respuesta a la pregunta filtro es <strong>no</strong>, puedes leerlo por curiosidad — pero no es una tarea pendiente. La mayoría del contenido de IA no pasa este filtro.</p></div>
+  </section>
+
+  <section class="slide" data-topic="4 · Mantenerse al día">
+    <div class="eyebrow">4.2 · Una dieta sostenible</div>
+    <h2>Un sistema pequeño y repetible</h2>
+    <div class="cols">
+      <div>
+        <ul>
+          <li><strong>1-2 fuentes primarias</strong>, no veinte: la doc de lo que realmente usas.</li>
+          <li><strong>Ritmo fijo</strong>: media hora al mes rinde más que 30 min diarios de hilos.</li>
+          <li><strong>Aprende haciendo</strong>: una hora probando enseña más que diez leyendo.</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><strong>Ten un problema pendiente</strong>: sin esa lista, las novedades pasan de largo.</li>
+          <li><strong>Aprende en comunidad</strong>: un grupo pequeño filtra mejor que cualquier algoritmo.</li>
+          <li><strong>Revisa tus prácticas</strong>: quizá das rodeos que ya no hacen falta.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout good">
+      <span class="tag">Permiso explícito</span>
+      <p class="small" style="margin:0"><strong>No tienes que probar todas las herramientas nuevas.</strong> Elegir una y usarla bien vale más que saltar entre cinco. La ventaja no está en conocer la última novedad, sino en tener criterio y método sobre una que dominas.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-topic="4 · Mantenerse al día">
+    <div class="eyebrow">4.3 · Lo que no cambia</div>
+    <h2>Lo que seguirá siendo cierto en tres años</h2>
+    <table>
+      <tbody>
+        <tr><td><strong>M1</strong></td><td>Los modelos predicen; no consultan la verdad → siempre habrá que verificar lo que importa</td></tr>
+        <tr><td><strong>M2</strong></td><td>El contexto es el recurso escaso → lo que le das determina lo que obtienes</td></tr>
+        <tr><td><strong>M3</strong></td><td>Las herramientas tapan agujeros conocidos → elegir bien es aplicar lo que sabes</td></tr>
+        <tr><td><strong>M4</strong></td><td>El método vence al truco → especificar, iterar y verificar</td></tr>
+        <tr><td><strong>M5</strong></td><td>La capacidad se recombina → lo nuevo son combinaciones de lo conocido</td></tr>
+        <tr><td><strong>M6</strong></td><td>A más autonomía, más verificación → delegar acciones no delega responsabilidad</td></tr>
+        <tr><td><strong>M7</strong></td><td><strong>Tú eres el responsable</strong> → firmas tú, no la herramienta</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ CIERRE ============ -->
+  <section class="slide" data-topic="Cierre del curso">
+    <div class="eyebrow">Cierre del curso</div>
+    <h2>Tu criterio es el producto</h2>
+    <p class="small">Empezamos preguntando <strong>cómo piensa un modelo</strong> y terminamos preguntando <strong>cómo piensas tú al usarlo</strong>. Ese es el arco completo.</p>
+    <div class="analogy">
+      <span class="tag">Los siete módulos en una idea</span>
+      <p>La IA es un colaborador <strong>extraordinariamente capaz</strong> y <strong>estructuralmente poco fiable</strong>. Capaz, porque hace en segundos lo que exigía horas. Poco fiable no por estar mal hecha, sino por su naturaleza: <strong>predice, no sabe</strong>. Trabajar bien con ella es explotar lo primero sin olvidar lo segundo.</p>
+    </div>
+    <div class="callout good">
+      <span class="tag">Y lo más práctico de todo</span>
+      <p class="small" style="margin:0"><strong>Empieza pequeño.</strong> Elige <em>un</em> caso del M5 que resuelva un dolor real de tu semana, aplícale el método del M4 y el criterio de hoy. Un caso bien resuelto enseña más —y convence más a tu equipo— que veinte experimentos a medias.</p>
+    </div>
+  </section>
+
+  <!-- ============ RESUMEN ============ -->
+  <section class="slide" data-topic="Resumen">
+    <div class="eyebrow">Resumen del Módulo 7</div>
+    <h2>Los 4 temas, de un vistazo</h2>
+    <table>
+      <thead><tr><th>#</th><th>Tema</th><th>Idea central</th><th>Para llevar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>Plausible ≠ correcto</td><td>El error y el acierto se producen igual</td><td>7 señales de alarma; verifica según el riesgo</td></tr>
+        <tr><td><strong>2</strong></td><td>Sesgos</td><td>Desviación sistemática, por tanto compensable</td><td>Abogado del diablo por defecto</td></tr>
+        <tr><td><strong>3</strong></td><td>Privacidad</td><td>Lo que escribes sale de tu equipo</td><td>Minimiza y anonimiza; lee tu política</td></tr>
+        <tr><td><strong>4</strong></td><td>Estar al día</td><td>Cambia la superficie, no los cimientos</td><td>Pocas fuentes, ritmo fijo, aprende haciendo</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p class="small" style="margin:0">Las herramientas de hoy serán viejas pronto. Lo que no caduca es saber <strong>qué tipo de caso es cada tarea, dónde va a fallar, cuánto verificar y qué no compartir</strong>. Eso es criterio — y es tuyo.</p>
+    </div>
+    <div class="callout">
+      <p class="small muted" style="margin:0">Fundamentos de IA Productiva · Módulo 7 de 7 — v1.0 · <strong>Fin del curso. ¡Gracias por llegar hasta aquí!</strong></p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ CONTROLES ============ -->
+<div id="controls">
+  <button class="nav-btn" id="prev" aria-label="Slide anterior">← Anterior</button>
+  <div id="progress-wrap">
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div id="counter"></div>
+  </div>
+  <button class="nav-btn" id="next" aria-label="Slide siguiente">Siguiente →</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let i = 0;
+
+  const fill    = document.getElementById('progress-fill');
+  const counter = document.getElementById('counter');
+  const badge   = document.getElementById('topic-badge');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  function show(n){
+    i = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    slides[i].scrollTop = 0;
+    fill.style.width = ((i + 1) / total * 100) + '%';
+    counter.textContent = (i + 1) + ' / ' + total;
+    const topic = slides[i].dataset.topic || '';
+    badge.innerHTML = topic ? 'Tema actual · <b>' + topic + '</b>' : '';
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === total - 1;
+  }
+
+  function nextSlide(){ if (i < total - 1) show(i + 1); }
+  function prevSlide(){ if (i > 0) show(i - 1); }
+
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); nextSlide(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End')  { e.preventDefault(); show(total - 1); }
+  });
+
+  show(0);
+</script>
+</body>
+</html>

@@ -61,15 +61,25 @@ Cada módulo vive en su propia carpeta; `index.html` y `wiki.html` quedan en la 
 │       ├── 02-contrato-extracto.md
 │       ├── 03-anuncio-precios.md
 │       └── 04-idea-vaga.md
-└── modulo-6/
+├── modulo-6/
+│   ├── presentacion.html
+│   ├── presentacion.pdf
+│   ├── wiki.md
+│   ├── wiki.pdf
+│   └── insumos/            · Materiales para diseñar agentes (sobre papel)
+│       ├── README.md
+│       ├── 01-procesos-imprenta.md
+│       └── 02-diseno-agente.md
+└── modulo-7/
     ├── presentacion.html
     ├── presentacion.pdf
     ├── wiki.md
     ├── wiki.pdf
-    └── insumos/            · Materiales para diseñar agentes (sobre papel)
+    └── insumos/            · Materiales para entrenar el ojo crítico
         ├── README.md
-        ├── 01-procesos-imprenta.md
-        └── 02-diseno-agente.md
+        ├── 01-respuestas-sospechosas.md
+        ├── 02-prompt-con-datos-sensibles.md
+        └── 03-plan-personal.md
 ```
 
 Las rutas a cada módulo están centralizadas: en `index.html` (array `MODULES`, campo `deck`) y

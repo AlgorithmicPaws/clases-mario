@@ -557,7 +557,7 @@ la referencia primaria; el resto aporta marco conceptual.
 ---
 
 *Anterior: [Módulo 5 — IA en Acción: Galería de Casos](./modulo-5-wiki.md)*
-*Siguiente: Módulo 7 — Criterio y uso sostenible*
+*Siguiente: [Módulo 7 — Criterio y Uso Sostenible](./modulo-7-wiki.md)*
 
 ---
 
